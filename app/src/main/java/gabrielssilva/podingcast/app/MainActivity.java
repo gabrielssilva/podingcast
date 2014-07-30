@@ -37,7 +37,7 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void onRegisterButtonClick(View view) {
+    public void onRegisterButtonClick(View view) {
         TextView podcastNameTextView = (TextView) findViewById(R.id.textfield_podcast_name);
         TextView rssAddressTextView = (TextView) findViewById(R.id.textfield_rss_address);
 
