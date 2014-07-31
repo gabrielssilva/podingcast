@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 
 import gabrielssilva.podingcast.model.Podcast;
+import podingcast.web.Send;
 
 public class PodcastController {
 
@@ -32,7 +33,7 @@ public class PodcastController {
         try {
             JSONObject jsonObject = podcastToJson(podcast);
             StringEntity stringJsonObject = new StringEntity(jsonObject.toString());
-            Web.getInstance().send(stringJsonObject);
+            new Send().execute(stringJsonObject);
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
