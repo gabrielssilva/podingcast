@@ -1,4 +1,4 @@
-package podingcast.web;
+package gabrielssilva.podingcast.web;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -16,37 +16,32 @@ public class Send extends AsyncTask<Object, Void, String> {
 
     protected String doInBackground(Object... params) {
 
-        final String path = "http://10.10.10.104/save_podcast";
+        final String path = "http://10.10.10.104:8080/save_podcast";
         StringEntity data = (StringEntity) params[0];
-
-        Log.i("Web Send", "entered");
 
         try {
             DefaultHttpClient httpClient = new DefaultHttpClient();
             HttpPost httPost = new HttpPost(path);
-            Log.i("Web Send", "entered 1");
+
             httPost.setEntity(data);
             httPost.setHeader("Accept", "text/plain");
             httPost.setHeader("Content-type", "application/json");
-            Log.i("Web Send", "entered 2");
+
             ResponseHandler responseHandler = new BasicResponseHandler();
-            Log.i("Web Send", "entered 3");
-            HttpResponse response = (HttpResponse) httpClient.execute(httPost, responseHandler);
+            String response = (String) httpClient.execute(httPost, responseHandler);
 
-            Log.i("Web Send", "exited");
-
-            return response.toString();
+            return response;
         } catch (IOException e) {
             e.printStackTrace();
-
-            Log.i("Web Send", "exited");
 
             return null;
         }
     }
 
     protected void onPostExecute(String response) {
-        Log.i("Web Send", response);
+        if (response != null) {
+            Log.i("Web Send", response);
+        }
     }
 
 }

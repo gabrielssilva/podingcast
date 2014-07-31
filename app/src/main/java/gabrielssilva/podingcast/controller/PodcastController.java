@@ -7,7 +7,7 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 
 import gabrielssilva.podingcast.model.Podcast;
-import podingcast.web.Send;
+import gabrielssilva.podingcast.web.Send;
 
 public class PodcastController {
 
