@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import gabrielssilva.podingcast.adapter.SectionsPagerAdapter;
 import gabrielssilva.podingcast.app.R;
