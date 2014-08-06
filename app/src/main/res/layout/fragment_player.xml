@@ -28,14 +28,10 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Play"
-            android:id="@+id/button"/>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Pause"
-            android:id="@+id/button_stop" />
+            android:contentDescription="Play"
+            android:background="@android:color/transparent"
+            android:drawableTop="@drawable/play"
+            android:id="@+id/play_pause"/>
 
     </LinearLayout>
 </LinearLayout>

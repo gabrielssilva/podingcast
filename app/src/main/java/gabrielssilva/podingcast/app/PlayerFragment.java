@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -59,19 +60,30 @@ public class PlayerFragment extends Fragment implements Connection {
     }
 
     public void setButtonEvents(View view) {
-        Button button = (Button) view.findViewById(R.id.button);
+        Button button = (Button) view.findViewById(R.id.play_pause);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                playerService.playAudio();
+                Button button = (Button) v;
+                this.setAttributes(button, playerService.isPlaying());
             }
-        });
 
-        Button button2 = (Button) view.findViewById(R.id.button_stop);
-        button2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                playerService.pauseAudio();
+            public void setAttributes(Button button, boolean playing) {
+                Drawable icon;
+
+                if (playing) {
+                    playerService.pauseAudio();
+                    icon = getResources().getDrawable(R.drawable.play);
+
+                    button.setContentDescription("Play");
+                    button.setCompoundDrawablesWithIntrinsicBounds(null, icon, null, null);
+                } else {
+                    playerService.playAudio();
+                    icon = getResources().getDrawable(R.drawable.pause);
+
+                    button.setContentDescription("Pause");
+                    button.setCompoundDrawablesWithIntrinsicBounds(null, icon, null, null);
+                }
             }
         });
 

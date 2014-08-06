@@ -80,9 +80,14 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         this.mediaPlayer.setOnErrorListener(this);
     }
 
+    public boolean isPlaying() {
+        return this.mediaPlayer.isPlaying();
+    }
+
     public class PlayerBinder extends Binder {
         PlayerService getService() {
             return PlayerService.this;
         }
     }
+
 }
