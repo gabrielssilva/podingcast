@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import gabrielssilva.podingcast.events.OnPlayPauseClick;
 import gabrielssilva.podingcast.service.Connection;
 import gabrielssilva.podingcast.service.PlayerConnection;
 import gabrielssilva.podingcast.service.PlayerService;
@@ -23,6 +24,7 @@ public class PlayerFragment extends Fragment implements Connection {
     private boolean bound = false;
     private ServiceConnection playerConnection;
     private Activity activity;
+    private View rootView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -30,9 +32,7 @@ public class PlayerFragment extends Fragment implements Connection {
 
         this.playerConnection = new PlayerConnection(this);
         this.activity = getActivity();
-
-        this.setButtonEvents(rootView);
-
+        this.rootView = rootView;
         return rootView;
     }
 
@@ -57,35 +57,12 @@ public class PlayerFragment extends Fragment implements Connection {
     @Override
     public void setService(PlayerService playerService) {
         this.playerService = playerService;
+        this.setButtonEvents(rootView);
     }
 
     public void setButtonEvents(View view) {
         Button button = (Button) view.findViewById(R.id.play_pause);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Button button = (Button) v;
-                this.setAttributes(button, playerService.isPlaying());
-            }
-
-            public void setAttributes(Button button, boolean playing) {
-                Drawable icon;
-
-                if (playing) {
-                    playerService.pauseAudio();
-                    icon = getResources().getDrawable(R.drawable.play);
-
-                    button.setContentDescription("Play");
-                    button.setCompoundDrawablesWithIntrinsicBounds(null, icon, null, null);
-                } else {
-                    playerService.playAudio();
-                    icon = getResources().getDrawable(R.drawable.pause);
-
-                    button.setContentDescription("Pause");
-                    button.setCompoundDrawablesWithIntrinsicBounds(null, icon, null, null);
-                }
-            }
-        });
-
+        OnPlayPauseClick playPauseEvent = new OnPlayPauseClick(this.playerService, getResources());
+        button.setOnClickListener(playPauseEvent);
     }
 }
