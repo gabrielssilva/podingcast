@@ -9,37 +9,12 @@
     tools:context="gabrielssilva.podingcast.app.HomeActivity$PlaceholderFragment"
     android:id="@+id/layout">
 
-    <TextView
-        android:id="@+id/section_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <TextView
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Large Text"
-        android:id="@+id/textView"
-        android:layout_below="@+id/section_label"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="59dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/textView2"
+        android:text="Download!"
+        android:id="@+id/download_button"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
-
-    <Switch
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Switch"
-        android:id="@+id/switch1"
-        android:layout_marginTop="38dp"
-        android:layout_below="@+id/textView"
-        android:layout_centerHorizontal="true"
-        android:checked="false" />
 
 </RelativeLayout>
