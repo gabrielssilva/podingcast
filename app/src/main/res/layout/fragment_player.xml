@@ -17,13 +17,27 @@
         android:textSize="70sp"
         android:id="@+id/text_view" />
 
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/seek_bar"
+        android:layout_gravity="center_horizontal"
+        android:background="@android:color/holo_blue_dark"/>
+
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.2"
+        android:layout_weight="0.10"
         android:background="@android:color/holo_blue_dark"
         android:gravity="center">
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-30"
+            android:id="@+id/button_minus_30" />
 
         <Button
             android:layout_width="wrap_content"
@@ -31,7 +45,14 @@
             android:contentDescription="Play"
             android:background="@android:color/transparent"
             android:drawableTop="@drawable/play"
-            android:id="@+id/play_pause"/>
+            android:id="@+id/button_play_pause"/>
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+30"
+            android:id="@+id/button_plus_30" />
 
     </LinearLayout>
 </LinearLayout>

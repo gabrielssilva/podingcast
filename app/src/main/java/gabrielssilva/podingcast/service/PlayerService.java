@@ -8,6 +8,7 @@ import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.util.Log;
 
 import java.io.IOException;
 
@@ -69,6 +70,26 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     public void pauseAudio() {
         this.mediaPlayer.pause();
         this.currentAudioPosition = this.mediaPlayer.getCurrentPosition();
+    }
+
+    public void genericSeekPosition(int deltaInMilliseconds) {
+        int newAudioPosition;
+
+        this.pauseAudio();
+        newAudioPosition = this.currentAudioPosition + deltaInMilliseconds;
+        this.currentAudioPosition = newAudioPosition;
+        Log.i("new position", ""+newAudioPosition);
+        this.playAudio();
+    }
+
+    public void backThirtySeconds() {
+        int deltaInMilliseconds = -30000;
+        this.genericSeekPosition(deltaInMilliseconds);
+    }
+
+    public void skipThirtySeconds() {
+        int deltaInMilliseconds = 30000;
+        this.genericSeekPosition(deltaInMilliseconds);
     }
 
     private void initializeMediaPlayer() {

@@ -6,37 +6,39 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import gabrielssilva.podingcast.app.EventListener;
+import gabrielssilva.podingcast.app.PlayerListener;
 import gabrielssilva.podingcast.app.R;
 import gabrielssilva.podingcast.service.PlayerService;
 
 public class OnPlayPauseClick implements View.OnClickListener {
 
-    private PlayerService playerService;
-    private Resources resources;
+    private PlayerListener listener;
 
-    public OnPlayPauseClick(PlayerService playerService, Resources resources) {
-        this.playerService = playerService;
-        this.resources = resources;
+    public OnPlayPauseClick(PlayerListener listener) {
+        this.listener = listener;
     }
 
     @Override
     public void onClick(View v) {
         Button button = (Button) v;
-        this.setAttributes(button, this.playerService.isPlaying());
+        this.setAttributes(button, this.listener.getService().isPlaying());
     }
 
     public void setAttributes(Button button, boolean playing) {
         Drawable icon;
+        PlayerService playerService = this.listener.getService();
+        Resources resources = this.listener.getResources();
 
         if (playing) {
-            this.playerService.pauseAudio();
-            icon = this.resources.getDrawable(R.drawable.play);
+            playerService.pauseAudio();
+            icon = resources.getDrawable(R.drawable.play);
 
             button.setContentDescription("Play");
             button.setCompoundDrawablesWithIntrinsicBounds(null, icon, null, null);
         } else {
-            this.playerService.playAudio();
-            icon = this.resources.getDrawable(R.drawable.pause);
+            playerService.playAudio();
+            icon = resources.getDrawable(R.drawable.pause);
 
             button.setContentDescription("Pause");
             button.setCompoundDrawablesWithIntrinsicBounds(null, icon, null, null);

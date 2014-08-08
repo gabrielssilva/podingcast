@@ -12,12 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import gabrielssilva.podingcast.events.OnBackAudioPositionClick;
 import gabrielssilva.podingcast.events.OnPlayPauseClick;
+import gabrielssilva.podingcast.events.OnSkipAudioPositionClick;
 import gabrielssilva.podingcast.service.Connection;
 import gabrielssilva.podingcast.service.PlayerConnection;
 import gabrielssilva.podingcast.service.PlayerService;
 
-public class PlayerFragment extends Fragment implements Connection {
+public class PlayerFragment extends Fragment implements Connection, PlayerListener {
 
     private PlayerService playerService;
     private Intent playerIntent;
@@ -57,12 +59,26 @@ public class PlayerFragment extends Fragment implements Connection {
     @Override
     public void setService(PlayerService playerService) {
         this.playerService = playerService;
-        this.setButtonEvents(rootView);
+        this.setButtonEvents();
     }
 
-    public void setButtonEvents(View view) {
-        Button button = (Button) view.findViewById(R.id.play_pause);
-        OnPlayPauseClick playPauseEvent = new OnPlayPauseClick(this.playerService, getResources());
-        button.setOnClickListener(playPauseEvent);
+    public void setButtonEvents() {
+        Button buttonPlayPause = (Button) this.rootView.findViewById(R.id.button_play_pause);
+        Button buttonSkipAudioPosition = (Button) this.rootView.findViewById(R.id.button_plus_30);
+        Button buttonBackAudioPosition = (Button) this.rootView.findViewById(R.id.button_minus_30);
+
+        OnPlayPauseClick playPauseEvent = new OnPlayPauseClick(this);
+        buttonPlayPause.setOnClickListener(playPauseEvent);
+
+        OnSkipAudioPositionClick skipAudioPositionClick = new OnSkipAudioPositionClick(this);
+        buttonSkipAudioPosition.setOnClickListener(skipAudioPositionClick);
+
+        OnBackAudioPositionClick backAudioPositionClick = new OnBackAudioPositionClick(this);
+        buttonBackAudioPosition.setOnClickListener(backAudioPositionClick);
+    }
+
+    @Override
+    public View getRootView() {
+        return this.rootView;
     }
 }
