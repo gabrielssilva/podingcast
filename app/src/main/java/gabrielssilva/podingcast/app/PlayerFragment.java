@@ -4,22 +4,27 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.SeekBar;
 
-import gabrielssilva.podingcast.events.OnBackAudioPositionClick;
 import gabrielssilva.podingcast.events.OnPlayPauseClick;
-import gabrielssilva.podingcast.events.OnSkipAudioPositionClick;
+import gabrielssilva.podingcast.events.OnSeekBarTouch;
+import gabrielssilva.podingcast.events.OnJumpAudioPositionClick;
 import gabrielssilva.podingcast.service.Connection;
 import gabrielssilva.podingcast.service.PlayerConnection;
 import gabrielssilva.podingcast.service.PlayerService;
 
 public class PlayerFragment extends Fragment implements Connection, PlayerListener {
+
+    private Button buttonPlayPause;
+    private Button buttonSkipAudioPosition;
+    private Button buttonBackAudioPosition;
+    private SeekBar seekBar;
 
     private PlayerService playerService;
     private Intent playerIntent;
@@ -41,6 +46,8 @@ public class PlayerFragment extends Fragment implements Connection, PlayerListen
     @Override
     public void onStart() {
         super.onStart();
+        this.initViews();
+
         if (playerIntent == null) {
             playerIntent = new Intent(this.activity, PlayerService.class);
             this.activity.bindService(playerIntent, playerConnection, Context.BIND_AUTO_CREATE);
@@ -62,20 +69,34 @@ public class PlayerFragment extends Fragment implements Connection, PlayerListen
         this.setButtonEvents();
     }
 
-    public void setButtonEvents() {
-        Button buttonPlayPause = (Button) this.rootView.findViewById(R.id.button_play_pause);
-        Button buttonSkipAudioPosition = (Button) this.rootView.findViewById(R.id.button_plus_30);
-        Button buttonBackAudioPosition = (Button) this.rootView.findViewById(R.id.button_minus_30);
+    @Override
+    public void initSeekBar() {
+        int audioDuration = this.playerService.getAudioDuration();
+        OnSeekBarTouch seekBarTouchEvent = new OnSeekBarTouch(this);
 
-        OnPlayPauseClick playPauseEvent = new OnPlayPauseClick(this);
-        buttonPlayPause.setOnClickListener(playPauseEvent);
-
-        OnSkipAudioPositionClick skipAudioPositionClick = new OnSkipAudioPositionClick(this);
-        buttonSkipAudioPosition.setOnClickListener(skipAudioPositionClick);
-
-        OnBackAudioPositionClick backAudioPositionClick = new OnBackAudioPositionClick(this);
-        buttonBackAudioPosition.setOnClickListener(backAudioPositionClick);
+        this.seekBar.setMax(audioDuration);
+        this.seekBar.setOnSeekBarChangeListener(seekBarTouchEvent);
     }
+
+    private void initViews() {
+        this.buttonPlayPause = (Button) this.rootView.findViewById(R.id.button_play_pause);
+        this.buttonSkipAudioPosition = (Button) this.rootView.findViewById(R.id.button_plus_30);
+        this.buttonBackAudioPosition = (Button) this.rootView.findViewById(R.id.button_minus_30);
+
+        this.seekBar = (SeekBar) this.rootView.findViewById(R.id.seek_bar);
+    }
+
+    private void setButtonEvents() {
+        OnPlayPauseClick playPauseEvent = new OnPlayPauseClick(this);
+        this.buttonPlayPause.setOnClickListener(playPauseEvent);
+
+        OnJumpAudioPositionClick skipAudioPositionClick = new OnJumpAudioPositionClick(this, 30000);
+        this.buttonSkipAudioPosition.setOnClickListener(skipAudioPositionClick);
+
+        OnJumpAudioPositionClick backAudioPositionClick = new OnJumpAudioPositionClick(this, -30000);
+        this.buttonBackAudioPosition.setOnClickListener(backAudioPositionClick);
+    }
+
 
     @Override
     public View getRootView() {

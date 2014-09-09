@@ -51,20 +51,24 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-        mp.seekTo(this.currentAudioPosition);
-        mp.start();
+        // Do nothing
     }
 
-    public void playAudio() {
+    public void loadAudio() {
         this.mediaPlayer.reset();
 
         try {
             AssetFileDescriptor afd = getAssets().openFd("cast.mp3");
             this.mediaPlayer.setDataSource(afd.getFileDescriptor(),afd.getStartOffset(),afd.getLength());
-            this.mediaPlayer.prepareAsync();
+            this.mediaPlayer.prepare();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void playAudio() {
+        this.mediaPlayer.seekTo(this.currentAudioPosition);
+        this.mediaPlayer.start();
     }
 
     public void pauseAudio() {
@@ -72,24 +76,19 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         this.currentAudioPosition = this.mediaPlayer.getCurrentPosition();
     }
 
-    public void genericSeekPosition(int deltaInMilliseconds) {
-        int newAudioPosition;
-
+    public void genericSeekPosition(int newAudioPosition) {
         this.pauseAudio();
-        newAudioPosition = this.currentAudioPosition + deltaInMilliseconds;
         this.currentAudioPosition = newAudioPosition;
-        Log.i("new position", ""+newAudioPosition);
         this.playAudio();
     }
 
-    public void backThirtySeconds() {
-        int deltaInMilliseconds = -30000;
-        this.genericSeekPosition(deltaInMilliseconds);
+    public void seekToWithDelta(int deltaInMilliseconds) {
+        int newAudioPosition = this.mediaPlayer.getCurrentPosition() + deltaInMilliseconds;
+        this.genericSeekPosition(newAudioPosition);
     }
 
-    public void skipThirtySeconds() {
-        int deltaInMilliseconds = 30000;
-        this.genericSeekPosition(deltaInMilliseconds);
+    public int getAudioDuration() {
+        return this.mediaPlayer.getDuration();
     }
 
     private void initializeMediaPlayer() {
@@ -99,6 +98,8 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         this.mediaPlayer.setOnPreparedListener(this);
         this.mediaPlayer.setOnCompletionListener(this);
         this.mediaPlayer.setOnErrorListener(this);
+
+        this.loadAudio();
     }
 
     public boolean isPlaying() {

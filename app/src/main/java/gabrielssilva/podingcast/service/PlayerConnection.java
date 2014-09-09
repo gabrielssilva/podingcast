@@ -16,13 +16,13 @@ public class PlayerConnection implements ServiceConnection {
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
         PlayerBinder binder = (PlayerBinder) service;
-        PlayerService playerService = connection.getService();
+        PlayerService playerService;
 
         playerService = binder.getService();
-        //playerService.setList(songList);
         this.connection.setService(playerService);
 
         this.connection.setBound(true);
+        this.connection.initSeekBar();
     }
 
     @Override

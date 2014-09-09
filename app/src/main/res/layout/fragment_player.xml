@@ -22,14 +22,14 @@
         android:layout_height="wrap_content"
         android:id="@+id/seek_bar"
         android:layout_gravity="center_horizontal"
-        android:background="@android:color/holo_blue_dark"/>
+        android:background="@android:color/holo_green_light"/>
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0.10"
-        android:background="@android:color/holo_blue_dark"
+        android:background="@android:color/holo_green_light"
         android:gravity="center">
 
         <Button
