@@ -9,10 +9,10 @@ import gabrielssilva.podingcast.app.PlayerListener;
 
 public class OnSeekBarTouch implements SeekBar.OnSeekBarChangeListener {
 
-    private PlayerListener listener;
+    private PlayerListener playerListener;
 
-    public OnSeekBarTouch(PlayerListener listener) {
-        this.listener = listener;
+    public OnSeekBarTouch(PlayerListener playerListener) {
+        this.playerListener = playerListener;
     }
 
     @Override
@@ -22,12 +22,13 @@ public class OnSeekBarTouch implements SeekBar.OnSeekBarChangeListener {
 
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
-
+        this.playerListener.stopUpdatingSeekBar();
     }
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         int seekPosition = seekBar.getProgress();
-        this.listener.getService().genericSeekPosition(seekPosition);
+        this.playerListener.getService().genericSeekPosition(seekPosition);
+        this.playerListener.startUpdatingSeekBar();
     }
 }

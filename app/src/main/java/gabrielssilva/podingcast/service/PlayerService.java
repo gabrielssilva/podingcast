@@ -91,6 +91,10 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         return this.mediaPlayer.getDuration();
     }
 
+    public int getAudioPosition() {
+        return this.mediaPlayer.getCurrentPosition();
+    }
+
     private void initializeMediaPlayer() {
         this.mediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
         this.mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
