@@ -13,6 +13,7 @@ import gabrielssilva.podingcast.web.DownloadNotifier;
 
 public class FeedFragment extends Fragment implements DownloadListener {
 
+    private DownloadNotifier receiver;
     private long downloadID;
     private DownloadManager downloadManager;
     private View view;
@@ -23,7 +24,7 @@ public class FeedFragment extends Fragment implements DownloadListener {
         View rootView = inflater.inflate(R.layout.fragment_feed, container, false);
         this.view = rootView;
 
-        DownloadNotifier receiver = new DownloadNotifier(this);
+        this.receiver = new DownloadNotifier(this);
         IntentFilter intentFilter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
         getActivity().registerReceiver(receiver, intentFilter);
 
@@ -33,6 +34,12 @@ public class FeedFragment extends Fragment implements DownloadListener {
         rootView.findViewById(R.id.download_button).setOnClickListener(downloadEvent);
 
         return rootView;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        this.getActivity().unregisterReceiver(this.receiver);
     }
 
     @Override

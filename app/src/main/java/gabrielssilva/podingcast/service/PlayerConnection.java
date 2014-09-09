@@ -3,6 +3,8 @@ package gabrielssilva.podingcast.service;
 import android.content.ComponentName;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.util.Log;
+
 import gabrielssilva.podingcast.service.PlayerService.PlayerBinder;
 
 public class PlayerConnection implements ServiceConnection {

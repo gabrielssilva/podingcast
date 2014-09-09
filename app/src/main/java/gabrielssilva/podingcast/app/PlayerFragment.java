@@ -7,6 +7,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +42,8 @@ public class PlayerFragment extends Fragment implements Connection, PlayerListen
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_player, container, false);
 
+        Log.i("Player Fragment", "Creating Activity...");
+
         this.playerConnection = new PlayerConnection(this);
         this.handler = new Handler();
 
@@ -51,6 +54,7 @@ public class PlayerFragment extends Fragment implements Connection, PlayerListen
 
     @Override
     public void onStart() {
+        Log.i("Player Fragment", "Starting Activity...");
         super.onStart();
         this.initViews();
 
@@ -59,6 +63,14 @@ public class PlayerFragment extends Fragment implements Connection, PlayerListen
             this.activity.bindService(playerIntent, playerConnection, Context.BIND_AUTO_CREATE);
             this.activity.startService(playerIntent);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.i("Player Fragment", "Destroying Activity...");
+
+        this.activity.unbindService(playerConnection);
+        super.onDestroy();
     }
 
     public void setBound(boolean bound) {
