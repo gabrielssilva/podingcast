@@ -10,7 +10,7 @@
     <string name="title_activity_test">test</string>
 
     <array name="tabs">
-        <item>Feed</item>
+        <item>List</item>
         <item>Player</item>
     </array>
 

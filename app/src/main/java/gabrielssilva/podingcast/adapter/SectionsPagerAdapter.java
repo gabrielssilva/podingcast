@@ -4,7 +4,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import gabrielssilva.podingcast.app.FeedFragment;
+import gabrielssilva.podingcast.app.ListFragment;
 import gabrielssilva.podingcast.app.PlayerFragment;
 
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -19,7 +19,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch(position) {
             case 0:
-                return new FeedFragment();
+                return new ListFragment();
             case 1:
                 return new PlayerFragment();
         }
