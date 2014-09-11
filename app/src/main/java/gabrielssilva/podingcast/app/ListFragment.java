@@ -13,8 +13,9 @@ import java.util.List;
 
 import gabrielssilva.podingcast.adapter.FeedListAdapter;
 import gabrielssilva.podingcast.controller.FeedList;
+import gabrielssilva.podingcast.events.ListViewClick;
 
-public class ListFragment extends Fragment {
+public class ListFragment extends Fragment implements EventListener {
 
     private ListView listView;
     private Activity activity;
@@ -42,6 +43,9 @@ public class ListFragment extends Fragment {
 
         FeedListAdapter adapter = new FeedListAdapter(this.activity, allFiles);
         this.listView.setAdapter(adapter);
+
+        ListViewClick onListViewClick = new ListViewClick(this);
+        this.listView.setOnItemClickListener(onListViewClick);
     }
 
 }

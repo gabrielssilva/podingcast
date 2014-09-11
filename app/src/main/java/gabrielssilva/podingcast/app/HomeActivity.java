@@ -75,11 +75,15 @@ public class HomeActivity extends Activity implements MyDrawerListener {
 
     @Override
     public void changeFragment(Fragment newFragment, String title, int index) {
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.content_frame, newFragment).commit();
+        this.openFragment(newFragment);
 
         this.updateDrawer(index);
         this.updateTitle(title);
+    }
+
+    public void openFragment(Fragment newFragment) {
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.content_frame, newFragment).commit();
     }
 
     private void updateDrawer(int index) {
