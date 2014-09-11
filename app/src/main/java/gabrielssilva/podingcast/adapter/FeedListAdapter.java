@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.util.List;
 
@@ -49,7 +51,7 @@ public class FeedListAdapter extends BaseAdapter {
 
         if (view == null) {
             // We need to inflate...
-            view = this.inflateLayout();
+            view = this.inflateLayout(viewGroup);
 
             listItemViewHolder.itemName = (TextView) view.findViewById(R.id.text_view);
             view.setTag(listItemViewHolder);
@@ -64,7 +66,7 @@ public class FeedListAdapter extends BaseAdapter {
         return view;
     }
 
-    private View inflateLayout() {
+    private View inflateLayout(ViewGroup viewGroup) {
         LayoutInflater inflater;
         View listItemView;
 

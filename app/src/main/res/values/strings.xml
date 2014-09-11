@@ -9,11 +9,14 @@
     <string name="title_section2">Player</string>
     <string name="title_activity_test">test</string>
 
-    <array name="tabs">
+    <array name="pages">
         <item>List</item>
         <item>Player</item>
     </array>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="drawer_opened">Close Menu</string>
+    <string name="drawer_closed">Open Menu</string>
 
 </resources>

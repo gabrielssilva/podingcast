@@ -1,6 +1,8 @@
 package gabrielssilva.podingcast.adapter;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +14,8 @@ import gabrielssilva.podingcast.app.R;
 public class DrawerAdapter extends BaseAdapter {
 
     private Context context;
-    private String[] items = {"List", "Player"};
+    private Resources resources;
+    private String[] pageNames;
 
     private class ListItemViewHolder {
         TextView itemName;
@@ -20,16 +23,19 @@ public class DrawerAdapter extends BaseAdapter {
 
     public DrawerAdapter(Context context) {
         this.context = context;
+        this.resources = context.getResources();
+
+        this.pageNames = this.resources.getStringArray(R.array.pages);
     }
 
     @Override
     public int getCount() {
-        return items.length;
+        return pageNames.length;
     }
 
     @Override
     public Object getItem(int index) {
-        return items[index];
+        return pageNames[index];
     }
 
     @Override
@@ -52,8 +58,9 @@ public class DrawerAdapter extends BaseAdapter {
             listItemViewHolder = (ListItemViewHolder) view.getTag();
         }
 
-        String itemName = items[index];
+        String itemName = pageNames[index];
         listItemViewHolder.itemName.setText(itemName);
+        this.setIcon(listItemViewHolder.itemName, index);
 
         return view;
     }
@@ -63,8 +70,23 @@ public class DrawerAdapter extends BaseAdapter {
         View listItemView;
 
         inflater = LayoutInflater.from(this.context);
-        listItemView = inflater.inflate(R.layout.feed_list_item, null);
+        listItemView = inflater.inflate(R.layout.drawer_list_item, null);
 
         return listItemView;
+    }
+
+    private void setIcon(TextView textView, int index) {
+        String iconName = getIconName(index);
+        int iconID = this.resources.getIdentifier(iconName, null, this.context.getPackageName());
+        Drawable icon = this.resources.getDrawable(iconID);
+
+        textView.setCompoundDrawablesWithIntrinsicBounds(null, null, icon, null);
+    }
+
+    private String getIconName(int index) {
+        String pageName = pageNames[index].toLowerCase();
+        String iconName = "drawable/ic_" + pageName;
+
+        return iconName;
     }
 }

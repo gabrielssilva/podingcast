@@ -2,6 +2,6 @@ package gabrielssilva.podingcast.app;
 
 import android.app.Fragment;
 
-public interface DrawerListener {
+public interface MyDrawerListener {
     public void changeFragment(Fragment newFragment, String title, int index);
 }

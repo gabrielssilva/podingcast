@@ -5,15 +5,15 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import gabrielssilva.podingcast.app.DrawerListener;
+import gabrielssilva.podingcast.app.MyDrawerListener;
 import gabrielssilva.podingcast.app.ListFragment;
 import gabrielssilva.podingcast.app.PlayerFragment;
 
 public class DrawerItemClick implements ListView.OnItemClickListener {
 
-    private DrawerListener drawerListener;
+    private MyDrawerListener drawerListener;
 
-    public DrawerItemClick(DrawerListener drawerListener) {
+    public DrawerItemClick(MyDrawerListener drawerListener) {
         this.drawerListener = drawerListener;
     }
 
