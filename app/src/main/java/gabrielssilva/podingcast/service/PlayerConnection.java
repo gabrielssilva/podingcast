@@ -24,7 +24,6 @@ public class PlayerConnection implements ServiceConnection {
         this.connection.setService(playerService);
 
         this.connection.setBound(true);
-        this.connection.initSeekBar();
     }
 
     @Override

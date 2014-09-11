@@ -1,9 +1,5 @@
 package gabrielssilva.podingcast.app;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.app.Fragment;
@@ -18,67 +14,41 @@ import gabrielssilva.podingcast.events.PlayPauseClick;
 import gabrielssilva.podingcast.events.SeekBarTouch;
 import gabrielssilva.podingcast.events.JumpAudioPositionClick;
 import gabrielssilva.podingcast.events.ProgressUpdateRunnable;
-import gabrielssilva.podingcast.service.Connection;
-import gabrielssilva.podingcast.service.PlayerConnection;
 import gabrielssilva.podingcast.service.PlayerService;
 
-public class PlayerFragment extends Fragment implements Connection, PlayerListener {
+public class PlayerFragment extends Fragment implements PlayerListener {
 
     private Button buttonPlayPause;
     private Button buttonSkipAudioPosition;
     private Button buttonBackAudioPosition;
     private SeekBar seekBar;
 
-    private PlayerService playerService;
     private Handler handler;
     ProgressUpdateRunnable updateRunnable;
-    private Intent playerIntent;
-    private boolean bound = false;
-    private ServiceConnection playerConnection;
-    private Activity activity;
+    private HomeActivity homeActivity;
     private View rootView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_player, container, false);
 
-        Log.i("Player Fragment", "Creating Activity...");
-
-        this.playerConnection = new PlayerConnection(this);
+        this.homeActivity = (HomeActivity) getActivity();
+        this.rootView = rootView;
         this.handler = new Handler();
 
-        this.activity = getActivity();
-        this.rootView = rootView;
-        return rootView;
-    }
-
-    @Override
-    public void onStart() {
-        Log.i("Player Fragment", "Starting Activity...");
-        super.onStart();
         this.initViews();
+        this.initSeekBar();
+        this.setButtonEvents();
 
-        if (playerIntent == null) {
-            playerIntent = new Intent(this.activity, PlayerService.class);
-            this.activity.bindService(playerIntent, playerConnection, Context.BIND_AUTO_CREATE);
-            this.activity.startService(playerIntent);
-        }
+        return rootView;
     }
 
     @Override
     public void onDestroy() {
         Log.i("Player Fragment", "Destroying Activity...");
 
-        this.activity.unbindService(playerConnection);
+        //this.activity.unbindService(playerConnection);
         super.onDestroy();
-    }
-
-    public void setBound(boolean bound) {
-        this.bound = bound;
-    }
-
-    public PlayerService getService() {
-        return this.playerService;
     }
 
     @Override
@@ -87,19 +57,20 @@ public class PlayerFragment extends Fragment implements Connection, PlayerListen
     }
 
     @Override
+    public PlayerService getService() {
+        return this.homeActivity.getService();
+    }
+
+    @Override
     public Handler getHandler() {
         return this.handler;
     }
 
-    @Override
-    public void setService(PlayerService playerService) {
-        this.playerService = playerService;
-        this.setButtonEvents();
-    }
 
-    @Override
     public void initSeekBar() {
-        int audioDuration = this.playerService.getAudioDuration();
+        PlayerService playerService = this.homeActivity.getService();
+
+        int audioDuration = playerService.getAudioDuration();
         SeekBarTouch seekBarTouchEvent = new SeekBarTouch(this);
         this.updateRunnable = new ProgressUpdateRunnable(this);
 

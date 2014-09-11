@@ -2,28 +2,48 @@ package gabrielssilva.podingcast.app;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
-import android.view.Menu;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ListView;
 
 import gabrielssilva.podingcast.adapter.DrawerAdapter;
 import gabrielssilva.podingcast.events.DrawerItemClick;
+import gabrielssilva.podingcast.service.Connection;
+import gabrielssilva.podingcast.service.PlayerConnection;
+import gabrielssilva.podingcast.service.PlayerService;
 
-public class HomeActivity extends Activity implements MyDrawerListener {
+public class HomeActivity extends Activity implements Connection, MyDrawerListener {
 
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
     private ListView drawerListView;
 
+    private ServiceConnection playerConnection;
+    private PlayerService playerService;
+    private Intent playerIntent;
+    private boolean bound = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        this.playerConnection = new PlayerConnection(this);
+
+        if (playerIntent == null) {
+            Log.i("Player Fragment", "Creating a new intent");
+            playerIntent = new Intent(this, PlayerService.class);
+            bindService(playerIntent, playerConnection, Context.BIND_AUTO_CREATE);
+            startService(playerIntent);
+        }
 
         this.initViews();
         this.initDrawerLayout();
@@ -95,4 +115,17 @@ public class HomeActivity extends Activity implements MyDrawerListener {
         getActionBar().setTitle(title);
     }
 
+    @Override
+    public void setBound(boolean bound) {
+        this.bound = bound;
+    }
+
+    public PlayerService getService() {
+        return this.playerService;
+    }
+
+    @Override
+    public void setService(PlayerService playerService) {
+        this.playerService = playerService;
+    }
 }
