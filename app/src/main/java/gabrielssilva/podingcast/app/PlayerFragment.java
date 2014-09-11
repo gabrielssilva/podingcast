@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,9 +14,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.SeekBar;
 
-import gabrielssilva.podingcast.events.OnPlayPauseClick;
-import gabrielssilva.podingcast.events.OnSeekBarTouch;
-import gabrielssilva.podingcast.events.OnJumpAudioPositionClick;
+import gabrielssilva.podingcast.events.PlayPauseClick;
+import gabrielssilva.podingcast.events.SeekBarTouch;
+import gabrielssilva.podingcast.events.JumpAudioPositionClick;
 import gabrielssilva.podingcast.events.ProgressUpdateRunnable;
 import gabrielssilva.podingcast.service.Connection;
 import gabrielssilva.podingcast.service.PlayerConnection;
@@ -100,7 +100,7 @@ public class PlayerFragment extends Fragment implements Connection, PlayerListen
     @Override
     public void initSeekBar() {
         int audioDuration = this.playerService.getAudioDuration();
-        OnSeekBarTouch seekBarTouchEvent = new OnSeekBarTouch(this);
+        SeekBarTouch seekBarTouchEvent = new SeekBarTouch(this);
         this.updateRunnable = new ProgressUpdateRunnable(this);
 
         this.seekBar.setMax(audioDuration);
@@ -127,19 +127,14 @@ public class PlayerFragment extends Fragment implements Connection, PlayerListen
     }
 
     private void setButtonEvents() {
-        OnPlayPauseClick playPauseEvent = new OnPlayPauseClick(this);
+        PlayPauseClick playPauseEvent = new PlayPauseClick(this);
         this.buttonPlayPause.setOnClickListener(playPauseEvent);
 
-        OnJumpAudioPositionClick skipAudioPositionClick = new OnJumpAudioPositionClick(this, 30000);
+        JumpAudioPositionClick skipAudioPositionClick = new JumpAudioPositionClick(this, 30000);
         this.buttonSkipAudioPosition.setOnClickListener(skipAudioPositionClick);
 
-        OnJumpAudioPositionClick backAudioPositionClick = new OnJumpAudioPositionClick(this, -30000);
+        JumpAudioPositionClick backAudioPositionClick = new JumpAudioPositionClick(this, -30000);
         this.buttonBackAudioPosition.setOnClickListener(backAudioPositionClick);
     }
 
-
-    @Override
-    public View getRootView() {
-        return this.rootView;
-    }
 }

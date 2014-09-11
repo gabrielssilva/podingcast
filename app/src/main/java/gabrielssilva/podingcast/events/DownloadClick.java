@@ -7,12 +7,12 @@ import android.view.View;
 
 import gabrielssilva.podingcast.app.DownloadListener;
 
-public class OnDownloadClick implements View.OnClickListener {
+public class DownloadClick implements View.OnClickListener {
 
     private DownloadManager downloadManager;
     private DownloadListener listener;
 
-    public OnDownloadClick(DownloadListener listener) {
+    public DownloadClick(DownloadListener listener) {
         this.downloadManager = listener.getDownloadManager();
         this.listener = listener;
     }

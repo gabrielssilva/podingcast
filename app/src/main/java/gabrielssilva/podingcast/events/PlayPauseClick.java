@@ -11,11 +11,11 @@ import gabrielssilva.podingcast.app.PlayerListener;
 import gabrielssilva.podingcast.app.R;
 import gabrielssilva.podingcast.service.PlayerService;
 
-public class OnPlayPauseClick implements View.OnClickListener {
+public class PlayPauseClick implements View.OnClickListener {
 
     private PlayerListener listener;
 
-    public OnPlayPauseClick(PlayerListener listener) {
+    public PlayPauseClick(PlayerListener listener) {
         this.listener = listener;
     }
 

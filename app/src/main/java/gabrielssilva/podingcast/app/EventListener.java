@@ -1,7 +1,7 @@
 package gabrielssilva.podingcast.app;
 
-import android.view.View;
+import android.app.Activity;
 
 public interface EventListener {
-    public View getRootView();
+    public Activity getActivity();
 }

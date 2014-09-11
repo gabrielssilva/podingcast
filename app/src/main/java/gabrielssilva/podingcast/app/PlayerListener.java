@@ -5,7 +5,7 @@ import android.os.Handler;
 
 import gabrielssilva.podingcast.service.PlayerService;
 
-public interface PlayerListener extends EventListener {
+public interface PlayerListener  {
     public Resources getResources();
     public PlayerService getService();
     public Handler getHandler();

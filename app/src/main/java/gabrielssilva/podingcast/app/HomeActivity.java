@@ -1,53 +1,39 @@
 package gabrielssilva.podingcast.app;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.ViewPager;
+import android.app.Fragment;
+import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
+import android.widget.ListView;
 
-import gabrielssilva.podingcast.adapter.SectionsPagerAdapter;
-import gabrielssilva.podingcast.app.R;
+import gabrielssilva.podingcast.adapter.DrawerAdapter;
+import gabrielssilva.podingcast.events.DrawerItemClick;
 
-public class HomeActivity extends FragmentActivity implements ActionBar.TabListener {
+public class HomeActivity extends Activity implements DrawerListener {
 
-    private SectionsPagerAdapter pagerAdapter;
-    private ViewPager viewPager;
-    private ActionBar actionBar;
+    private DrawerLayout drawerLayout;
+    private ListView drawerListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        viewPager = (ViewPager) findViewById(R.id.view_pager);
-        actionBar = getActionBar();
-        pagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
-        viewPager.setAdapter(pagerAdapter);
-        this.setViewPagerListener();
-
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        this.setTabsNames();
+        this.initViews();
+        this.initDrawerList();
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.home, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             return true;
@@ -55,50 +41,34 @@ public class HomeActivity extends FragmentActivity implements ActionBar.TabListe
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
-        viewPager.setCurrentItem(tab.getPosition());
+    private void initViews() {
+        this.drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        this.drawerListView = (ListView) findViewById(R.id.navigation_drawer);
+    }
+
+    private void initDrawerList() {
+        DrawerAdapter drawerAdapter = new DrawerAdapter(this);
+        DrawerItemClick onDrawerItemClick = new DrawerItemClick(this);
+
+        this.drawerListView.setAdapter(drawerAdapter);
+        this.drawerListView.setOnItemClickListener(onDrawerItemClick);
     }
 
     @Override
-    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
+    public void changeFragment(Fragment newFragment, String title, int index) {
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.content_frame, newFragment).commit();
 
+        this.updateDrawer(index);
+        this.updateTitle(title);
     }
 
-    @Override
-    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
-
+    private void updateDrawer(int index) {
+        this.drawerListView.setItemChecked(index, true);
+        this.drawerLayout.closeDrawer(this.drawerListView);
     }
 
-    private void setTabsNames() {
-        int tabsCount = pagerAdapter.getCount();
-        String[] tabsNames = getResources().getStringArray(R.array.tabs);
-
-        for (int i=0; i<tabsCount; i++) {
-            actionBar.addTab(actionBar.newTab().setText(tabsNames[i]).setTabListener(this));
-        }
-    }
-
-    // The class is declared here to avoid the declaration on function call.
-    private class ViewPagerListener implements ViewPager.OnPageChangeListener {
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            // Do nothing.
-        }
-
-        @Override
-        public void onPageSelected(int position) {
-            actionBar.setSelectedNavigationItem(position);
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int state) {
-            // Do nothing.
-        }
-    }
-
-    private void setViewPagerListener() {
-        ViewPagerListener listener = new ViewPagerListener();
-        viewPager.setOnPageChangeListener(listener);
+    private void updateTitle(String title) {
+        getActionBar().setTitle(title);
     }
 }

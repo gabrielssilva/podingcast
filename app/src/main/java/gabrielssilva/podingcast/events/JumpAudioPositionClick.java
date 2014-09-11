@@ -4,11 +4,11 @@ import android.view.View;
 
 import gabrielssilva.podingcast.app.PlayerListener;
 
-public class OnJumpAudioPositionClick implements View.OnClickListener {
+public class JumpAudioPositionClick implements View.OnClickListener {
     private PlayerListener listener;
     private int deltaInMilliseconds;
 
-    public OnJumpAudioPositionClick(PlayerListener listener, int deltaInMilliseconds) {
+    public JumpAudioPositionClick(PlayerListener listener, int deltaInMilliseconds) {
         this.listener = listener;
         this.deltaInMilliseconds = deltaInMilliseconds;
     }

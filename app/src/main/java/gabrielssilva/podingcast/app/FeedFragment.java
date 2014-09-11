@@ -3,12 +3,12 @@ package gabrielssilva.podingcast.app;
 import android.app.DownloadManager;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import gabrielssilva.podingcast.events.OnDownloadClick;
+import gabrielssilva.podingcast.events.DownloadClick;
 import gabrielssilva.podingcast.web.DownloadNotifier;
 
 public class FeedFragment extends Fragment implements DownloadListener {
@@ -30,7 +30,7 @@ public class FeedFragment extends Fragment implements DownloadListener {
 
         this.downloadManager = (DownloadManager) getActivity().getSystemService(getActivity().DOWNLOAD_SERVICE);
 
-        OnDownloadClick downloadEvent = new OnDownloadClick(this);
+        DownloadClick downloadEvent = new DownloadClick(this);
         rootView.findViewById(R.id.download_button).setOnClickListener(downloadEvent);
 
         return rootView;
@@ -40,11 +40,6 @@ public class FeedFragment extends Fragment implements DownloadListener {
     public void onDestroy() {
         super.onDestroy();
         this.getActivity().unregisterReceiver(this.receiver);
-    }
-
-    @Override
-    public View getRootView() {
-        return this.view;
     }
 
     @Override

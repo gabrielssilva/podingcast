@@ -1,6 +1,5 @@
 package gabrielssilva.podingcast.adapter;
 
-import android.app.LauncherActivity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,34 +7,29 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import java.io.File;
-import java.util.List;
-
 import gabrielssilva.podingcast.app.R;
 
-public class FeedListAdapter extends BaseAdapter {
+public class DrawerAdapter extends BaseAdapter {
 
-    private List<File> allFiles;
     private Context context;
+    private String[] items = {"List", "Player"};
 
-    // A holder to store our views.
     private class ListItemViewHolder {
         TextView itemName;
     }
 
-    public FeedListAdapter(Context context, List<File> allFiles) {
+    public DrawerAdapter(Context context) {
         this.context = context;
-        this.allFiles = allFiles;
     }
 
     @Override
     public int getCount() {
-        return allFiles.size();
+        return items.length;
     }
 
     @Override
     public Object getItem(int index) {
-        return allFiles.get(index);
+        return items[index];
     }
 
     @Override
@@ -58,7 +52,7 @@ public class FeedListAdapter extends BaseAdapter {
             listItemViewHolder = (ListItemViewHolder) view.getTag();
         }
 
-        String itemName = this.allFiles.get(index).getName();
+        String itemName = items[index];
         listItemViewHolder.itemName.setText(itemName);
 
         return view;

@@ -7,11 +7,11 @@ import android.widget.SeekBar;
 
 import gabrielssilva.podingcast.app.PlayerListener;
 
-public class OnSeekBarTouch implements SeekBar.OnSeekBarChangeListener {
+public class SeekBarTouch implements SeekBar.OnSeekBarChangeListener {
 
     private PlayerListener playerListener;
 
-    public OnSeekBarTouch(PlayerListener playerListener) {
+    public SeekBarTouch(PlayerListener playerListener) {
         this.playerListener = playerListener;
     }
 
