@@ -1,6 +1,5 @@
 package gabrielssilva.podingcast.adapter;
 
-import android.app.LauncherActivity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,16 +7,13 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
-import java.io.File;
 import java.util.List;
 
 import gabrielssilva.podingcast.app.R;
 
 public class FeedListAdapter extends BaseAdapter {
 
-    private List<File> allFiles;
+    private List<String> feeds;
     private Context context;
 
     // A holder to store our views.
@@ -25,19 +21,19 @@ public class FeedListAdapter extends BaseAdapter {
         TextView itemName;
     }
 
-    public FeedListAdapter(Context context, List<File> allFiles) {
+    public FeedListAdapter(Context context, List<String> feeds) {
         this.context = context;
-        this.allFiles = allFiles;
+        this.feeds = feeds;
     }
 
     @Override
     public int getCount() {
-        return allFiles.size();
+        return feeds.size();
     }
 
     @Override
     public Object getItem(int index) {
-        return allFiles.get(index);
+        return feeds.get(index);
     }
 
     @Override
@@ -60,7 +56,7 @@ public class FeedListAdapter extends BaseAdapter {
             listItemViewHolder = (ListItemViewHolder) view.getTag();
         }
 
-        String itemName = this.allFiles.get(index).getName();
+        String itemName = this.feeds.get(index);
         listItemViewHolder.itemName.setText(itemName);
 
         return view;
@@ -71,7 +67,7 @@ public class FeedListAdapter extends BaseAdapter {
         View listItemView;
 
         inflater = LayoutInflater.from(this.context);
-        listItemView = inflater.inflate(R.layout.feed_list_item, null);
+        listItemView = inflater.inflate(R.layout.feed_list_item, viewGroup, false);
 
         return listItemView;
     }

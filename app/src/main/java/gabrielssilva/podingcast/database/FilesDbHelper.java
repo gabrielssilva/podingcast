@@ -29,6 +29,15 @@ public class FilesDbHelper extends SQLiteOpenHelper {
         onCreate(database);
     }
 
+    public Cursor getAllFeeds() {
+        SQLiteDatabase database = getReadableDatabase();
+        String columns[] = { FilesDbContract.FeedEntry.FEED_NAME };
+        String sortOrder = FilesDbContract.FeedEntry.FEED_NAME + " ASC";
+
+        return database.query(FilesDbContract.FeedEntry.TABLE_NAME, columns, null, null, null,
+                null, sortOrder);
+    }
+
     public void insertPodcast(String feedName, String fileTitle, String filePath) {
         /* This function will be called on loops, sometimes.
            Maybe Find a nice way to get the database just once.

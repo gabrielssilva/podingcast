@@ -2,18 +2,15 @@ package gabrielssilva.podingcast.app;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import java.io.File;
-import java.util.List;
-
 import gabrielssilva.podingcast.adapter.FeedListAdapter;
 import gabrielssilva.podingcast.controller.FilesList;
-import gabrielssilva.podingcast.events.ListViewClick;
 
 public class ListFragment extends Fragment implements EventListener {
 
@@ -38,7 +35,10 @@ public class ListFragment extends Fragment implements EventListener {
     }
 
     private void initListView() {
-        // TODO
-    }
+        Context context = activity.getApplicationContext();
+        FilesList filesList = new FilesList(context);
+        FeedListAdapter feedAdapter = new FeedListAdapter(context, filesList.getAllFeeds());
 
+        this.listView.setAdapter(feedAdapter);
+    }
 }
