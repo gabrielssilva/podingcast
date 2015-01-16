@@ -2,16 +2,16 @@ package gabrielssilva.podingcast.database;
 
 import android.provider.BaseColumns;
 
-public final class FilesDatabaseContract {
+public final class FilesDbContract {
 
-    private FilesDatabaseContract() {}
+    private FilesDbContract() {}
 
     public static abstract class FeedEntry implements BaseColumns {
         public static final String TABLE_NAME = "feed";
         public static final String FEED_NAME = "feed_name";
 
         public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" + _ID
-                + " INTEGER PRIMARY KEY, " + FEED_NAME + " TEXT);";
+                + " INTEGER PRIMARY KEY, " + FEED_NAME + " TEXT UNIQUE);";
         public static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME + ";";
     }
 

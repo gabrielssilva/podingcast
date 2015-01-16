@@ -12,7 +12,7 @@ import java.io.File;
 import java.util.List;
 
 import gabrielssilva.podingcast.adapter.FeedListAdapter;
-import gabrielssilva.podingcast.controller.FeedList;
+import gabrielssilva.podingcast.controller.FilesList;
 import gabrielssilva.podingcast.events.ListViewClick;
 
 public class ListFragment extends Fragment implements EventListener {
@@ -38,14 +38,7 @@ public class ListFragment extends Fragment implements EventListener {
     }
 
     private void initListView() {
-        FeedList feedList = new FeedList();
-        List<File> allFiles = feedList.getAllFiles();
-
-        FeedListAdapter adapter = new FeedListAdapter(this.activity, allFiles);
-        this.listView.setAdapter(adapter);
-
-        ListViewClick onListViewClick = new ListViewClick(this);
-        this.listView.setOnItemClickListener(onListViewClick);
+        // TODO
     }
 
 }
