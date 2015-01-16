@@ -32,6 +32,6 @@ public class Mp3Helper {
 
     public static String getFeedName(Context context, File mp3File) {
         setFileSource(context, mp3File);
-        return dataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
+        return dataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM);
     }
 }

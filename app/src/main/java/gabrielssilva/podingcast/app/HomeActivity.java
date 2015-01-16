@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.widget.ListView;
 
 import gabrielssilva.podingcast.adapter.DrawerAdapter;
+import gabrielssilva.podingcast.database.FilesDbManager;
 import gabrielssilva.podingcast.events.DrawerItemClick;
 import gabrielssilva.podingcast.service.Connection;
 import gabrielssilva.podingcast.service.PlayerConnection;
@@ -48,6 +49,9 @@ public class HomeActivity extends Activity implements Connection, MyDrawerListen
         this.initViews();
         this.initDrawerLayout();
         this.initDrawerList();
+
+        FilesDbManager dbManager = new FilesDbManager(getApplicationContext());
+        dbManager.refreshDatabase();
     }
 
     @Override
