@@ -7,40 +7,41 @@ import android.widget.Button;
 
 import gabrielssilva.podingcast.app.PlayerEventListener;
 import gabrielssilva.podingcast.app.R;
-import gabrielssilva.podingcast.service.PlayerService;
+import gabrielssilva.podingcast.service.ServiceListener;
 
 public class PlayPauseClick implements View.OnClickListener {
 
-    private PlayerEventListener listener;
+    private PlayerEventListener eventListener;
+    private ServiceListener serviceListener;
 
-    public PlayPauseClick(PlayerEventListener listener) {
-        this.listener = listener;
+    public PlayPauseClick(PlayerEventListener eventListener, ServiceListener serviceListener) {
+        this.eventListener = eventListener;
+        this.serviceListener = serviceListener;
     }
 
     @Override
-    public void onClick(View v) {
-        Button button = (Button) v;
-        this.setAttributes(button, this.listener.getService().isPlaying());
+    public void onClick(View view) {
+        Button button = (Button) view;
+
+        this.setAttributes(button, serviceListener.getService().isPlaying());
     }
 
     public void setAttributes(Button button, boolean playing) {
         Drawable icon;
-        PlayerService playerService = this.listener.getService();
-        Resources resources = this.listener.getResources();
+        Resources resources = this.eventListener.getResources();
 
         if (playing) {
-            playerService.pauseAudio();
+            this.serviceListener.getService().pauseAudio();
             icon = resources.getDrawable(R.drawable.play);
 
             button.setContentDescription("Play");
             button.setCompoundDrawablesWithIntrinsicBounds(null, icon, null, null);
         } else {
-            playerService.playAudio();
+            this.serviceListener.getService().playAudio();
             icon = resources.getDrawable(R.drawable.pause);
 
             button.setContentDescription("Pause");
             button.setCompoundDrawablesWithIntrinsicBounds(null, icon, null, null);
         }
     }
-
 }

@@ -3,16 +3,15 @@ package gabrielssilva.podingcast.service;
 import android.content.ComponentName;
 import android.content.ServiceConnection;
 import android.os.IBinder;
-import android.util.Log;
 
 import gabrielssilva.podingcast.service.PlayerService.PlayerBinder;
 
 public class PlayerConnection implements ServiceConnection {
 
-    private Connection connection;
+    private ServiceListener serviceListener;
 
-    public PlayerConnection(Connection connection) {
-        this.connection = connection;
+    public PlayerConnection(ServiceListener serviceListener) {
+        this.serviceListener = serviceListener;
     }
 
     @Override
@@ -21,13 +20,12 @@ public class PlayerConnection implements ServiceConnection {
         PlayerService playerService;
 
         playerService = binder.getService();
-        this.connection.setService(playerService);
-
-        this.connection.setBound(true);
+        this.serviceListener.setService(playerService);
+        this.serviceListener.setBound(true);
     }
 
     @Override
     public void onServiceDisconnected(ComponentName name) {
-        this.connection.setBound(false);
+        this.serviceListener.setBound(false);
     }
 }

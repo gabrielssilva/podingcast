@@ -4,26 +4,21 @@ import android.os.Handler;
 
 import gabrielssilva.podingcast.app.PlayerEventListener;
 import gabrielssilva.podingcast.service.PlayerService;
+import gabrielssilva.podingcast.service.ServiceListener;
 
 public class ProgressUpdateRunnable implements Runnable {
 
-    private PlayerEventListener playerEventListener;
-    private PlayerService playerService;
+    private PlayerEventListener eventListener;
     private Handler handler;
-    private int currentProgress;
 
-    public ProgressUpdateRunnable(PlayerEventListener playerEventListener) {
-        this.playerEventListener = playerEventListener;
-        this.playerService = playerEventListener.getService();
-        this.handler = playerEventListener.getHandler();
-        this.currentProgress = 0;
+    public ProgressUpdateRunnable(PlayerEventListener eventListener) {
+        this.eventListener = eventListener;
+        this.handler = eventListener.getHandler();
     }
 
     @Override
     public void run() {
-        this.currentProgress = this.playerService.getAudioPosition();
-        this.playerEventListener.updateSeekBar(this.currentProgress);
-
+        this.eventListener.updateSeekBar();
         this.handler.postDelayed(this, 100);
     }
 }

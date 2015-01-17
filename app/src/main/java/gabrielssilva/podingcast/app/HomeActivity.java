@@ -17,17 +17,16 @@ import android.widget.ListView;
 import gabrielssilva.podingcast.adapter.DrawerAdapter;
 import gabrielssilva.podingcast.database.FilesDbManager;
 import gabrielssilva.podingcast.events.DrawerItemClick;
-import gabrielssilva.podingcast.service.Connection;
+import gabrielssilva.podingcast.service.ServiceListener;
 import gabrielssilva.podingcast.service.PlayerConnection;
 import gabrielssilva.podingcast.service.PlayerService;
 
-public class HomeActivity extends Activity implements Connection, MyDrawerListener, FeedSelectedListener {
+public class HomeActivity extends Activity implements ServiceListener, MyDrawerListener, FeedSelectedListener {
 
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
     private ListView drawerListView;
 
-    private ServiceConnection playerConnection;
     private PlayerService playerService;
     private Intent playerIntent;
     private boolean bound = false;
@@ -37,7 +36,7 @@ public class HomeActivity extends Activity implements Connection, MyDrawerListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        this.playerConnection = new PlayerConnection(this);
+        ServiceConnection playerConnection = new PlayerConnection(this);
 
         if (playerIntent == null) {
             Log.i("Player Fragment", "Creating a new intent");
@@ -119,7 +118,6 @@ public class HomeActivity extends Activity implements Connection, MyDrawerListen
         getActionBar().setTitle(title);
     }
 
-    @Override
     public void setBound(boolean bound) {
         this.bound = bound;
     }
@@ -128,7 +126,6 @@ public class HomeActivity extends Activity implements Connection, MyDrawerListen
         return this.playerService;
     }
 
-    @Override
     public void setService(PlayerService playerService) {
         this.playerService = playerService;
     }

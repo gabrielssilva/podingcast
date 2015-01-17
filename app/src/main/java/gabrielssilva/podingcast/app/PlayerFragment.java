@@ -14,6 +14,7 @@ import gabrielssilva.podingcast.events.PlayPauseClick;
 import gabrielssilva.podingcast.events.SeekBarTouch;
 import gabrielssilva.podingcast.events.JumpAudioPositionClick;
 import gabrielssilva.podingcast.events.ProgressUpdateRunnable;
+import gabrielssilva.podingcast.service.ServiceListener;
 import gabrielssilva.podingcast.service.PlayerService;
 
 public class PlayerFragment extends Fragment implements PlayerEventListener {
@@ -25,14 +26,14 @@ public class PlayerFragment extends Fragment implements PlayerEventListener {
 
     private Handler handler;
     ProgressUpdateRunnable updateRunnable;
-    private HomeActivity homeActivity;
+    private ServiceListener serviceListener;
     private View rootView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_player, container, false);
 
-        this.homeActivity = (HomeActivity) getActivity();
+        this.serviceListener = (ServiceListener) getActivity();
         this.rootView = rootView;
         this.handler = new Handler();
 
@@ -51,27 +52,11 @@ public class PlayerFragment extends Fragment implements PlayerEventListener {
         super.onDestroy();
     }
 
-    @Override
-    public void updateSeekBar(int newProgress) {
-        this.seekBar.setProgress(newProgress);
-    }
-
-    @Override
-    public PlayerService getService() {
-        return this.homeActivity.getService();
-    }
-
-    @Override
-    public Handler getHandler() {
-        return this.handler;
-    }
-
-
     public void initSeekBar() {
-        PlayerService playerService = this.homeActivity.getService();
+        PlayerService playerService = this.serviceListener.getService();
 
         int audioDuration = playerService.getAudioDuration();
-        SeekBarTouch seekBarTouchEvent = new SeekBarTouch(this);
+        SeekBarTouch seekBarTouchEvent = new SeekBarTouch(this, serviceListener);
         this.updateRunnable = new ProgressUpdateRunnable(this);
 
         this.seekBar.setMax(audioDuration);
@@ -87,25 +72,31 @@ public class PlayerFragment extends Fragment implements PlayerEventListener {
         this.seekBar = (SeekBar) this.rootView.findViewById(R.id.seek_bar);
     }
 
-    @Override
+    private void setButtonEvents() {
+        PlayPauseClick playPauseEvent = new PlayPauseClick(this, serviceListener);
+        this.buttonPlayPause.setOnClickListener(playPauseEvent);
+
+        JumpAudioPositionClick skipAudioPositionClick = new JumpAudioPositionClick(serviceListener, 30000);
+        this.buttonSkipAudioPosition.setOnClickListener(skipAudioPositionClick);
+
+        JumpAudioPositionClick backAudioPositionClick = new JumpAudioPositionClick(serviceListener, -30000);
+        this.buttonBackAudioPosition.setOnClickListener(backAudioPositionClick);
+    }
+
+    public void updateSeekBar() {
+        int newProgress = this.serviceListener.getService().getAudioPosition();
+        this.seekBar.setProgress(newProgress);
+    }
+
+    public Handler getHandler() {
+        return this.handler;
+    }
+
     public void startUpdatingSeekBar() {
         this.handler.postDelayed(this.updateRunnable, 100);
     }
 
-    @Override
     public void stopUpdatingSeekBar() {
         this.handler.removeCallbacks(this.updateRunnable);
     }
-
-    private void setButtonEvents() {
-        PlayPauseClick playPauseEvent = new PlayPauseClick(this);
-        this.buttonPlayPause.setOnClickListener(playPauseEvent);
-
-        JumpAudioPositionClick skipAudioPositionClick = new JumpAudioPositionClick(this, 30000);
-        this.buttonSkipAudioPosition.setOnClickListener(skipAudioPositionClick);
-
-        JumpAudioPositionClick backAudioPositionClick = new JumpAudioPositionClick(this, -30000);
-        this.buttonBackAudioPosition.setOnClickListener(backAudioPositionClick);
-    }
-
 }
