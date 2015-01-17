@@ -2,13 +2,13 @@ package gabrielssilva.podingcast.events;
 
 import android.view.View;
 
-import gabrielssilva.podingcast.app.PlayerListener;
+import gabrielssilva.podingcast.app.PlayerEventListener;
 
 public class JumpAudioPositionClick implements View.OnClickListener {
-    private PlayerListener listener;
+    private PlayerEventListener listener;
     private int deltaInMilliseconds;
 
-    public JumpAudioPositionClick(PlayerListener listener, int deltaInMilliseconds) {
+    public JumpAudioPositionClick(PlayerEventListener listener, int deltaInMilliseconds) {
         this.listener = listener;
         this.deltaInMilliseconds = deltaInMilliseconds;
     }

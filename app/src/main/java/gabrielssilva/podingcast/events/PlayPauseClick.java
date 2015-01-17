@@ -2,20 +2,18 @@ package gabrielssilva.podingcast.events;
 
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import gabrielssilva.podingcast.app.EventListener;
-import gabrielssilva.podingcast.app.PlayerListener;
+import gabrielssilva.podingcast.app.PlayerEventListener;
 import gabrielssilva.podingcast.app.R;
 import gabrielssilva.podingcast.service.PlayerService;
 
 public class PlayPauseClick implements View.OnClickListener {
 
-    private PlayerListener listener;
+    private PlayerEventListener listener;
 
-    public PlayPauseClick(PlayerListener listener) {
+    public PlayPauseClick(PlayerEventListener listener) {
         this.listener = listener;
     }
 

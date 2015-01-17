@@ -16,7 +16,7 @@ import gabrielssilva.podingcast.events.JumpAudioPositionClick;
 import gabrielssilva.podingcast.events.ProgressUpdateRunnable;
 import gabrielssilva.podingcast.service.PlayerService;
 
-public class PlayerFragment extends Fragment implements PlayerListener {
+public class PlayerFragment extends Fragment implements PlayerEventListener {
 
     private Button buttonPlayPause;
     private Button buttonSkipAudioPosition;
