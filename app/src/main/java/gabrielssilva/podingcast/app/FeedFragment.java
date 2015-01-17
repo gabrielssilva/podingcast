@@ -1,59 +1,58 @@
 package gabrielssilva.podingcast.app;
 
-import android.app.DownloadManager;
-import android.content.IntentFilter;
-import android.os.Bundle;
+import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
-import gabrielssilva.podingcast.events.DownloadClick;
-import gabrielssilva.podingcast.web.DownloadNotifier;
+import gabrielssilva.podingcast.adapter.FeedListAdapter;
+import gabrielssilva.podingcast.controller.FilesList;
+import gabrielssilva.podingcast.events.FeedListItemClick;
 
-public class FeedFragment extends Fragment implements DownloadListener {
+public class FeedFragment extends Fragment implements EventListener {
 
-    private DownloadNotifier receiver;
-    private long downloadID;
-    private DownloadManager downloadManager;
-    private View view;
+    public final static String ARG_FEED_NAME = "feed_name";
+
+    private ListView listView;
+    private Activity activity;
+    private FeedSelectedListener feedSelectedListener;
+    private View rootView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         View rootView = inflater.inflate(R.layout.fragment_feed, container, false);
-        this.view = rootView;
+        this.rootView = rootView;
+        this.activity = getActivity();
 
-        this.receiver = new DownloadNotifier(this);
-        IntentFilter intentFilter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
-        getActivity().registerReceiver(receiver, intentFilter);
-
-        this.downloadManager = (DownloadManager) getActivity().getSystemService(getActivity().DOWNLOAD_SERVICE);
-
-        DownloadClick downloadEvent = new DownloadClick(this);
-        rootView.findViewById(R.id.download_button).setOnClickListener(downloadEvent);
+        this.initViews();
+        this.initListView();
 
         return rootView;
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        this.getActivity().unregisterReceiver(this.receiver);
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        this.feedSelectedListener = (FeedSelectedListener) activity;
     }
 
-    @Override
-    public DownloadManager getDownloadManager() {
-        return this.downloadManager;
+    private void initViews() {
+        this.listView = (ListView) this.rootView.findViewById(R.id.list_view);
     }
 
-    @Override
-    public long getDownloadID() {
-        return this.downloadID;
-    }
+    private void initListView() {
+        Context context = activity.getApplicationContext();
+        FilesList filesList = new FilesList(context);
+        FeedListAdapter feedAdapter = new FeedListAdapter(context, filesList.getAllFeeds());
 
-    @Override
-    public void setDownloadID(long downloadID) {
-        this.downloadID = downloadID;
+        FeedListItemClick feedListItemClick = new FeedListItemClick(this.feedSelectedListener);
+
+        this.listView.setAdapter(feedAdapter);
+        this.listView.setOnItemClickListener(feedListItemClick);
     }
 }

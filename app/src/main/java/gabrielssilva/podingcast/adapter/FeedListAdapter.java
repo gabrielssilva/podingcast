@@ -49,7 +49,7 @@ public class FeedListAdapter extends BaseAdapter {
             // We need to inflate...
             view = this.inflateLayout(viewGroup);
 
-            listItemViewHolder.itemName = (TextView) view.findViewById(R.id.text_view);
+            listItemViewHolder.itemName = (TextView) view.findViewById(R.id.feed_name);
             view.setTag(listItemViewHolder);
         } else {
             // We can use our Holder!

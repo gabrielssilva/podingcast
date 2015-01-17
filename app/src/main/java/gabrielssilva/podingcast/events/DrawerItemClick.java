@@ -5,8 +5,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import gabrielssilva.podingcast.app.FeedFragment;
 import gabrielssilva.podingcast.app.MyDrawerListener;
-import gabrielssilva.podingcast.app.ListFragment;
 import gabrielssilva.podingcast.app.PlayerFragment;
 
 public class DrawerItemClick implements ListView.OnItemClickListener {
@@ -30,7 +30,7 @@ public class DrawerItemClick implements ListView.OnItemClickListener {
 
         switch (index) {
             case 0:
-                newFragment = new ListFragment();
+                newFragment = new FeedFragment();
                 break;
             case 1:
                 newFragment = new PlayerFragment();

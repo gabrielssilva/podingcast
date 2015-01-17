@@ -12,19 +12,22 @@ import android.widget.ListView;
 import gabrielssilva.podingcast.adapter.FeedListAdapter;
 import gabrielssilva.podingcast.controller.FilesList;
 
-public class ListFragment extends Fragment implements EventListener {
+public class FilesFragment extends Fragment {
 
-    private ListView listView;
-    private Activity activity;
     private View rootView;
+    private Activity activity;
+
+    private String feedName;
+    private ListView listView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_list, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_files, container, false);
         this.rootView = rootView;
         this.activity = getActivity();
 
         this.initViews();
+        this.retrieveInfo();
         this.initListView();
 
         return rootView;
@@ -34,11 +37,16 @@ public class ListFragment extends Fragment implements EventListener {
         this.listView = (ListView) this.rootView.findViewById(R.id.list_view);
     }
 
+    private void retrieveInfo() {
+        Bundle bundle = this.getArguments();
+        this.feedName = bundle.getString(FeedFragment.ARG_FEED_NAME);
+    }
+
     private void initListView() {
         Context context = activity.getApplicationContext();
         FilesList filesList = new FilesList(context);
-        FeedListAdapter feedAdapter = new FeedListAdapter(context, filesList.getAllFeeds());
+        FeedListAdapter adapter = new FeedListAdapter(context, filesList.getFeedFiles(this.feedName));
 
-        this.listView.setAdapter(feedAdapter);
+        this.listView.setAdapter(adapter);
     }
 }

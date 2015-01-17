@@ -3,7 +3,6 @@ package gabrielssilva.podingcast.controller;
 import android.content.Context;
 import android.database.Cursor;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,17 +19,25 @@ public class FilesList {
 
     public List<String> getAllFeeds() {
         Cursor queryResult = dbHelper.getAllFeeds();
-        List<String> allFeeds = new ArrayList<String>();
         int columnIndex = queryResult.getColumnIndexOrThrow(FilesDbContract.FeedEntry.FEED_NAME);
 
-        for(queryResult.moveToFirst(); !queryResult.isAfterLast(); queryResult.moveToNext()) {
-            allFeeds.add(queryResult.getString(columnIndex));
-        }
-
-        return allFeeds;
+        return cursorToList(queryResult, columnIndex);
     }
 
-    public List<File> getFeedFiles() {
-        return null;
+    public List<String> getFeedFiles(String feedName) {
+        Cursor queryResult = dbHelper.getFeedFiles(feedName);
+        int columnIndex = queryResult.getColumnIndexOrThrow(FilesDbContract.FileEntry.FILE_NAME);
+
+        return cursorToList(queryResult, columnIndex);
+    }
+
+    private List<String> cursorToList(Cursor cursor, int columnIndex) {
+        List<String> list = new ArrayList<String>();
+
+        for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            list.add(cursor.getString(columnIndex));
+        }
+
+        return list;
     }
 }

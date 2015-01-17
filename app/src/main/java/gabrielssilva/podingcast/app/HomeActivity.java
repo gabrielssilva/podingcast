@@ -21,7 +21,7 @@ import gabrielssilva.podingcast.service.Connection;
 import gabrielssilva.podingcast.service.PlayerConnection;
 import gabrielssilva.podingcast.service.PlayerService;
 
-public class HomeActivity extends Activity implements Connection, MyDrawerListener {
+public class HomeActivity extends Activity implements Connection, MyDrawerListener, FeedSelectedListener {
 
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
@@ -131,5 +131,16 @@ public class HomeActivity extends Activity implements Connection, MyDrawerListen
     @Override
     public void setService(PlayerService playerService) {
         this.playerService = playerService;
+    }
+
+    @Override
+    public void onFeedSelected(String feedName) {
+        Fragment filesFragment = new FilesFragment();
+        Bundle args = new Bundle();
+
+        args.putString(FeedFragment.ARG_FEED_NAME, feedName);
+        filesFragment.setArguments(args);
+
+        this.changeFragment(filesFragment, "Files", 0);
     }
 }
