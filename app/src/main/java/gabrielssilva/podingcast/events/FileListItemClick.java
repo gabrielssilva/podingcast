@@ -8,19 +8,19 @@ import android.widget.TextView;
 import gabrielssilva.podingcast.app.ListSelectionListener;
 import gabrielssilva.podingcast.app.R;
 
-public class FeedListItemClick implements ListView.OnItemClickListener {
+public class FileListItemClick implements ListView.OnItemClickListener {
 
     private ListSelectionListener listSelectionListener;
 
-    public FeedListItemClick(ListSelectionListener listSelectionListener) {
+    public FileListItemClick(ListSelectionListener listSelectionListener) {
         this.listSelectionListener = listSelectionListener;
     }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int index, long id) {
         TextView textView = (TextView) view.findViewById(R.id.feed_name);
-        String fileName = textView.getText().toString();
+        String feedName = textView.getText().toString();
 
-        this.listSelectionListener.onFeedSelected(fileName);
+        this.listSelectionListener.onFileSelected(feedName);
     }
 }

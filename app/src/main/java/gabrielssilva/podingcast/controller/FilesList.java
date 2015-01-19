@@ -31,6 +31,14 @@ public class FilesList {
         return cursorToList(queryResult, columnIndex);
     }
 
+    public String getFilePath(String fileName) {
+        Cursor queryResult = dbHelper.getFilePath(fileName);
+        int columnIndex = queryResult.getColumnIndexOrThrow(FilesDbContract.FileEntry.FILE_PATH);
+
+        queryResult.moveToFirst();
+        return queryResult.getString(columnIndex);
+    }
+
     private List<String> cursorToList(Cursor cursor, int columnIndex) {
         List<String> list = new ArrayList<String>();
 

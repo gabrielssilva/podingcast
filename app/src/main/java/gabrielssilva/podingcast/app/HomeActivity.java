@@ -15,13 +15,14 @@ import android.view.MenuItem;
 import android.widget.ListView;
 
 import gabrielssilva.podingcast.adapter.DrawerAdapter;
+import gabrielssilva.podingcast.controller.FilesList;
 import gabrielssilva.podingcast.database.FilesDbManager;
 import gabrielssilva.podingcast.events.DrawerItemClick;
 import gabrielssilva.podingcast.service.ServiceListener;
 import gabrielssilva.podingcast.service.PlayerConnection;
 import gabrielssilva.podingcast.service.PlayerService;
 
-public class HomeActivity extends Activity implements ServiceListener, MyDrawerListener, FeedSelectedListener {
+public class HomeActivity extends Activity implements ServiceListener, MyDrawerListener, ListSelectionListener {
 
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
@@ -130,7 +131,6 @@ public class HomeActivity extends Activity implements ServiceListener, MyDrawerL
         this.playerService = playerService;
     }
 
-    @Override
     public void onFeedSelected(String feedName) {
         Fragment filesFragment = new FilesFragment();
         Bundle args = new Bundle();
@@ -139,5 +139,15 @@ public class HomeActivity extends Activity implements ServiceListener, MyDrawerL
         filesFragment.setArguments(args);
 
         this.changeFragment(filesFragment, "Files", 0);
+    }
+
+    public void onFileSelected(String fileName) {
+        Fragment playerFragment = new PlayerFragment();
+        FilesList filesList = new FilesList(this);
+        String filePath = filesList.getFilePath(fileName);
+
+        this.getService().loadAudio(filePath);
+        this.getService().playAudio();
+        this.changeFragment(playerFragment, "Player", 0);
     }
 }

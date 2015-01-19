@@ -13,13 +13,13 @@ import gabrielssilva.podingcast.adapter.FeedListAdapter;
 import gabrielssilva.podingcast.controller.FilesList;
 import gabrielssilva.podingcast.events.FeedListItemClick;
 
-public class FeedFragment extends Fragment implements EventListener {
+public class FeedFragment extends Fragment {
 
     public final static String ARG_FEED_NAME = "feed_name";
 
     private ListView listView;
     private Activity activity;
-    private FeedSelectedListener feedSelectedListener;
+    private ListSelectionListener listSelectionListener;
     private View rootView;
 
     @Override
@@ -38,7 +38,7 @@ public class FeedFragment extends Fragment implements EventListener {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        this.feedSelectedListener = (FeedSelectedListener) activity;
+        this.listSelectionListener = (ListSelectionListener) activity;
     }
 
     private void initViews() {
@@ -48,9 +48,9 @@ public class FeedFragment extends Fragment implements EventListener {
     private void initListView() {
         Context context = activity.getApplicationContext();
         FilesList filesList = new FilesList(context);
-        FeedListAdapter feedAdapter = new FeedListAdapter(context, filesList.getAllFeeds());
 
-        FeedListItemClick feedListItemClick = new FeedListItemClick(this.feedSelectedListener);
+        FeedListAdapter feedAdapter = new FeedListAdapter(context, filesList.getAllFeeds());
+        FeedListItemClick feedListItemClick = new FeedListItemClick(this.listSelectionListener);
 
         this.listView.setAdapter(feedAdapter);
         this.listView.setOnItemClickListener(feedListItemClick);

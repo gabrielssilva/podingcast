@@ -9,13 +9,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import java.util.List;
+
 import gabrielssilva.podingcast.adapter.FeedListAdapter;
 import gabrielssilva.podingcast.controller.FilesList;
+import gabrielssilva.podingcast.events.FileListItemClick;
 
 public class FilesFragment extends Fragment {
 
     private View rootView;
     private Activity activity;
+    private ListSelectionListener listSelectionListener;
 
     private String feedName;
     private ListView listView;
@@ -33,6 +37,13 @@ public class FilesFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        this.listSelectionListener = (ListSelectionListener) activity;
+    }
+
     private void initViews() {
         this.listView = (ListView) this.rootView.findViewById(R.id.list_view);
     }
@@ -45,8 +56,11 @@ public class FilesFragment extends Fragment {
     private void initListView() {
         Context context = activity.getApplicationContext();
         FilesList filesList = new FilesList(context);
+
         FeedListAdapter adapter = new FeedListAdapter(context, filesList.getFeedFiles(this.feedName));
+        FileListItemClick listItemClick = new FileListItemClick(this.listSelectionListener);
 
         this.listView.setAdapter(adapter);
+        this.listView.setOnItemClickListener(listItemClick);
     }
 }

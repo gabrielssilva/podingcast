@@ -20,6 +20,8 @@ public class PlayerConnection implements ServiceConnection {
         PlayerService playerService;
 
         playerService = binder.getService();
+        playerService.loadAudio("");
+
         this.serviceListener.setService(playerService);
         this.serviceListener.setBound(true);
     }

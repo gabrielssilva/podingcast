@@ -54,12 +54,12 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         // Do nothing
     }
 
-    public void loadAudio() {
+    public void loadAudio(String filePath) {
+        this.currentAudioPosition = 0;
         this.mediaPlayer.reset();
 
         try {
-            AssetFileDescriptor afd = getAssets().openFd("cast.mp3");
-            this.mediaPlayer.setDataSource(afd.getFileDescriptor(),afd.getStartOffset(),afd.getLength());
+            this.mediaPlayer.setDataSource(filePath);
             this.mediaPlayer.prepare();
         } catch (IOException e) {
             e.printStackTrace();
@@ -102,8 +102,6 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         this.mediaPlayer.setOnPreparedListener(this);
         this.mediaPlayer.setOnCompletionListener(this);
         this.mediaPlayer.setOnErrorListener(this);
-
-        this.loadAudio();
     }
 
     public boolean isPlaying() {
