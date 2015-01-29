@@ -3,17 +3,16 @@ package gabrielssilva.podingcast.events;
 import android.widget.SeekBar;
 
 import gabrielssilva.podingcast.app.PlayerEventListener;
-import gabrielssilva.podingcast.service.PlayerService;
-import gabrielssilva.podingcast.service.ServiceListener;
+import gabrielssilva.podingcast.controller.ServiceController;
 
 public class SeekBarTouch implements SeekBar.OnSeekBarChangeListener {
 
     private PlayerEventListener eventListener;
-    private ServiceListener serviceListener;
+    private ServiceController serviceController;
 
-    public SeekBarTouch(PlayerEventListener eventListener, ServiceListener serviceListener) {
+    public SeekBarTouch(PlayerEventListener eventListener, ServiceController serviceController) {
         this.eventListener = eventListener;
-        this.serviceListener = serviceListener;
+        this.serviceController = serviceController;
     }
 
     @Override
@@ -29,7 +28,7 @@ public class SeekBarTouch implements SeekBar.OnSeekBarChangeListener {
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         int seekPosition = seekBar.getProgress();
-        this.serviceListener.getService().genericSeekPosition(seekPosition);
+        this.serviceController.seekToPosition(seekPosition, false);
         this.eventListener.startUpdatingSeekBar();
     }
 }

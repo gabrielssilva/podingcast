@@ -1,54 +1,39 @@
 package gabrielssilva.podingcast.app;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ListView;
 
 import gabrielssilva.podingcast.adapter.DrawerAdapter;
-import gabrielssilva.podingcast.controller.FilesList;
+import gabrielssilva.podingcast.controller.ServiceController;
 import gabrielssilva.podingcast.database.FilesDbManager;
 import gabrielssilva.podingcast.events.DrawerItemClick;
-import gabrielssilva.podingcast.service.ServiceListener;
-import gabrielssilva.podingcast.service.PlayerConnection;
-import gabrielssilva.podingcast.service.PlayerService;
 
-public class HomeActivity extends Activity implements ServiceListener, MyDrawerListener, ListSelectionListener {
+public class HomeActivity extends Activity implements MyDrawerListener, ListSelectionListener {
 
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
     private ListView drawerListView;
 
-    private PlayerService playerService;
-    private Intent playerIntent;
-    private boolean bound = false;
+    private ServiceController serviceController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        ServiceConnection playerConnection = new PlayerConnection(this);
-
-        if (playerIntent == null) {
-            Log.i("Player Fragment", "Creating a new intent");
-            playerIntent = new Intent(this, PlayerService.class);
-            bindService(playerIntent, playerConnection, Context.BIND_AUTO_CREATE);
-            startService(playerIntent);
-        }
-
         this.initViews();
         this.initDrawerLayout();
         this.initDrawerList();
+
+        this.serviceController = new ServiceController(this);
+        this.serviceController.initService();
 
         FilesDbManager dbManager = new FilesDbManager(getApplicationContext());
         dbManager.refreshDatabase();
@@ -85,8 +70,11 @@ public class HomeActivity extends Activity implements ServiceListener, MyDrawerL
                 R.string.drawer_opened, R.string.drawer_closed);
 
         this.drawerLayout.setDrawerListener(drawerToggle);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
+
+        if(getActionBar() != null) {
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+            getActionBar().setHomeButtonEnabled(true);
+        }
     }
 
     private void initDrawerList() {
@@ -116,19 +104,9 @@ public class HomeActivity extends Activity implements ServiceListener, MyDrawerL
     }
 
     private void updateTitle(String title) {
-        getActionBar().setTitle(title);
-    }
-
-    public void setBound(boolean bound) {
-        this.bound = bound;
-    }
-
-    public PlayerService getService() {
-        return this.playerService;
-    }
-
-    public void setService(PlayerService playerService) {
-        this.playerService = playerService;
+        if (getActionBar() != null) {
+            getActionBar().setTitle(title);
+        }
     }
 
     public void onFeedSelected(String feedName) {
@@ -143,11 +121,12 @@ public class HomeActivity extends Activity implements ServiceListener, MyDrawerL
 
     public void onFileSelected(String fileName) {
         Fragment playerFragment = new PlayerFragment();
-        FilesList filesList = new FilesList(this);
-        String filePath = filesList.getFilePath(fileName);
 
-        this.getService().loadAudio(filePath);
-        this.getService().playAudio();
+        this.serviceController.playFile(fileName);
         this.changeFragment(playerFragment, "Player", 0);
+    }
+
+    public ServiceController getServiceController() {
+        return this.serviceController;
     }
 }

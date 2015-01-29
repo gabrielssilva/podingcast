@@ -9,20 +9,19 @@ import gabrielssilva.podingcast.app.DownloadListener;
 
 public class DownloadClick implements View.OnClickListener {
 
-    private DownloadManager downloadManager;
     private DownloadListener listener;
 
     public DownloadClick(DownloadListener listener) {
-        this.downloadManager = listener.getDownloadManager();
         this.listener = listener;
     }
 
     @Override
-    public void onClick(View v) {
+    public void onClick(View view) {
+        DownloadManager downloadManager = this.listener.getDownloadManager();
         long downloadID;
 
         Request request = new Request(Uri.parse("http://www.vogella.de/img/lars/LarsVogelArticle7.png"));
-        downloadID = this.listener.getDownloadManager().enqueue(request);
+        downloadID = downloadManager.enqueue(request);
 
         this.listener.setDownloadID(downloadID);
     }

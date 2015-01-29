@@ -3,8 +3,6 @@ package gabrielssilva.podingcast.events;
 import android.os.Handler;
 
 import gabrielssilva.podingcast.app.PlayerEventListener;
-import gabrielssilva.podingcast.service.PlayerService;
-import gabrielssilva.podingcast.service.ServiceListener;
 
 public class ProgressUpdateRunnable implements Runnable {
 
