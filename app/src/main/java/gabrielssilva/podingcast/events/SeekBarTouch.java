@@ -8,11 +8,9 @@ import gabrielssilva.podingcast.controller.ServiceController;
 public class SeekBarTouch implements SeekBar.OnSeekBarChangeListener {
 
     private PlayerEventListener eventListener;
-    private ServiceController serviceController;
 
-    public SeekBarTouch(PlayerEventListener eventListener, ServiceController serviceController) {
+    public SeekBarTouch(PlayerEventListener eventListener) {
         this.eventListener = eventListener;
-        this.serviceController = serviceController;
     }
 
     @Override
@@ -28,7 +26,6 @@ public class SeekBarTouch implements SeekBar.OnSeekBarChangeListener {
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         int seekPosition = seekBar.getProgress();
-        this.serviceController.seekToPosition(seekPosition, false);
-        this.eventListener.startUpdatingSeekBar();
+        this.eventListener.continueUpdatingSeekBar(seekPosition);
     }
 }

@@ -9,11 +9,11 @@ import java.util.List;
 import gabrielssilva.podingcast.database.FilesDbContract;
 import gabrielssilva.podingcast.database.FilesDbHelper;
 
-public class FilesList {
+public class FilesController {
 
     private FilesDbHelper dbHelper;
 
-    public FilesList(Context context) {
+    public FilesController(Context context) {
         dbHelper = new FilesDbHelper(context);
     }
 

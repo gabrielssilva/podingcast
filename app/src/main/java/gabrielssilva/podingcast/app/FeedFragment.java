@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import gabrielssilva.podingcast.adapter.FeedListAdapter;
-import gabrielssilva.podingcast.controller.FilesList;
+import gabrielssilva.podingcast.controller.FilesController;
 import gabrielssilva.podingcast.events.FeedListItemClick;
 
 public class FeedFragment extends Fragment {
@@ -47,9 +47,9 @@ public class FeedFragment extends Fragment {
 
     private void initListView() {
         Context context = activity.getApplicationContext();
-        FilesList filesList = new FilesList(context);
+        FilesController filesController = new FilesController(context);
 
-        FeedListAdapter feedAdapter = new FeedListAdapter(context, filesList.getAllFeeds());
+        FeedListAdapter feedAdapter = new FeedListAdapter(context, filesController.getAllFeeds());
         FeedListItemClick feedListItemClick = new FeedListItemClick(this.listSelectionListener);
 
         this.listView.setAdapter(feedAdapter);

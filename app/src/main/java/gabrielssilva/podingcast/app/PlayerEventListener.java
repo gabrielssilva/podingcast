@@ -4,10 +4,11 @@ import android.content.res.Resources;
 import android.os.Handler;
 
 public interface PlayerEventListener {
-    public Resources getResources();
-    public Handler getHandler();
+
+    public void playOrPause();
+    public void seekToPosition(int deltaInMilliseconds);
 
     public void updateSeekBar();
-    public void startUpdatingSeekBar();
+    public void continueUpdatingSeekBar(int seekPosition);
     public void stopUpdatingSeekBar();
 }

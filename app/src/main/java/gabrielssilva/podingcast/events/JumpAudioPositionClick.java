@@ -2,19 +2,20 @@ package gabrielssilva.podingcast.events;
 
 import android.view.View;
 
-import gabrielssilva.podingcast.controller.ServiceController;
+import gabrielssilva.podingcast.app.PlayerEventListener;
 
 public class JumpAudioPositionClick implements View.OnClickListener {
-    private ServiceController serviceController;
+
+    private PlayerEventListener eventListener;
     private int deltaInMilliseconds;
 
-    public JumpAudioPositionClick(ServiceController serviceController, int deltaInMilliseconds) {
-        this.serviceController = serviceController;
+    public JumpAudioPositionClick(PlayerEventListener eventListener, int deltaInMilliseconds) {
+        this.eventListener = eventListener;
         this.deltaInMilliseconds = deltaInMilliseconds;
     }
 
     @Override
     public void onClick(View view) {
-        this.serviceController.seekToPosition(deltaInMilliseconds, true);
+        this.eventListener.seekToPosition(deltaInMilliseconds);
     }
 }

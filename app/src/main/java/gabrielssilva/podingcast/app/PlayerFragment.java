@@ -1,5 +1,7 @@
 package gabrielssilva.podingcast.app;
 
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.app.Fragment;
@@ -19,14 +21,14 @@ import gabrielssilva.podingcast.events.ProgressUpdateRunnable;
 public class PlayerFragment extends Fragment implements PlayerEventListener {
 
     private Button buttonPlayPause;
-    private Button buttonSkipAudioPosition;
-    private Button buttonBackAudioPosition;
+    private Button buttonSkipAudio;
+    private Button buttonBackAudio;
     private SeekBar seekBar;
 
+    private View rootView;
     private Handler handler;
     ProgressUpdateRunnable updateRunnable;
     private ServiceController serviceController;
-    private View rootView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -51,48 +53,77 @@ public class PlayerFragment extends Fragment implements PlayerEventListener {
         super.onDestroy();
     }
 
-    public void initSeekBar() {
-        int audioDuration = this.serviceController.getAudioDuration();
-        SeekBarTouch seekBarTouchEvent = new SeekBarTouch(this, serviceController);
-        this.updateRunnable = new ProgressUpdateRunnable(this);
-
-        this.seekBar.setMax(audioDuration);
-        this.seekBar.setOnSeekBarChangeListener(seekBarTouchEvent);
-        this.startUpdatingSeekBar();
-    }
-
     private void initViews() {
         this.buttonPlayPause = (Button) this.rootView.findViewById(R.id.button_play_pause);
-        this.buttonSkipAudioPosition = (Button) this.rootView.findViewById(R.id.button_plus_30);
-        this.buttonBackAudioPosition = (Button) this.rootView.findViewById(R.id.button_minus_30);
+        this.buttonSkipAudio = (Button) this.rootView.findViewById(R.id.button_plus_30);
+        this.buttonBackAudio = (Button) this.rootView.findViewById(R.id.button_minus_30);
 
         this.seekBar = (SeekBar) this.rootView.findViewById(R.id.seek_bar);
     }
 
-    private void setButtonEvents() {
-        PlayPauseClick playPauseEvent = new PlayPauseClick(this, serviceController);
-        this.buttonPlayPause.setOnClickListener(playPauseEvent);
+    public void initSeekBar() {
+        int audioDuration = this.serviceController.getAudioDuration();
+        SeekBarTouch seekBarTouchEvent = new SeekBarTouch(this);
+        this.updateRunnable = new ProgressUpdateRunnable(this);
 
-        JumpAudioPositionClick skipAudioPositionClick = new JumpAudioPositionClick(serviceController, 30000);
-        this.buttonSkipAudioPosition.setOnClickListener(skipAudioPositionClick);
-
-        JumpAudioPositionClick backAudioPositionClick = new JumpAudioPositionClick(serviceController, -30000);
-        this.buttonBackAudioPosition.setOnClickListener(backAudioPositionClick);
+        this.seekBar.setMax(audioDuration);
+        this.seekBar.setOnSeekBarChangeListener(seekBarTouchEvent);
+        this.updateSeekBar();
     }
 
+    private void setButtonEvents() {
+        PlayPauseClick playPauseEvent = new PlayPauseClick(this);
+        this.buttonPlayPause.setOnClickListener(playPauseEvent);
+
+        JumpAudioPositionClick skipAudioEvent = new JumpAudioPositionClick(this, 30000);
+        this.buttonSkipAudio.setOnClickListener(skipAudioEvent);
+
+        JumpAudioPositionClick backAudioEvent = new JumpAudioPositionClick(this, -30000);
+        this.buttonBackAudio.setOnClickListener(backAudioEvent);
+    }
+
+    @Override
+    public void playOrPause() {
+        this.serviceController.playOrPause();
+        this.updateButtonPlayPause();
+    }
+
+    private void updateButtonPlayPause() {
+        Resources resources = this.getResources();
+        String contentDescription;
+        Drawable icon;
+
+        if (this.serviceController.isPlaying()) {
+            icon = resources.getDrawable(R.drawable.pause);
+            contentDescription = "Pause";
+        } else {
+            icon = resources.getDrawable(R.drawable.play);
+            contentDescription = "Play";
+        }
+
+        this.buttonPlayPause.setCompoundDrawablesWithIntrinsicBounds(null, icon, null, null);
+        this.buttonPlayPause.setContentDescription(contentDescription);
+    }
+
+    @Override
+    public void seekToPosition(int deltaInMilliseconds) {
+        this.serviceController.seekToPosition(deltaInMilliseconds, true);
+    }
+
+    @Override
     public void updateSeekBar() {
         int newProgress = this.serviceController.getAudioPosition();
         this.seekBar.setProgress(newProgress);
-    }
-
-    public Handler getHandler() {
-        return this.handler;
-    }
-
-    public void startUpdatingSeekBar() {
         this.handler.postDelayed(this.updateRunnable, 100);
     }
 
+    @Override
+    public void continueUpdatingSeekBar(int seekPosition) {
+        this.serviceController.seekToPosition(seekPosition, false);
+        this.handler.postDelayed(this.updateRunnable, 100);
+    }
+
+    @Override
     public void stopUpdatingSeekBar() {
         this.handler.removeCallbacks(this.updateRunnable);
     }

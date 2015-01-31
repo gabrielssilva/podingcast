@@ -33,8 +33,8 @@ public class ServiceController {
     }
 
     public void playFile(String fileName) {
-        FilesList filesList = new FilesList(this.context);
-        String filePath = filesList.getFilePath(fileName);
+        FilesController filesController = new FilesController(this.context);
+        String filePath = filesController.getFilePath(fileName);
 
         this.playerService.loadAudio(filePath);
         this.playerService.playAudio();
@@ -48,18 +48,13 @@ public class ServiceController {
         }
     }
 
-    public boolean playOrPause() {
-        boolean playing = this.playerService.isPlaying();
+    public void playOrPause() {
 
-        if (playing) {
+        if (this.isPlaying()) {
             this.playerService.pauseAudio();
-            playing = false;
         } else {
             this.playerService.playAudio();
-            playing = true;
         }
-
-        return !playing;
     }
 
     public void setService(PlayerService playerService) {
@@ -76,5 +71,9 @@ public class ServiceController {
 
     public int getAudioPosition() {
         return this.playerService.getAudioPosition();
+    }
+
+    public boolean isPlaying() {
+        return this.playerService.isPlaying();
     }
 }
