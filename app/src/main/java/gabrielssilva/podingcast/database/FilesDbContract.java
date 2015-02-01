@@ -20,12 +20,13 @@ public final class FilesDbContract {
         public static final String FEED_ID = "feed_id";
         public static final String FILE_NAME = "file_name";
         public static final String FILE_PATH = "file_path";
+        public static final String FILE_LAST_POS = "file_current_pos";
 
         public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" + _ID
                 + " INTEGER PRIMARY KEY," + FEED_ID + " INTEGER, " + FILE_NAME + " TEXT, "
-                + FILE_PATH + " TEXT, " + " FOREIGN KEY (" + FEED_ID + ") REFERENCES "
-                + FeedEntry.TABLE_NAME + " (" + FeedEntry._ID + ") ON DELETE CASCADE"
-                + " ON UPDATE CASCADE);" ;
+                + FILE_PATH + " TEXT, "+ FILE_LAST_POS + " INTEGER DEFAULT 0, "
+                + " FOREIGN KEY (" + FEED_ID + ") REFERENCES " + FeedEntry.TABLE_NAME
+                + " (" + FeedEntry._ID + ") ON DELETE CASCADE" + " ON UPDATE CASCADE);" ;
         public static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME + ";";
     }
 }

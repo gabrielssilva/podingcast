@@ -12,6 +12,7 @@ public class ServiceController {
 
     private Context context;
     private boolean bound;
+    private FilesController.FileInfo fileInfo;
 
     private PlayerService playerService;
     private ServiceConnection playerConnection;
@@ -34,9 +35,11 @@ public class ServiceController {
 
     public void playFile(String fileName) {
         FilesController filesController = new FilesController(this.context);
-        String filePath = filesController.getFilePath(fileName);
+        this.fileInfo = filesController.getFileInfo(fileName);
 
-        this.playerService.loadAudio(filePath);
+        Log.i("Current position", ""+this.fileInfo.lastPosition);
+        this.playerService.setLastAudioPosition(this.fileInfo.lastPosition);
+        this.playerService.loadAudio(fileInfo.path);
         this.playerService.playAudio();
     }
 
@@ -63,16 +66,17 @@ public class ServiceController {
         }
     }
 
+    public void saveCurrentPosition() {
+        FilesController filesController = new FilesController(this.context);
+        filesController.saveCurrentPosition(this.fileInfo.name, this.playerService.getAudioPosition());
+    }
+
     public void setService(PlayerService playerService) {
         this.playerService = playerService;
     }
 
     public void setBound(boolean bound) {
         this.bound = bound;
-    }
-
-    public boolean isBound() {
-        return this.bound;
     }
 
     public int getAudioDuration() {

@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class FilesDbHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "Podingcast.db";
 
     public FilesDbHelper(Context context) {
@@ -51,10 +51,10 @@ public class FilesDbHelper extends SQLiteOpenHelper {
                 selectionArgs, null, null, sortOrder);
     }
 
-    public Cursor getFilePath(String fileName) {
+    public Cursor getFileInfo(String fileName) {
         SQLiteDatabase database = getReadableDatabase();
 
-        String columns[] = { FilesDbContract.FileEntry.FILE_PATH };
+        String columns[] = { FilesDbContract.FileEntry.FILE_PATH, FilesDbContract.FileEntry.FILE_LAST_POS};
         String selection = FilesDbContract.FileEntry.FILE_NAME + " = ?";
         String selectionArgs[] = { fileName };
 
@@ -73,6 +73,19 @@ public class FilesDbHelper extends SQLiteOpenHelper {
         int feedId = getFeedId(database, feedName);
         insertFile(database, feedId, fileTitle, filePath);
     }
+
+    public void updateLastPosition(String fileName, int currentPosition) {
+        SQLiteDatabase database = getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(FilesDbContract.FileEntry.FILE_LAST_POS, currentPosition);
+
+        String selection = FilesDbContract.FileEntry.FILE_NAME + " like ?";
+        String selectionArgs[] = { fileName };
+
+        database.update(FilesDbContract.FileEntry.TABLE_NAME, values, selection, selectionArgs);
+    }
+
 
     private int getFeedId(SQLiteDatabase database, String feedName) {
         String columns[] = { FilesDbContract.FeedEntry._ID };

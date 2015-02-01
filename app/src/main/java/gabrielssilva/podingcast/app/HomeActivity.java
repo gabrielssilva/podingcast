@@ -20,8 +20,8 @@ public class HomeActivity extends Activity implements ListSelectionListener {
         this.serviceController = new ServiceController(this);
         this.serviceController.initService();
 
-        FilesDbManager dbManager = new FilesDbManager(getApplicationContext());
-        dbManager.refreshDatabase();
+        //FilesDbManager dbManager = new FilesDbManager(getApplicationContext());
+        //dbManager.refreshDatabase();
 
         this.openFragment(new FeedFragment());
     }
@@ -29,14 +29,8 @@ public class HomeActivity extends Activity implements ListSelectionListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        this.serviceController.saveCurrentPosition();
         this.serviceController.destroyService();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putBoolean("bound", this.serviceController.isBound());
-
-        super.onSaveInstanceState(savedInstanceState);
     }
 
 

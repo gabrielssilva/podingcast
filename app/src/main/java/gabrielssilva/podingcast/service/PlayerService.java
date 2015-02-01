@@ -7,7 +7,6 @@ import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
-import android.util.Log;
 
 import java.io.IOException;
 
@@ -15,43 +14,34 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
 
     private MediaPlayer mediaPlayer;
+    private int lastAudioPosition;
     private int currentAudioPosition;
     private final IBinder playerBind = new PlayerBinder();
 
     @Override
-    public void onCreate() {
-        super.onCreate();
-
-        Log.i("Player Service", "Created Media Player");
-        this.currentAudioPosition = 0;
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public IBinder onBind(Intent intent) {
         this.mediaPlayer = new MediaPlayer();
         this.initializeMediaPlayer();
 
-        return START_STICKY;
-    }
-
-    @Override
-    public IBinder onBind(Intent intent) {
         return this.playerBind;
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
         this.mediaPlayer.release();
+        this.mediaPlayer = new MediaPlayer();
+
         return false;
     }
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-
+        this.currentAudioPosition = 0;
     }
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
+        // Nothing special.
         return false;
     }
 
@@ -61,7 +51,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     }
 
     public void loadAudio(String filePath) {
-        this.currentAudioPosition = 0;
+        this.currentAudioPosition = lastAudioPosition;
         this.mediaPlayer.reset();
 
         try {
@@ -101,13 +91,8 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         return this.mediaPlayer.getCurrentPosition();
     }
 
-    private void initializeMediaPlayer() {
-        this.mediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
-        this.mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-
-        this.mediaPlayer.setOnPreparedListener(this);
-        this.mediaPlayer.setOnCompletionListener(this);
-        this.mediaPlayer.setOnErrorListener(this);
+    public void setLastAudioPosition(int lastAudioPosition) {
+        this.lastAudioPosition = lastAudioPosition;
     }
 
     public boolean isPlaying() {
@@ -120,4 +105,13 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         }
     }
 
+
+    private void initializeMediaPlayer() {
+        this.mediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
+        this.mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+
+        this.mediaPlayer.setOnPreparedListener(this);
+        this.mediaPlayer.setOnCompletionListener(this);
+        this.mediaPlayer.setOnErrorListener(this);
+    }
 }

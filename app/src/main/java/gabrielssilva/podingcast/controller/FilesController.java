@@ -31,12 +31,20 @@ public class FilesController {
         return cursorToList(queryResult, columnIndex);
     }
 
-    public String getFilePath(String fileName) {
-        Cursor queryResult = dbHelper.getFilePath(fileName);
-        int columnIndex = queryResult.getColumnIndexOrThrow(FilesDbContract.FileEntry.FILE_PATH);
+    public FileInfo getFileInfo(String fileName) {
+        Cursor queryResult = dbHelper.getFileInfo(fileName);
+        int pathColumnIndex = queryResult.getColumnIndexOrThrow(FilesDbContract.FileEntry.FILE_PATH);
+        int posColumnIndex = queryResult.getColumnIndexOrThrow(FilesDbContract.FileEntry.FILE_LAST_POS);
 
         queryResult.moveToFirst();
-        return queryResult.getString(columnIndex);
+        String path = queryResult.getString(pathColumnIndex);
+        int lastPosition = queryResult.getInt(posColumnIndex);
+
+        return new FileInfo(fileName, path, lastPosition);
+    }
+
+    public void saveCurrentPosition(String fileName, int currentPosition) {
+        this.dbHelper.updateLastPosition(fileName, currentPosition);
     }
 
     private List<String> cursorToList(Cursor cursor, int columnIndex) {
@@ -47,5 +55,17 @@ public class FilesController {
         }
 
         return list;
+    }
+
+    public class FileInfo {
+        public String name;
+        public String path;
+        public int lastPosition;
+
+        public FileInfo(String name, String path, int lastPosition) {
+            this.name = name;
+            this.path = path;
+            this.lastPosition = lastPosition;
+        }
     }
 }

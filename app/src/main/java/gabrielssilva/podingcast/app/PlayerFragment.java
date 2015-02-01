@@ -113,6 +113,7 @@ public class PlayerFragment extends Fragment implements PlayerEventListener {
     @Override
     public void seekToPosition(int deltaInMilliseconds) {
         this.serviceController.seekToPosition(deltaInMilliseconds, true);
+        this.updateButtonPlayPause();
     }
 
     @Override
@@ -126,6 +127,7 @@ public class PlayerFragment extends Fragment implements PlayerEventListener {
     public void continueUpdatingSeekBar(int seekPosition) {
         this.serviceController.seekToPosition(seekPosition, false);
         this.handler.postDelayed(this.updateRunnable, 100);
+        this.updateButtonPlayPause();
     }
 
     @Override
