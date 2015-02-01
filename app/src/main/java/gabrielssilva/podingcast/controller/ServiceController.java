@@ -11,23 +11,23 @@ import gabrielssilva.podingcast.service.PlayerService;
 public class ServiceController {
 
     private Context context;
-    private Intent playerIntent;
     private boolean bound;
 
     private PlayerService playerService;
+    private ServiceConnection playerConnection;
 
     public ServiceController(Context context) {
         this.context = context;
     }
 
     public void initService() {
-        ServiceConnection playerConnection = new PlayerConnection(this);
+        this.playerConnection = new PlayerConnection(this);
 
-        if (playerIntent == null) {
+        if (!bound) {
             Log.i("Player Fragment", "Creating a new intent");
-            playerIntent = new Intent(this.context, PlayerService.class);
+            Intent playerIntent = new Intent(this.context, PlayerService.class);
 
-            this.context.bindService(playerIntent, playerConnection, Context.BIND_AUTO_CREATE);
+            this.context.bindService(playerIntent, this.playerConnection, Context.BIND_AUTO_CREATE);
             this.context.startService(playerIntent);
         }
     }
@@ -57,12 +57,22 @@ public class ServiceController {
         }
     }
 
+    public void destroyService() {
+        if (bound) {
+            this.context.unbindService(this.playerConnection);
+        }
+    }
+
     public void setService(PlayerService playerService) {
         this.playerService = playerService;
     }
 
     public void setBound(boolean bound) {
         this.bound = bound;
+    }
+
+    public boolean isBound() {
+        return this.bound;
     }
 
     public int getAudioDuration() {

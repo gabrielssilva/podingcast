@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,16 +40,22 @@ public class PlayerFragment extends Fragment implements PlayerEventListener {
         this.initViews();
         this.initSeekBar();
         this.setButtonEvents();
+        this.updateButtonPlayPause();
 
         return rootView;
     }
 
     @Override
-    public void onDestroy() {
-        Log.i("Player Fragment", "Destroying Activity...");
+    public void onStop() {
+        super.onStop();
+        this.stopUpdatingSeekBar();
+    }
 
-        //this.activity.unbindService(playerConnection);
-        super.onDestroy();
+    @Override
+    public void onResume() {
+        super.onResume();
+        this.updateSeekBar();
+        this.handler.postDelayed(this.updateRunnable, 100);
     }
 
     private void initViews() {

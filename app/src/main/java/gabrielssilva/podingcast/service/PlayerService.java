@@ -23,9 +23,15 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         super.onCreate();
 
         Log.i("Player Service", "Created Media Player");
+        this.currentAudioPosition = 0;
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
         this.mediaPlayer = new MediaPlayer();
         this.initializeMediaPlayer();
-        this.currentAudioPosition = 0;
+
+        return START_STICKY;
     }
 
     @Override
@@ -35,6 +41,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
 
     @Override
     public boolean onUnbind(Intent intent) {
+        this.mediaPlayer.release();
         return false;
     }
 

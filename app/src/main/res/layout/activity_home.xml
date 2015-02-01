@@ -1,20 +1,7 @@
-<android.support.v4.widget.DrawerLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/drawer_layout">
+    android:id="@+id/content_frame">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/content_frame"/>
-    
-    <ListView
-        android:layout_width="250dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="left"
-        android:background="#ff567899"
-        android:choiceMode="singleChoice"
-        android:id="@+id/navigation_drawer"/>
-
-</android.support.v4.widget.DrawerLayout>
+</FrameLayout>
