@@ -5,7 +5,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import gabrielssilva.podingcast.app.ListSelectionListener;
+import gabrielssilva.podingcast.app.interfaces.ListSelectionListener;
 import gabrielssilva.podingcast.app.R;
 
 public class FileListItemClick implements ListView.OnItemClickListener {
@@ -21,6 +21,6 @@ public class FileListItemClick implements ListView.OnItemClickListener {
         TextView textView = (TextView) view.findViewById(R.id.feed_name);
         String feedName = textView.getText().toString();
 
-        this.listSelectionListener.onFileSelected(feedName);
+        this.listSelectionListener.onItemSelected(feedName);
     }
 }

@@ -1,14 +1,16 @@
 package gabrielssilva.podingcast.app;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewPager;
 
+import gabrielssilva.podingcast.adapter.FragmentsAdapter;
+import gabrielssilva.podingcast.app.interfaces.ServiceListener;
 import gabrielssilva.podingcast.controller.ServiceController;
-import gabrielssilva.podingcast.database.FilesDbManager;
 
-public class HomeActivity extends Activity implements ListSelectionListener {
+public class HomeActivity extends FragmentActivity {
+
+    public final static int PLAYER_FRAGMENT_POS = 1;
 
     private ServiceController serviceController;
 
@@ -17,43 +19,22 @@ public class HomeActivity extends Activity implements ListSelectionListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        this.serviceController = new ServiceController(this);
-        this.serviceController.initService();
-
-        //FilesDbManager dbManager = new FilesDbManager(getApplicationContext());
+        //FilesDbManager dbManager = new FilesDbManager(this);
         //dbManager.refreshDatabase();
 
-        this.openFragment(new FeedFragment());
+        FragmentsAdapter adapter = new FragmentsAdapter(this.getSupportFragmentManager());
+
+        ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
+        viewPager.setAdapter(adapter);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        this.serviceController.saveCurrentPosition();
-        this.serviceController.destroyService();
-    }
-
-
-    public void openFragment(Fragment newFragment) {
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.content_frame, newFragment).commit();
-    }
-
-    public void onFeedSelected(String feedName) {
-        Fragment filesFragment = new FilesFragment();
-        Bundle args = new Bundle();
-
-        args.putString(FeedFragment.ARG_FEED_NAME, feedName);
-        filesFragment.setArguments(args);
-
-        this.openFragment(filesFragment);
-    }
-
-    public void onFileSelected(String fileName) {
-        Fragment playerFragment = new PlayerFragment();
-
-        this.serviceController.playFile(fileName);
-        this.openFragment(playerFragment);
+    /*
+     * The following two methods are used by the fragments to exchange the ServiceController.
+     * The PlayerFragment will set it after creating a new ServiceController.
+     * The FilesFragment will get it when necessary.
+     */
+    public void setServiceController(ServiceController serviceController) {
+        this.serviceController = serviceController;
     }
 
     public ServiceController getServiceController() {

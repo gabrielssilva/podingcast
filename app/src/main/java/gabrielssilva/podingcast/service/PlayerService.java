@@ -7,6 +7,7 @@ import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.util.Log;
 
 import java.io.IOException;
 
@@ -20,6 +21,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
 
     @Override
     public IBinder onBind(Intent intent) {
+        Log.i("Service", "Initializing service (service)");
         this.mediaPlayer = new MediaPlayer();
         this.initializeMediaPlayer();
 
@@ -99,12 +101,6 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         return this.mediaPlayer.isPlaying();
     }
 
-    public class PlayerBinder extends Binder {
-        PlayerService getService() {
-            return PlayerService.this;
-        }
-    }
-
 
     private void initializeMediaPlayer() {
         this.mediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
@@ -113,5 +109,14 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         this.mediaPlayer.setOnPreparedListener(this);
         this.mediaPlayer.setOnCompletionListener(this);
         this.mediaPlayer.setOnErrorListener(this);
+
+        this.loadAudio("");
+    }
+
+
+    public class PlayerBinder extends Binder {
+        PlayerService getService() {
+            return PlayerService.this;
+        }
     }
 }

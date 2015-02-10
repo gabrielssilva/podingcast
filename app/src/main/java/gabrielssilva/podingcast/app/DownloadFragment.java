@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import gabrielssilva.podingcast.app.interfaces.DownloadListener;
 import gabrielssilva.podingcast.events.DownloadClick;
 import gabrielssilva.podingcast.web.DownloadNotifier;
 

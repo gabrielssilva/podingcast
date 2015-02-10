@@ -1,7 +1,6 @@
-package gabrielssilva.podingcast.app;
+package gabrielssilva.podingcast.app.interfaces;
 
 import android.app.DownloadManager;
-import android.view.View;
 
 public interface DownloadListener {
     public DownloadManager getDownloadManager();

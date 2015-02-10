@@ -6,9 +6,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.view.View;
 
-import gabrielssilva.podingcast.app.DownloadListener;
+import gabrielssilva.podingcast.app.interfaces.DownloadListener;
 
 public class DownloadNotifier extends BroadcastReceiver {
 

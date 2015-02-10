@@ -2,7 +2,7 @@ package gabrielssilva.podingcast.events;
 
 import android.view.View;
 
-import gabrielssilva.podingcast.app.PlayerEventListener;
+import gabrielssilva.podingcast.app.interfaces.PlayerEventListener;
 
 public class PlayPauseClick implements View.OnClickListener {
 

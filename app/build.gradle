@@ -2,17 +2,17 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 20
-    buildToolsVersion '20.0.0'
+    buildToolsVersion '21.1.1'
     defaultConfig {
         applicationId 'gabrielssilva.podingcast.app'
-        minSdkVersion 14
-        targetSdkVersion 18
+        minSdkVersion 15
+        targetSdkVersion 21
         versionCode 1
         versionName '1.0'
     }
     buildTypes {
         release {
-            runProguard false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -23,5 +23,5 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     // You must install or update the Support Repository through the SDK manager to use this dependency.
-    compile 'com.android.support:support-v13:19.+'
+    compile 'com.android.support:support-v4:20.0.0'
 }

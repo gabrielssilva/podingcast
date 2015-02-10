@@ -3,8 +3,8 @@ package gabrielssilva.podingcast.controller;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.util.Log;
 
+import gabrielssilva.podingcast.app.interfaces.ServiceListener;
 import gabrielssilva.podingcast.service.PlayerConnection;
 import gabrielssilva.podingcast.service.PlayerService;
 
@@ -14,33 +14,50 @@ public class ServiceController {
     private boolean bound;
     private FilesController.FileInfo fileInfo;
 
+    private ServiceListener serviceListener;
     private PlayerService playerService;
     private ServiceConnection playerConnection;
 
-    public ServiceController(Context context) {
-        this.context = context;
+    public ServiceController(ServiceListener serviceListener) {
+        this.serviceListener = serviceListener;
+        this.context = serviceListener.getApplicationContext();
+
+        this.initService();
     }
 
-    public void initService() {
+    private void initService() {
         this.playerConnection = new PlayerConnection(this);
 
-        if (!bound) {
-            Log.i("Player Fragment", "Creating a new intent");
-            Intent playerIntent = new Intent(this.context, PlayerService.class);
+        Intent playerIntent = new Intent(this.context, PlayerService.class);
+        this.context.bindService(playerIntent, this.playerConnection, Context.BIND_AUTO_CREATE);
+        this.context.startService(playerIntent);
+    }
 
-            this.context.bindService(playerIntent, this.playerConnection, Context.BIND_AUTO_CREATE);
-            this.context.startService(playerIntent);
-        }
+
+    /*
+     * The following two method will be called by the PlayerConnection,
+     * as soon as the Service was created. Because of that, it is necessary
+     * to check if the Ser
+     */
+    public void setService(PlayerService playerService) {
+        this.playerService = playerService;
+    }
+
+    public void setBound(boolean bound) {
+        this.bound = bound;
     }
 
     public void playFile(String fileName) {
+        this.saveCurrentPosition();
+
         FilesController filesController = new FilesController(this.context);
         this.fileInfo = filesController.getFileInfo(fileName);
 
-        Log.i("Current position", ""+this.fileInfo.lastPosition);
         this.playerService.setLastAudioPosition(this.fileInfo.lastPosition);
         this.playerService.loadAudio(fileInfo.path);
         this.playerService.playAudio();
+
+        this.serviceListener.setSeekBar();
     }
 
     public void seekToPosition(int seekPosition, boolean preservePosition) {
@@ -52,7 +69,6 @@ public class ServiceController {
     }
 
     public void playOrPause() {
-
         if (this.isPlaying()) {
             this.playerService.pauseAudio();
         } else {
@@ -67,27 +83,29 @@ public class ServiceController {
     }
 
     public void saveCurrentPosition() {
-        FilesController filesController = new FilesController(this.context);
-        filesController.saveCurrentPosition(this.fileInfo.name, this.playerService.getAudioPosition());
-    }
-
-    public void setService(PlayerService playerService) {
-        this.playerService = playerService;
-    }
-
-    public void setBound(boolean bound) {
-        this.bound = bound;
+        if (this.fileInfo != null) {
+            FilesController filesController = new FilesController(this.context);
+            filesController.saveCurrentPosition(this.fileInfo.name, this.playerService.getAudioPosition());
+        }
     }
 
     public int getAudioDuration() {
-        return this.playerService.getAudioDuration();
+        if (this.bound) {
+            return this.playerService.getAudioDuration();
+        } else {
+            return 0;
+        }
     }
 
     public int getAudioPosition() {
-        return this.playerService.getAudioPosition();
+        if (this.bound) {
+            return this.playerService.getAudioPosition();
+        } else {
+            return 0;
+        }
     }
 
     public boolean isPlaying() {
-        return this.playerService.isPlaying();
+        return this.bound && this.playerService.isPlaying();
     }
 }

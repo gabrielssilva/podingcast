@@ -5,7 +5,7 @@ import android.app.DownloadManager.Request;
 import android.net.Uri;
 import android.view.View;
 
-import gabrielssilva.podingcast.app.DownloadListener;
+import gabrielssilva.podingcast.app.interfaces.DownloadListener;
 
 public class DownloadClick implements View.OnClickListener {
 

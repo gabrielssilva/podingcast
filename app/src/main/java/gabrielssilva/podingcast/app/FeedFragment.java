@@ -1,7 +1,8 @@
 package gabrielssilva.podingcast.app;
 
 import android.app.Activity;
-import android.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,16 +11,16 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import gabrielssilva.podingcast.adapter.FeedListAdapter;
+import gabrielssilva.podingcast.app.interfaces.ListSelectionListener;
 import gabrielssilva.podingcast.controller.FilesController;
 import gabrielssilva.podingcast.events.FeedListItemClick;
 
-public class FeedFragment extends Fragment {
+public class FeedFragment extends Fragment implements ListSelectionListener {
 
     public final static String ARG_FEED_NAME = "feed_name";
 
     private ListView listView;
     private Activity activity;
-    private ListSelectionListener listSelectionListener;
     private View rootView;
 
     @Override
@@ -34,12 +35,6 @@ public class FeedFragment extends Fragment {
         return rootView;
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
-        this.listSelectionListener = (ListSelectionListener) activity;
-    }
 
     private void initViews() {
         this.listView = (ListView) this.rootView.findViewById(R.id.list_view);
@@ -50,9 +45,23 @@ public class FeedFragment extends Fragment {
         FilesController filesController = new FilesController(context);
 
         FeedListAdapter feedAdapter = new FeedListAdapter(context, filesController.getAllFeeds());
-        FeedListItemClick feedListItemClick = new FeedListItemClick(this.listSelectionListener);
+        FeedListItemClick feedListItemClick = new FeedListItemClick(this);
 
         this.listView.setAdapter(feedAdapter);
         this.listView.setOnItemClickListener(feedListItemClick);
+    }
+
+
+    @Override
+    public void onItemSelected(String feedName) {
+        Fragment filesFragment = new FilesFragment();
+        Bundle args = new Bundle();
+
+        args.putString(FeedFragment.ARG_FEED_NAME, feedName);
+        filesFragment.setArguments(args);
+
+        FragmentTransaction transaction = this.getFragmentManager().beginTransaction();
+        transaction.replace(R.id.container, filesFragment);
+        transaction.commit();
     }
 }

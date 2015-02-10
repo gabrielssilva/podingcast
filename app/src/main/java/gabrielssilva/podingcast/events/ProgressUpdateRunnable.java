@@ -1,6 +1,6 @@
 package gabrielssilva.podingcast.events;
 
-import gabrielssilva.podingcast.app.PlayerEventListener;
+import gabrielssilva.podingcast.app.interfaces.PlayerEventListener;
 
 public class ProgressUpdateRunnable implements Runnable {
 
