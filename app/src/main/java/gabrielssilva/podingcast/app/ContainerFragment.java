@@ -21,7 +21,7 @@ public class ContainerFragment extends Fragment {
     private void addFragmentToContainer() {
         FragmentTransaction transaction = this.getFragmentManager().beginTransaction();
 
-        transaction.replace(R.id.container, new FeedFragment());
+        transaction.replace(R.id.container, new FeedFragment(), FeedFragment.TAG);
         transaction.commit();
     }
 }

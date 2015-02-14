@@ -17,6 +17,8 @@ import gabrielssilva.podingcast.events.FileListItemClick;
 
 public class FilesFragment extends Fragment implements ListSelectionListener {
 
+    public final static String TAG = "FILES_FRAGMENT";
+
     private ServiceController serviceController;
     private View rootView;
     private HomeActivity activity;

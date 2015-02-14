@@ -19,12 +19,12 @@ public class SeekBarTouch implements SeekBar.OnSeekBarChangeListener {
 
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
-        this.eventListener.startTouchingSeekBar();
+        this.eventListener.stopUpdatingSeekBar();
     }
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         int seekPosition = seekBar.getProgress();
-        this.eventListener.stopTouchingSeekBar(seekPosition);
+        this.eventListener.startUpdatingSeekBar(seekPosition);
     }
 }

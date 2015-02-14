@@ -10,6 +10,8 @@ import gabrielssilva.podingcast.app.PlayerFragment;
 
 public class FragmentsAdapter extends FragmentPagerAdapter {
 
+    private static final String[] TITLES = {"Feed", "Player"};
+
     public FragmentsAdapter(FragmentManager fragmentManager) {
         super(fragmentManager);
     }
@@ -21,7 +23,7 @@ public class FragmentsAdapter extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return "Feed";
+        return TITLES[position];
     }
 
     @Override

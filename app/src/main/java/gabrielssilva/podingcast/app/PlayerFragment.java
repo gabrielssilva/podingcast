@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,12 +53,14 @@ public class PlayerFragment extends Fragment implements PlayerEventListener, Ser
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        this.startTouchingSeekBar();
+    public void onDestroy() {
+        super.onDestroy();
+        this.stopUpdatingSeekBar();
 
         this.serviceController.saveCurrentPosition();
         this.serviceController.destroyService();
+
+        Log.i("Activity Life Cycle", "Destroying activity");
     }
 
     @Override
@@ -118,7 +121,9 @@ public class PlayerFragment extends Fragment implements PlayerEventListener, Ser
 
         this.seekBar.setMax(audioDuration);
         this.seekBar.setOnSeekBarChangeListener(seekBarTouchEvent);
+
         this.updateSeekBar();
+        this.updateButtonPlayPause();
     }
 
     @Override
@@ -136,14 +141,14 @@ public class PlayerFragment extends Fragment implements PlayerEventListener, Ser
     }
 
     @Override
-    public void stopTouchingSeekBar(int seekPosition) {
+    public void startUpdatingSeekBar(int seekPosition) {
         this.serviceController.seekToPosition(seekPosition, false);
         this.handler.postDelayed(this.updateRunnable, 100);
         this.updateButtonPlayPause();
     }
 
     @Override
-    public void startTouchingSeekBar() {
+    public void stopUpdatingSeekBar() {
         this.handler.removeCallbacks(this.updateRunnable);
     }
 

@@ -18,6 +18,7 @@ import gabrielssilva.podingcast.events.FeedListItemClick;
 public class FeedFragment extends Fragment implements ListSelectionListener {
 
     public final static String ARG_FEED_NAME = "feed_name";
+    public final static String TAG = "FEED_FRAGMENT";
 
     private ListView listView;
     private Activity activity;
@@ -35,6 +36,20 @@ public class FeedFragment extends Fragment implements ListSelectionListener {
         return rootView;
     }
 
+    @Override
+    public void onItemSelected(String feedName) {
+        Fragment filesFragment = new FilesFragment();
+        Bundle args = new Bundle();
+
+        args.putString(FeedFragment.ARG_FEED_NAME, feedName);
+        filesFragment.setArguments(args);
+
+        FragmentTransaction transaction = this.getFragmentManager().beginTransaction();
+        transaction.replace(R.id.container, filesFragment, FilesFragment.TAG);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
 
     private void initViews() {
         this.listView = (ListView) this.rootView.findViewById(R.id.list_view);
@@ -49,19 +64,5 @@ public class FeedFragment extends Fragment implements ListSelectionListener {
 
         this.listView.setAdapter(feedAdapter);
         this.listView.setOnItemClickListener(feedListItemClick);
-    }
-
-
-    @Override
-    public void onItemSelected(String feedName) {
-        Fragment filesFragment = new FilesFragment();
-        Bundle args = new Bundle();
-
-        args.putString(FeedFragment.ARG_FEED_NAME, feedName);
-        filesFragment.setArguments(args);
-
-        FragmentTransaction transaction = this.getFragmentManager().beginTransaction();
-        transaction.replace(R.id.container, filesFragment);
-        transaction.commit();
     }
 }

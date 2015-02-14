@@ -10,6 +10,6 @@ public interface PlayerEventListener {
     public void seekToPosition(int deltaInMilliseconds);
 
     public void updateSeekBar();
-    public void stopTouchingSeekBar(int seekPosition);
-    public void startTouchingSeekBar();
+    public void startUpdatingSeekBar(int seekPosition);
+    public void stopUpdatingSeekBar();
 }
