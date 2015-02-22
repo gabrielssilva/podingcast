@@ -7,15 +7,17 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
-import gabrielssilva.podingcast.adapter.FeedListAdapter;
-import gabrielssilva.podingcast.app.interfaces.ListSelectionListener;
-import gabrielssilva.podingcast.controller.FilesController;
-import gabrielssilva.podingcast.controller.ServiceController;
-import gabrielssilva.podingcast.events.FileListItemClick;
+import java.util.List;
 
-public class FilesFragment extends Fragment implements ListSelectionListener {
+import gabrielssilva.podingcast.adapter.EpisodesAdapter;
+import gabrielssilva.podingcast.controller.ServiceController;
+import gabrielssilva.podingcast.model.Episode;
+import gabrielssilva.podingcast.model.Podcast;
+
+public class EpisodesFragment extends Fragment implements ListView.OnItemClickListener {
 
     public final static String TAG = "FILES_FRAGMENT";
 
@@ -23,12 +25,12 @@ public class FilesFragment extends Fragment implements ListSelectionListener {
     private View rootView;
     private HomeActivity activity;
 
-    private String feedName;
     private ListView listView;
+    private Podcast podcast;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_files, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_episodes, container, false);
 
         this.rootView = rootView;
         this.activity = (HomeActivity) getActivity();
@@ -47,27 +49,25 @@ public class FilesFragment extends Fragment implements ListSelectionListener {
     }
 
     private void retrieveInfo() {
-        Bundle bundle = this.getArguments();
-        this.feedName = bundle.getString(FeedFragment.ARG_FEED_NAME);
+        Bundle args = this.getArguments();
+        podcast = args.getParcelable(PodcastsFragment.ARG_PODCAST);
     }
 
     private void initListView() {
         Context context = activity.getApplicationContext();
-        FilesController filesController = new FilesController(context);
-
-        FeedListAdapter adapter = new FeedListAdapter(context, filesController.getFeedFiles(this.feedName));
-        FileListItemClick listItemClick = new FileListItemClick(this);
+        EpisodesAdapter adapter = new EpisodesAdapter(context, this.podcast.getEpisodes());
 
         this.listView.setAdapter(adapter);
-        this.listView.setOnItemClickListener(listItemClick);
+        this.listView.setOnItemClickListener(this);
     }
 
 
     @Override
-    public void onItemSelected(String fileName) {
-        ViewPager viewPager = (ViewPager) this.activity.findViewById(R.id.view_pager);
+    public void onItemClick(AdapterView<?> adapterView, View view, int index, long id) {
+        List<Episode> episodes = this.podcast.getEpisodes();
+        this.serviceController.playFile(episodes.get(index));
 
-        this.serviceController.playFile(fileName);
+        ViewPager viewPager = (ViewPager) this.activity.findViewById(R.id.view_pager);
         viewPager.setCurrentItem(HomeActivity.PLAYER_FRAGMENT_POS, true);
     }
 }

@@ -42,24 +42,14 @@ public class FilesDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase database = getReadableDatabase();
         String feedId = ""+this.getFeedId(database, feedName);
 
-        String columns[] = { FilesDbContract.FileEntry.FILE_NAME, FilesDbContract.FileEntry.FILE_PATH };
+        String columns[] = { FilesDbContract.FileEntry.FILE_NAME,
+                FilesDbContract.FileEntry.FILE_PATH, FilesDbContract.FileEntry.FILE_LAST_POS };
         String selection = FilesDbContract.FileEntry.FEED_ID + " = ?";
         String selectionArgs[] = { feedId };
         String sortOrder = FilesDbContract.FileEntry._ID + " ASC";
 
         return database.query(FilesDbContract.FileEntry.TABLE_NAME, columns, selection,
                 selectionArgs, null, null, sortOrder);
-    }
-
-    public Cursor getFileInfo(String fileName) {
-        SQLiteDatabase database = getReadableDatabase();
-
-        String columns[] = { FilesDbContract.FileEntry.FILE_PATH, FilesDbContract.FileEntry.FILE_LAST_POS};
-        String selection = FilesDbContract.FileEntry.FILE_NAME + " = ?";
-        String selectionArgs[] = { fileName };
-
-        return database.query(FilesDbContract.FileEntry.TABLE_NAME, columns, selection,
-                selectionArgs, null, null, null);
     }
 
     public void insertPodcast(String feedName, String fileTitle, String filePath) {

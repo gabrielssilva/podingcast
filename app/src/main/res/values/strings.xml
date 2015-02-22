@@ -18,5 +18,8 @@
 
     <string name="drawer_opened">Close Menu</string>
     <string name="drawer_closed">Open Menu</string>
+    <string name="feed_item_cover">Podcast Cover</string>
+
+    <string name="feed_episodes">Episodes</string>
 
 </resources>

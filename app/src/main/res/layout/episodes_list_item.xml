@@ -3,20 +3,26 @@
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     card_view:cardCornerRadius="1dp"
     card_view:cardElevation="2dp">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@android:color/black"
-        android:singleLine="true"
-        android:background="@color/background_material_light"
-        android:padding="10dp"
-        android:id="@+id/feed_name"/>
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@android:color/black"
+            android:singleLine="true"
+            android:padding="10dp"
+            android:id="@+id/episode_name"/>
+
+    </LinearLayout>
 
 </android.support.v7.widget.CardView>

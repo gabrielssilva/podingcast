@@ -10,30 +10,26 @@ import android.widget.TextView;
 import java.util.List;
 
 import gabrielssilva.podingcast.app.R;
+import gabrielssilva.podingcast.model.Episode;
 
-public class FeedListAdapter extends BaseAdapter {
+public class EpisodesAdapter extends BaseAdapter {
 
-    private List<String> feeds;
     private Context context;
+    private List<Episode> episodes;
 
-    // A holder to store our views.
-    private class ListItemViewHolder {
-        TextView itemName;
-    }
-
-    public FeedListAdapter(Context context, List<String> feeds) {
+    public EpisodesAdapter(Context context, List<Episode> episodes) {
         this.context = context;
-        this.feeds = feeds;
+        this.episodes = episodes;
     }
 
     @Override
     public int getCount() {
-        return feeds.size();
+        return this.episodes.size();
     }
 
     @Override
     public Object getItem(int index) {
-        return feeds.get(index);
+        return this.episodes.get(index);
     }
 
     @Override
@@ -43,21 +39,21 @@ public class FeedListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int index, View view, ViewGroup viewGroup) {
-        ListItemViewHolder listItemViewHolder = new ListItemViewHolder();
+        ViewHolder viewHolder = new ViewHolder();
 
         if (view == null) {
             // We need to inflate...
             view = this.inflateLayout(viewGroup);
 
-            listItemViewHolder.itemName = (TextView) view.findViewById(R.id.feed_name);
-            view.setTag(listItemViewHolder);
+            viewHolder.episodeName = (TextView) view.findViewById(R.id.episode_name);
+            view.setTag(viewHolder);
         } else {
             // We can use our Holder!
-            listItemViewHolder = (ListItemViewHolder) view.getTag();
+            viewHolder = (ViewHolder) view.getTag();
         }
 
-        String itemName = this.feeds.get(index);
-        listItemViewHolder.itemName.setText(itemName);
+        Episode episode = this.episodes.get(index);
+        viewHolder.episodeName.setText(episode.getEpisodeName());
 
         return view;
     }
@@ -67,8 +63,14 @@ public class FeedListAdapter extends BaseAdapter {
         View listItemView;
 
         inflater = LayoutInflater.from(this.context);
-        listItemView = inflater.inflate(R.layout.feed_list_item, viewGroup, false);
+        listItemView = inflater.inflate(R.layout.episodes_list_item, viewGroup, false);
 
         return listItemView;
+    }
+
+
+    // A holder to store our views.
+    private class ViewHolder {
+        TextView episodeName;
     }
 }

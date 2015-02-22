@@ -8,6 +8,8 @@ import java.util.List;
 
 import gabrielssilva.podingcast.database.FilesDbContract;
 import gabrielssilva.podingcast.database.FilesDbHelper;
+import gabrielssilva.podingcast.model.Episode;
+import gabrielssilva.podingcast.model.Podcast;
 
 public class FilesController {
 
@@ -17,55 +19,45 @@ public class FilesController {
         dbHelper = new FilesDbHelper(context);
     }
 
-    public List<String> getAllFeeds() {
-        Cursor queryResult = dbHelper.getAllFeeds();
-        int columnIndex = queryResult.getColumnIndexOrThrow(FilesDbContract.FeedEntry.FEED_NAME);
+    public List<Podcast> getAllPodcasts() {
+        List<Podcast> list = new ArrayList<>();
+        Cursor cursor = dbHelper.getAllFeeds();
 
-        return cursorToList(queryResult, columnIndex);
-    }
+        int nameColumnIndex = cursor.getColumnIndexOrThrow(FilesDbContract.FeedEntry.FEED_NAME);
 
-    public List<String> getFeedFiles(String feedName) {
-        Cursor queryResult = dbHelper.getFeedFiles(feedName);
-        int columnIndex = queryResult.getColumnIndexOrThrow(FilesDbContract.FileEntry.FILE_NAME);
+        for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            Podcast podcast = new Podcast();
+            podcast.setPodcastName(cursor.getString(nameColumnIndex));
+            podcast.setEpisodes(this.getPodcastEpisodes(podcast));
 
-        return cursorToList(queryResult, columnIndex);
-    }
+            list.add(podcast);
+        }
 
-    public FileInfo getFileInfo(String fileName) {
-        Cursor queryResult = dbHelper.getFileInfo(fileName);
-        int pathColumnIndex = queryResult.getColumnIndexOrThrow(FilesDbContract.FileEntry.FILE_PATH);
-        int posColumnIndex = queryResult.getColumnIndexOrThrow(FilesDbContract.FileEntry.FILE_LAST_POS);
-
-        queryResult.moveToFirst();
-        String path = queryResult.getString(pathColumnIndex);
-        int lastPosition = queryResult.getInt(posColumnIndex);
-
-        return new FileInfo(fileName, path, lastPosition);
+        return list;
     }
 
     public void saveCurrentPosition(String fileName, int currentPosition) {
         this.dbHelper.updateLastPosition(fileName, currentPosition);
     }
 
-    private List<String> cursorToList(Cursor cursor, int columnIndex) {
-        List<String> list = new ArrayList<String>();
+
+    private List<Episode> getPodcastEpisodes(Podcast podcast) {
+        List<Episode> list = new ArrayList<>();
+        Cursor cursor = dbHelper.getFeedFiles(podcast.getPodcastName());
+
+        int nameColumnIndex = cursor.getColumnIndexOrThrow(FilesDbContract.FileEntry.FILE_NAME);
+        int pathColumnIndex = cursor.getColumnIndexOrThrow(FilesDbContract.FileEntry.FILE_PATH);
+        int posColumnIndex = cursor.getColumnIndexOrThrow(FilesDbContract.FileEntry.FILE_LAST_POS);
 
         for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            list.add(cursor.getString(columnIndex));
+            String episodeName = cursor.getString(nameColumnIndex);
+            String filePath = cursor.getString(pathColumnIndex);
+            int lastPlayedPosition = cursor.getInt(posColumnIndex);
+
+            Episode episode = new Episode(episodeName, filePath, lastPlayedPosition);
+            list.add(episode);
         }
 
         return list;
-    }
-
-    public class FileInfo {
-        public String name;
-        public String path;
-        public int lastPosition;
-
-        public FileInfo(String name, String path, int lastPosition) {
-            this.name = name;
-            this.path = path;
-            this.lastPosition = lastPosition;
-        }
     }
 }

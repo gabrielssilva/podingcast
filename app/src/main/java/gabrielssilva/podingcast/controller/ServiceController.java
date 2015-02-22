@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 
 import gabrielssilva.podingcast.app.interfaces.ServiceListener;
+import gabrielssilva.podingcast.model.Episode;
 import gabrielssilva.podingcast.service.PlayerConnection;
 import gabrielssilva.podingcast.service.PlayerService;
 
@@ -12,7 +13,7 @@ public class ServiceController {
 
     private Context context;
     private boolean bound;
-    private FilesController.FileInfo fileInfo;
+    private Episode episode;
 
     private ServiceListener serviceListener;
     private PlayerService playerService;
@@ -47,14 +48,12 @@ public class ServiceController {
         this.bound = bound;
     }
 
-    public void playFile(String fileName) {
+    public void playFile(Episode episode) {
         this.saveCurrentPosition();
+        this.episode = episode;
 
-        FilesController filesController = new FilesController(this.context);
-        this.fileInfo = filesController.getFileInfo(fileName);
-
-        this.playerService.setLastAudioPosition(this.fileInfo.lastPosition);
-        this.playerService.loadAudio(fileInfo.path);
+        this.playerService.setLastAudioPosition(episode.getLastPlayedPosition());
+        this.playerService.loadAudio(episode.getFilePath());
         this.playerService.playAudio();
 
         this.serviceListener.setSeekBar();
@@ -83,9 +82,9 @@ public class ServiceController {
     }
 
     public void saveCurrentPosition() {
-        if (this.fileInfo != null) {
+        if (this.episode != null) {
             FilesController filesController = new FilesController(this.context);
-            filesController.saveCurrentPosition(this.fileInfo.name, this.playerService.getAudioPosition());
+            filesController.saveCurrentPosition(this.episode.getEpisodeName(), this.playerService.getAudioPosition());
         }
     }
 
