@@ -6,15 +6,13 @@
     android:layout_height="fill_parent"
     android:id="@+id/relative_layout">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <ImageView
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight = "0.8"
-        android:gravity="center"
-        android:layout_gravity="center"
-        android:text="Cover"
-        android:textSize="70sp"
-        android:id="@+id/text_view" />
+        android:scaleType="centerCrop"
+        android:id="@+id/episode_cover"
+        android:contentDescription="@string/player_episode_cover" />
 
     <SeekBar
         android:layout_width="match_parent"

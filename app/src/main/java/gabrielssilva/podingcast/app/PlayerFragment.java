@@ -2,6 +2,7 @@ package gabrielssilva.podingcast.app;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 
 import gabrielssilva.podingcast.app.interfaces.PlayerEventListener;
@@ -27,6 +29,7 @@ public class PlayerFragment extends Fragment implements PlayerEventListener, Ser
     private Button buttonSkipAudio;
     private Button buttonBackAudio;
     private SeekBar seekBar;
+    private ImageView imageView;
 
     private View rootView;
     private Handler handler;
@@ -76,6 +79,7 @@ public class PlayerFragment extends Fragment implements PlayerEventListener, Ser
         this.buttonBackAudio = (Button) this.rootView.findViewById(R.id.button_minus_30);
 
         this.seekBar = (SeekBar) this.rootView.findViewById(R.id.seek_bar);
+        this.imageView = (ImageView) this.rootView.findViewById(R.id.episode_cover);
     }
 
     private void setButtonEvents() {
@@ -124,6 +128,11 @@ public class PlayerFragment extends Fragment implements PlayerEventListener, Ser
 
         this.updateSeekBar();
         this.updateButtonPlayPause();
+    }
+
+    @Override
+    public void setEpisodeCover(Bitmap bitmapCover) {
+        this.imageView.setImageBitmap(bitmapCover);
     }
 
     @Override

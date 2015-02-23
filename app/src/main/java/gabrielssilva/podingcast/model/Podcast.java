@@ -64,6 +64,7 @@ public class Podcast implements Parcelable {
 
     public void setEpisodes(List<Episode> episodes) {
         this.episodes = episodes;
+        this.numberOfEpisodes = episodes.size();
     }
 
 

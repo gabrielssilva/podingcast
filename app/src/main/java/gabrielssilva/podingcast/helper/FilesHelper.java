@@ -40,12 +40,6 @@ public class FilesHelper {
         return allFiles;
     }
 
-    public static File getFile(int index) {
-        List<File> allFiles = getAllFiles();
-
-        return allFiles.get(index);
-    }
-
     /* A private class to filter our files.
      * This class is pretty small, so declare it here should make no harm.
      */

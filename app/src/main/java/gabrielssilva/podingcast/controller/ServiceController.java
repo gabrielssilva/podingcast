@@ -3,8 +3,12 @@ package gabrielssilva.podingcast.controller;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Bitmap;
+
+import java.io.File;
 
 import gabrielssilva.podingcast.app.interfaces.ServiceListener;
+import gabrielssilva.podingcast.helper.Mp3Helper;
 import gabrielssilva.podingcast.model.Episode;
 import gabrielssilva.podingcast.service.PlayerConnection;
 import gabrielssilva.podingcast.service.PlayerService;
@@ -34,6 +38,15 @@ public class ServiceController {
         this.context.startService(playerIntent);
     }
 
+    private void updatePlayer() {
+        File episodeFile = new File(this.episode.getFilePath());
+        Mp3Helper mp3Helper = new Mp3Helper(this.context, episodeFile);
+        Bitmap bitmapCover = mp3Helper.getEpisodeCover(this.context.getResources());
+
+        this.serviceListener.setEpisodeCover(bitmapCover);
+        this.serviceListener.setSeekBar();
+    }
+
 
     /*
      * The following two method will be called by the PlayerConnection,
@@ -49,6 +62,7 @@ public class ServiceController {
     }
 
     public void playFile(Episode episode) {
+        // Save position from current episode and update it's reference to a new one.
         this.saveCurrentPosition();
         this.episode = episode;
 
@@ -56,7 +70,7 @@ public class ServiceController {
         this.playerService.loadAudio(episode.getFilePath());
         this.playerService.playAudio();
 
-        this.serviceListener.setSeekBar();
+        this.updatePlayer();
     }
 
     public void seekToPosition(int seekPosition, boolean preservePosition) {

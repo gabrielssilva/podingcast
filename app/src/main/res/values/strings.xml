@@ -20,6 +20,8 @@
     <string name="drawer_closed">Open Menu</string>
     <string name="feed_item_cover">Podcast Cover</string>
 
+    <string name="feed_episode">Episode</string>
     <string name="feed_episodes">Episodes</string>
+    <string name="player_episode_cover">Episode Cover</string>
 
 </resources>

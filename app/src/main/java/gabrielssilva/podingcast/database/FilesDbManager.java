@@ -27,8 +27,9 @@ public class FilesDbManager {
             /* Should I set the file source once here, or on each method call as now?
                I probably can gain some performance, but I can also forget to change the source.
                For now, I will keep like this. */
-            String feedName = Mp3Helper.getFeedName(context, file);
-            String fileTitle = Mp3Helper.getFileTitle(context, file);
+            Mp3Helper mp3Helper = new Mp3Helper(this.context, file);
+            String feedName = mp3Helper.getFeedName();
+            String fileTitle = mp3Helper.getFileTitle();
 
             dbHelper.insertPodcast(feedName, fileTitle, file.getPath());
         }

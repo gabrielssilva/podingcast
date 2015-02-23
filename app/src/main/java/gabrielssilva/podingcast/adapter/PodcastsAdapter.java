@@ -1,6 +1,7 @@
 package gabrielssilva.podingcast.adapter;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,8 +56,10 @@ public class PodcastsAdapter extends BaseAdapter {
         }
 
         Podcast podcast = this.podcasts.get(index);
+        String episodesCountString = this.getEpisodesCountString(podcast.getNumberOfEpisodes());
+
         viewHolder.podcastName.setText(podcast.getPodcastName());
-        viewHolder.episodesCount.setText(podcast.getNumberOfEpisodes()+R.string.feed_episodes);
+        viewHolder.episodesCount.setText(episodesCountString);
 
         return view;
     }
@@ -69,6 +72,19 @@ public class PodcastsAdapter extends BaseAdapter {
         listItemView = inflater.inflate(R.layout.podcasts_list_item, viewGroup, false);
 
         return listItemView;
+    }
+
+    private String getEpisodesCountString(int episodeCount) {
+        Resources resources = this.context.getResources();
+        int stringResId;
+
+        if (episodeCount == 1) {
+            stringResId = R.string.feed_episode;
+        } else {
+            stringResId = R.string.feed_episodes;
+        }
+
+        return episodeCount + " " + resources.getString(stringResId);
     }
 
 
