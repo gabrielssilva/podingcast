@@ -6,50 +6,74 @@
     android:layout_height="fill_parent"
     android:id="@+id/relative_layout">
 
-    <ImageView
+    <android.support.v7.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight = "0.8"
-        android:scaleType="centerCrop"
-        android:id="@+id/episode_cover"
-        android:contentDescription="@string/player_episode_cover" />
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="10dp"
+        card_view:cardCornerRadius="1dp"
+        card_view:cardElevation="6dp">
 
-    <SeekBar
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/seek_bar"
-        android:layout_gravity="center_horizontal"
-        android:background="@android:color/holo_green_light"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:id="@+id/episode_cover"
+            android:contentDescription="@string/player_episode_cover" />
+
+    </android.support.v7.widget.CardView>
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.10"
-        android:background="@android:color/holo_green_light"
-        android:gravity="center">
+        android:layout_height="0dp"
+        android:layout_weight="0.2"
+        android:orientation="vertical">
 
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
+        <SeekBar
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="-30"
-            android:id="@+id/button_minus_30" />
+            android:id="@+id/seek_bar"
+            android:layout_gravity="center_horizontal"
+            android:background="@android:color/transparent"/>
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="Play"
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            style="@android:style/ButtonBar"
             android:background="@android:color/transparent"
-            android:drawableTop="@drawable/play"
-            android:id="@+id/button_play_pause"/>
+            android:gravity="center">
 
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="+30"
-            android:id="@+id/button_plus_30" />
+            <ImageButton
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:id="@+id/button_minus_30"
+                android:src="@drawable/selector_minus30_button"/>
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="Play"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@android:color/transparent"
+                android:id="@+id/button_play_pause"
+                android:src="@drawable/selector_play_button"/>
+
+            <ImageButton
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:id="@+id/button_plus_30"
+                android:src="@drawable/selector_plus30_button"/>
+        </LinearLayout>
 
     </LinearLayout>
 </LinearLayout>

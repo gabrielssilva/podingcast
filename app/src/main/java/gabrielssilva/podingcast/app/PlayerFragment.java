@@ -1,9 +1,7 @@
 package gabrielssilva.podingcast.app;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -11,7 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 
@@ -25,9 +23,9 @@ import gabrielssilva.podingcast.events.ProgressUpdateRunnable;
 
 public class PlayerFragment extends Fragment implements PlayerEventListener, ServiceListener {
 
-    private Button buttonPlayPause;
-    private Button buttonSkipAudio;
-    private Button buttonBackAudio;
+    private ImageButton buttonPlayPause;
+    private ImageButton buttonSkipAudio;
+    private ImageButton buttonBackAudio;
     private SeekBar seekBar;
     private ImageView imageView;
 
@@ -74,9 +72,9 @@ public class PlayerFragment extends Fragment implements PlayerEventListener, Ser
 
 
     private void initViews() {
-        this.buttonPlayPause = (Button) this.rootView.findViewById(R.id.button_play_pause);
-        this.buttonSkipAudio = (Button) this.rootView.findViewById(R.id.button_plus_30);
-        this.buttonBackAudio = (Button) this.rootView.findViewById(R.id.button_minus_30);
+        this.buttonPlayPause = (ImageButton) this.rootView.findViewById(R.id.button_play_pause);
+        this.buttonSkipAudio = (ImageButton) this.rootView.findViewById(R.id.button_plus_30);
+        this.buttonBackAudio = (ImageButton) this.rootView.findViewById(R.id.button_minus_30);
 
         this.seekBar = (SeekBar) this.rootView.findViewById(R.id.seek_bar);
         this.imageView = (ImageView) this.rootView.findViewById(R.id.episode_cover);
@@ -94,19 +92,18 @@ public class PlayerFragment extends Fragment implements PlayerEventListener, Ser
     }
 
     private void updateButtonPlayPause() {
-        Resources resources = this.getResources();
         String contentDescription;
-        Drawable icon;
+        int selectorId;
 
         if (this.serviceController.isPlaying()) {
-            icon = resources.getDrawable(R.drawable.pause);
+            selectorId = R.drawable.selector_pause_button;
             contentDescription = "Pause";
         } else {
-            icon = resources.getDrawable(R.drawable.play);
+            selectorId = R.drawable.selector_play_button;
             contentDescription = "Play";
         }
 
-        this.buttonPlayPause.setCompoundDrawablesWithIntrinsicBounds(null, icon, null, null);
+        this.buttonPlayPause.setImageResource(selectorId);
         this.buttonPlayPause.setContentDescription(contentDescription);
     }
 
