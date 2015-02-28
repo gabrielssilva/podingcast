@@ -7,6 +7,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
@@ -16,8 +17,10 @@ import gabrielssilva.podingcast.adapter.EpisodesAdapter;
 import gabrielssilva.podingcast.controller.ServiceController;
 import gabrielssilva.podingcast.model.Episode;
 import gabrielssilva.podingcast.model.Podcast;
+import gabrielssilva.podingcast.view.Animator;
 
-public class EpisodesFragment extends Fragment implements ListView.OnItemClickListener {
+public class EpisodesFragment extends Fragment implements ListView.OnItemClickListener,
+        ViewTreeObserver.OnGlobalLayoutListener {
 
     public final static String TAG = "FILES_FRAGMENT";
 
@@ -59,6 +62,9 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
 
         this.listView.setAdapter(adapter);
         this.listView.setOnItemClickListener(this);
+
+        ViewTreeObserver viewTree = this.listView.getViewTreeObserver();
+        viewTree.addOnGlobalLayoutListener(this);
     }
 
 
@@ -69,5 +75,18 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
 
         ViewPager viewPager = (ViewPager) this.activity.findViewById(R.id.view_pager);
         viewPager.setCurrentItem(HomeActivity.PLAYER_FRAGMENT_POS, true);
+    }
+
+    /*
+     * Will be called when the ListView draws the list item
+     * We remove the listener to avoid calling it repeatedly
+     */
+    @Override
+    public void onGlobalLayout() {
+        ViewTreeObserver viewTree = this.listView.getViewTreeObserver();
+        viewTree.removeOnGlobalLayoutListener(this);
+
+        Animator animator = new Animator();
+        animator.fadeListIn(this.listView, null, 0);
     }
 }

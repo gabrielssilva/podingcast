@@ -7,6 +7,7 @@ import android.support.v4.view.ViewPager;
 
 import gabrielssilva.podingcast.adapter.FragmentsAdapter;
 import gabrielssilva.podingcast.controller.ServiceController;
+import gabrielssilva.podingcast.database.FilesDbManager;
 
 public class HomeActivity extends FragmentActivity {
 
@@ -19,8 +20,8 @@ public class HomeActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        //FilesDbManager dbManager = new FilesDbManager(this);
-        //dbManager.refreshDatabase();
+        FilesDbManager dbManager = new FilesDbManager(this);
+        dbManager.refreshDatabase();
 
         FragmentsAdapter adapter = new FragmentsAdapter(this.getSupportFragmentManager());
 
