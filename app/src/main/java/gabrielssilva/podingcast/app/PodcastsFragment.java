@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.ListView;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public class PodcastsFragment extends Fragment implements ListView.OnItemClickLi
     public final static String ARG_PODCAST = "PODCAST";
     public final static String TAG = "FEED_FRAGMENT";
 
-    private ListView listView;
+    private GridView gridView;
     private View rootView;
     private List<Podcast> podcasts;
 
@@ -41,16 +42,16 @@ public class PodcastsFragment extends Fragment implements ListView.OnItemClickLi
 
 
     private void initViews() {
-        this.listView = (ListView) this.rootView.findViewById(R.id.list_view);
+        this.gridView = (GridView) this.rootView.findViewById(R.id.grid_view);
     }
 
     private void initListView() {
         PodcastsAdapter adapter = new PodcastsAdapter(getActivity(), this.podcasts);
 
-        this.listView.setAdapter(adapter);
-        this.listView.setOnItemClickListener(this);
+        this.gridView.setAdapter(adapter);
+        this.gridView.setOnItemClickListener(this);
 
-        ViewTreeObserver viewTree = this.listView.getViewTreeObserver();
+        ViewTreeObserver viewTree = this.gridView.getViewTreeObserver();
         viewTree.addOnGlobalLayoutListener(this);
     }
 
@@ -64,7 +65,7 @@ public class PodcastsFragment extends Fragment implements ListView.OnItemClickLi
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, final int index, long id) {
         Animator animator = new Animator();
-        animator.fadeListOut(this.listView, new MyAnimatorListener(index), index);
+        animator.fadeListOut(this.gridView, new MyAnimatorListener(index), index);
     }
 
     /*
@@ -73,11 +74,11 @@ public class PodcastsFragment extends Fragment implements ListView.OnItemClickLi
      */
     @Override
     public void onGlobalLayout() {
-        ViewTreeObserver viewTree = this.listView.getViewTreeObserver();
+        ViewTreeObserver viewTree = this.gridView.getViewTreeObserver();
         viewTree.removeOnGlobalLayoutListener(this);
 
         Animator animator = new Animator();
-        animator.fadeListIn(this.listView, null, 0);
+        animator.fadeListIn(this.gridView, null, 0);
     }
 
 
@@ -93,7 +94,7 @@ public class PodcastsFragment extends Fragment implements ListView.OnItemClickLi
         @Override
         public void onAnimationStart(android.animation.Animator animator) {
             // Stop handling click events
-            listView.setOnItemClickListener(null);
+            gridView.setOnItemClickListener(null);
         }
 
         @Override

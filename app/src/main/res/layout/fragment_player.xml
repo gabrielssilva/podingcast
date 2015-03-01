@@ -23,6 +23,7 @@
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
             android:id="@+id/episode_cover"
+            android:src="@drawable/default_episode_cover"
             android:contentDescription="@string/player_episode_cover" />
 
     </android.support.v7.widget.CardView>

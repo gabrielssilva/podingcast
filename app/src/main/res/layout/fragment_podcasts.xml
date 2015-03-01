@@ -1,17 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="20dp"
+    android:orientation="vertical"
+    android:paddingTop="30dp"
     android:paddingBottom="20dp"
-    android:paddingLeft="10dp"
+    android:paddingLeft="15dp"
     android:paddingRight="10dp">
 
-    <ListView
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/TextAppearance.Primary"
+        android:text="@string/podcasts_page_title"/>
+
+    <View
+        style="@style/HorizontalDivider"/>
+
+    <GridView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/list_view"
+        android:id="@+id/grid_view"
+        android:numColumns="2"
         android:divider="@android:color/transparent"/>
 
-</FrameLayout>
+</LinearLayout>
