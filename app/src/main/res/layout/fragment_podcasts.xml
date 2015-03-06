@@ -9,14 +9,31 @@
     android:paddingLeft="15dp"
     android:paddingRight="10dp">
 
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/TextAppearance.Primary"
-        android:text="@string/podcasts_page_title"/>
+        android:layout_height="wrap_content">
 
-    <View
-        style="@style/HorizontalDivider"/>
+        <TextView
+            android:id="@+id/podcasts_page_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.Primary"
+            android:text="@string/podcasts_page_title"/>
+
+        <View
+            style="@style/HorizontalDivider"
+            android:layout_below="@id/podcasts_page_title"/>
+
+        <Button
+            android:id="@+id/add_feed_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:text="Add feed"/>
+
+    </RelativeLayout>
+
 
     <GridView
         android:layout_width="match_parent"

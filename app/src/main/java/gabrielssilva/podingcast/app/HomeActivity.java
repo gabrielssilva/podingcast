@@ -4,12 +4,14 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.widget.Toast;
 
 import gabrielssilva.podingcast.adapter.FragmentsAdapter;
+import gabrielssilva.podingcast.app.interfaces.CallbackListener;
 import gabrielssilva.podingcast.controller.ServiceController;
 import gabrielssilva.podingcast.database.FilesDbManager;
 
-public class HomeActivity extends FragmentActivity {
+public class HomeActivity extends FragmentActivity implements CallbackListener {
 
     public final static int PLAYER_FRAGMENT_POS = 1;
 
@@ -43,6 +45,18 @@ public class HomeActivity extends FragmentActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+
+    // This Activity will implement this callback temporarily, testing purposes
+    @Override
+    public void onSuccess(Object result) {
+        Toast.makeText(this, "Feed downloaded", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onFailure() {
+        Toast.makeText(this, "Feed not downloaded", Toast.LENGTH_LONG).show();
     }
 
 

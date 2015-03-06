@@ -6,25 +6,23 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 
+import gabrielssilva.podingcast.app.interfaces.CallbackListener;
 import gabrielssilva.podingcast.model.Podcast;
-import gabrielssilva.podingcast.web.Send;
+import gabrielssilva.podingcast.web.DownloadFeedTask;
+import gabrielssilva.podingcast.web.SendPodcastTask;
 
-public class PodcastController {
+public class PodcastController implements CallbackListener {
 
-    private static PodcastController instance;
+    private CallbackListener callbackListener;
 
-    private PodcastController() {
-
+    public PodcastController(CallbackListener callbackListener) {
+        this.callbackListener = callbackListener;
     }
 
-    public static PodcastController getInstance() {
-        if (instance == null) {
-            instance = new PodcastController();
-        } else {
-            // Do nothing.
-        }
 
-        return instance;
+    public void addPodcast(String feedAddress) {
+        DownloadFeedTask downloadTask = new DownloadFeedTask(this);
+        downloadTask.execute(feedAddress);
     }
 
     public void sendPodcast(String podcastName, String rssAddress) {
@@ -33,14 +31,13 @@ public class PodcastController {
         try {
             JSONObject jsonObject = podcastToJson(podcast);
             StringEntity stringJsonObject = new StringEntity(jsonObject.toString());
-            new Send().execute(stringJsonObject);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
+            new SendPodcastTask().execute(stringJsonObject);
+        } catch (JSONException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
 
     }
+
 
     private JSONObject podcastToJson(Podcast podcast) throws JSONException {
         JSONObject jsonPodcast = new JSONObject();
@@ -51,5 +48,16 @@ public class PodcastController {
         jsonPodcast.put("rss_address", rssAddress);
 
         return jsonPodcast;
+    }
+
+
+    @Override
+    public void onSuccess(Object result) {
+        this.callbackListener.onSuccess(null);
+    }
+
+    @Override
+    public void onFailure() {
+        this.callbackListener.onFailure();
     }
 }

@@ -8,24 +8,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.List;
 
 import gabrielssilva.podingcast.adapter.PodcastsAdapter;
+import gabrielssilva.podingcast.app.interfaces.CallbackListener;
 import gabrielssilva.podingcast.controller.FilesController;
 import gabrielssilva.podingcast.model.Podcast;
+import gabrielssilva.podingcast.view.AddFeedDialog;
 import gabrielssilva.podingcast.view.Animator;
 
 public class PodcastsFragment extends Fragment implements ListView.OnItemClickListener,
-        ViewTreeObserver.OnGlobalLayoutListener{
+        View.OnClickListener, ViewTreeObserver.OnGlobalLayoutListener {
 
     public final static String ARG_PODCAST = "PODCAST";
     public final static String TAG = "FEED_FRAGMENT";
 
     private GridView gridView;
     private View rootView;
+    private Button addFeedButton;
     private List<Podcast> podcasts;
 
     @Override
@@ -43,6 +48,8 @@ public class PodcastsFragment extends Fragment implements ListView.OnItemClickLi
 
     private void initViews() {
         this.gridView = (GridView) this.rootView.findViewById(R.id.grid_view);
+        this.addFeedButton = (Button) this.rootView.findViewById(R.id.add_feed_button);
+        this.addFeedButton.setOnClickListener(this);
     }
 
     private void initListView() {
@@ -68,9 +75,15 @@ public class PodcastsFragment extends Fragment implements ListView.OnItemClickLi
         animator.fadeListOut(this.gridView, new MyAnimatorListener(index), index);
     }
 
+    @Override
+    public void onClick(View view) {
+        AddFeedDialog addFeedDialog = new AddFeedDialog();
+        addFeedDialog.show(getFragmentManager(), "test");
+    }
+
     /*
      * Will be called when the ListView draws the list item
-     * We remove the listener to avoid calling it repeatedly
+     * We remove the listener to avxoid calling it repeatedly
      */
     @Override
     public void onGlobalLayout() {

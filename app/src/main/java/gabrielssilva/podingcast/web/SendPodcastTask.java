@@ -3,7 +3,6 @@ package gabrielssilva.podingcast.web;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -12,7 +11,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.IOException;
 
-public class Send extends AsyncTask<Object, Void, String> {
+public class SendPodcastTask extends AsyncTask<Object, Void, String> {
 
     protected String doInBackground(Object... params) {
 
@@ -21,16 +20,15 @@ public class Send extends AsyncTask<Object, Void, String> {
 
         try {
             DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpPost httPost = new HttpPost(path);
 
-            httPost.setEntity(data);
-            httPost.setHeader("Accept", "text/plain");
-            httPost.setHeader("Content-type", "application/json");
+            HttpPost httpPost = new HttpPost(path);
+            httpPost.setEntity(data);
+            httpPost.setHeader("Accept", "text/plain");
+            httpPost.setHeader("Content-type", "application/json");
 
             ResponseHandler responseHandler = new BasicResponseHandler();
-            String response = (String) httpClient.execute(httPost, responseHandler);
+            return (String) httpClient.execute(httpPost, responseHandler);
 
-            return response;
         } catch (IOException e) {
             e.printStackTrace();
 

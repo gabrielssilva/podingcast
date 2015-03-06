@@ -49,6 +49,7 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
 
     private void initViews() {
         this.listView = (ListView) this.rootView.findViewById(R.id.list_view);
+
     }
 
     private void retrieveInfo() {

@@ -25,4 +25,8 @@
     <string name="player_episode_cover">Episode Cover</string>
     <string name="podcasts_page_title">Your Feed</string>
 
+    <string name="dialog_add_feed_prompt">Feed Address</string>
+    <string name="dialog_add_feed_confirm">Add Feed</string>
+    <string name="dialog_add_feed_cancel">Cancel</string>
+
 </resources>
