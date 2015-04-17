@@ -1,18 +1,28 @@
 package gabrielssilva.podingcast.web;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONObject;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import gabrielssilva.podingcast.app.interfaces.CallbackListener;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
 
-public class DownloadFeedTask extends AsyncTask<String, Void, InputStream> {
+import gabrielssilva.podingcast.app.interfaces.CallbackListener;
+import gabrielssilva.podingcast.controller.PodcastController;
+import gabrielssilva.podingcast.parser.SaxHandler;
+
+public class DownloadFeedTask extends AsyncTask<PodcastController.Params, Void, JSONObject> {
 
     private CallbackListener callbackListener;
 
@@ -21,28 +31,33 @@ public class DownloadFeedTask extends AsyncTask<String, Void, InputStream> {
     }
 
     @Override
-    protected InputStream doInBackground(String... params) {
-        InputStream xmlFileStream = null;
-
+    protected JSONObject doInBackground(PodcastController.Params... params) {
         DefaultHttpClient httpClient = new DefaultHttpClient();
-        HttpGet httpGet = new HttpGet(params[0]);
+        HttpGet httpGet = new HttpGet(params[0].url);
+
+        SaxHandler saxHandler = new SaxHandler();
 
         try {
             HttpResponse httpResponse = httpClient.execute(httpGet);
             HttpEntity httpEntity = httpResponse.getEntity();
 
-            xmlFileStream = httpEntity.getContent();
-        } catch (IOException e) {
+            InputStream xmlFileStream = httpEntity.getContent();
+            XMLReader xmlReader = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
+
+            xmlReader.setContentHandler(saxHandler);
+            xmlReader.parse(new InputSource(xmlFileStream));
+            Log.i("JSON", saxHandler.getJson().toString());
+        } catch (IOException | SAXException | ParserConfigurationException e) {
             e.printStackTrace();
         }
 
-        return xmlFileStream;
+        return saxHandler.getJson();
     }
 
     @Override
-    protected void onPostExecute(InputStream xmlFileStream) {
-        if (xmlFileStream != null) {
-            callbackListener.onSuccess(xmlFileStream);
+    protected void onPostExecute(JSONObject jsonPodcast) {
+        if (jsonPodcast != null) {
+            callbackListener.onSuccess(jsonPodcast);
         } else {
             callbackListener.onFailure();
         }

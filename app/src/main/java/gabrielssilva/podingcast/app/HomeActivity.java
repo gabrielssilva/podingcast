@@ -34,12 +34,10 @@ public class HomeActivity extends FragmentActivity implements CallbackListener {
     @Override
     public void onBackPressed() {
         Fragment filesFragment = getSupportFragmentManager().findFragmentByTag(EpisodesFragment.TAG);
-
         /*
          * If FeedList is visible, the back button will just send the App to background
          * (without calling onDestroy()). If FilesList is displayed, it will get back one screen.
          */
-
         if (filesFragment == null) {
             moveTaskToBack(true);
         } else {
@@ -51,7 +49,7 @@ public class HomeActivity extends FragmentActivity implements CallbackListener {
     // This Activity will implement this callback temporarily, testing purposes
     @Override
     public void onSuccess(Object result) {
-        Toast.makeText(this, "Feed downloaded", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, (String) result, Toast.LENGTH_LONG).show();
     }
 
     @Override

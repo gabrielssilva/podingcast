@@ -11,12 +11,10 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.List;
 
 import gabrielssilva.podingcast.adapter.PodcastsAdapter;
-import gabrielssilva.podingcast.app.interfaces.CallbackListener;
 import gabrielssilva.podingcast.controller.FilesController;
 import gabrielssilva.podingcast.model.Podcast;
 import gabrielssilva.podingcast.view.AddFeedDialog;
@@ -30,7 +28,6 @@ public class PodcastsFragment extends Fragment implements ListView.OnItemClickLi
 
     private GridView gridView;
     private View rootView;
-    private Button addFeedButton;
     private List<Podcast> podcasts;
 
     @Override
@@ -48,8 +45,8 @@ public class PodcastsFragment extends Fragment implements ListView.OnItemClickLi
 
     private void initViews() {
         this.gridView = (GridView) this.rootView.findViewById(R.id.grid_view);
-        this.addFeedButton = (Button) this.rootView.findViewById(R.id.add_feed_button);
-        this.addFeedButton.setOnClickListener(this);
+        Button addFeedButton = (Button) this.rootView.findViewById(R.id.add_feed_button);
+        addFeedButton.setOnClickListener(this);
     }
 
     private void initListView() {
@@ -83,7 +80,7 @@ public class PodcastsFragment extends Fragment implements ListView.OnItemClickLi
 
     /*
      * Will be called when the ListView draws the list item
-     * We remove the listener to avxoid calling it repeatedly
+     * We remove the listener to avoid calling it repeatedly
      */
     @Override
     public void onGlobalLayout() {
