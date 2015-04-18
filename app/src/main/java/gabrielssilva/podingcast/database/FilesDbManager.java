@@ -18,8 +18,6 @@ public class FilesDbManager {
     }
 
     public void refreshDatabase() {
-        this.context.deleteDatabase(FilesDbHelper.DATABASE_NAME);
-
         FilesDbHelper dbHelper = new FilesDbHelper(context);
         List<File> allFiles = FilesHelper.getAllFiles();
 
@@ -31,7 +29,7 @@ public class FilesDbManager {
             String feedName = mp3Helper.getFeedName();
             String fileTitle = mp3Helper.getFileTitle();
 
-            dbHelper.insertPodcast(feedName, fileTitle, file.getPath());
+            dbHelper.insertEpisode(feedName, fileTitle, file.getPath());
         }
     }
 }

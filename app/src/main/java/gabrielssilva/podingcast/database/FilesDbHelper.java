@@ -6,9 +6,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import gabrielssilva.podingcast.model.Podcast;
+
 public class FilesDbHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 4;
     public static final String DATABASE_NAME = "Podingcast.db";
 
     public FilesDbHelper(Context context) {
@@ -40,7 +42,7 @@ public class FilesDbHelper extends SQLiteOpenHelper {
 
     public Cursor getFeedFiles(String feedName) {
         SQLiteDatabase database = getReadableDatabase();
-        String feedId = ""+this.getFeedId(database, feedName);
+        String feedId = ""+this.getPodcastId(database, feedName);
 
         String columns[] = { FilesDbContract.FileEntry.FILE_NAME,
                 FilesDbContract.FileEntry.FILE_PATH, FilesDbContract.FileEntry.FILE_LAST_POS };
@@ -52,16 +54,19 @@ public class FilesDbHelper extends SQLiteOpenHelper {
                 selectionArgs, null, null, sortOrder);
     }
 
-    public void insertPodcast(String feedName, String fileTitle, String filePath) {
+    public void insertEpisode(String feedName, String fileTitle, String filePath) {
         /* This function will be called on loops, sometimes.
            Maybe Find a nice way to get the database just once.
           */
         SQLiteDatabase database = getWritableDatabase();
+        insertPodcast(database, new Podcast(feedName, null, null));
+        long feedId = getPodcastId(database, feedName);
+        insertEpisode(database, feedId, fileTitle, filePath);
+    }
 
-        insertFeed(database, feedName);
-
-        int feedId = getFeedId(database, feedName);
-        insertFile(database, feedId, fileTitle, filePath);
+    public void insertPodcast(Podcast podcast) {
+        SQLiteDatabase database = getWritableDatabase();
+        insertPodcast(database, podcast);
     }
 
     public void updateLastPosition(String fileName, int currentPosition) {
@@ -77,7 +82,7 @@ public class FilesDbHelper extends SQLiteOpenHelper {
     }
 
 
-    private int getFeedId(SQLiteDatabase database, String feedName) {
+    private int getPodcastId(SQLiteDatabase database, String feedName) {
         String columns[] = { FilesDbContract.FeedEntry._ID };
         String selection = FilesDbContract.FeedEntry.FEED_NAME + " like ?";
         String selectionArgs[] = { feedName };
@@ -91,21 +96,24 @@ public class FilesDbHelper extends SQLiteOpenHelper {
         return queryResult.getInt(columnIndex);
     }
 
-    private void insertFeed(SQLiteDatabase database, String feedName) {
-        ContentValues values = new ContentValues();
-        values.put(FilesDbContract.FeedEntry.FEED_NAME, feedName);
-
-        database.insertWithOnConflict(FilesDbContract.FeedEntry.TABLE_NAME, null, values,
-                SQLiteDatabase.CONFLICT_IGNORE);
-    }
-
-    private void insertFile(SQLiteDatabase database, int feedId, String fileName, String filePath) {
+    private void insertEpisode(SQLiteDatabase database, long feedId, String fileName, String filePath) {
         ContentValues values = new ContentValues();
         values.put(FilesDbContract.FileEntry.FEED_ID, feedId);
         values.put(FilesDbContract.FileEntry.FILE_NAME, fileName);
         values.put(FilesDbContract.FileEntry.FILE_PATH, filePath);
 
         database.insertWithOnConflict(FilesDbContract.FileEntry.TABLE_NAME, null, values,
+                SQLiteDatabase.CONFLICT_IGNORE);
+    }
+
+    private void insertPodcast(SQLiteDatabase database, Podcast podcast) {
+        ContentValues values = new ContentValues();
+        values.put(FilesDbContract.FeedEntry.FEED_NAME, podcast.getPodcastName());
+        values.put(FilesDbContract.FeedEntry.FEED_ADDRESS, podcast.getRssAddress());
+        values.put(FilesDbContract.FeedEntry.FEED_IMG_ADDRESS, podcast.getImageAddress());
+
+
+        database.insertWithOnConflict(FilesDbContract.FeedEntry.TABLE_NAME, null, values,
                 SQLiteDatabase.CONFLICT_IGNORE);
     }
 }

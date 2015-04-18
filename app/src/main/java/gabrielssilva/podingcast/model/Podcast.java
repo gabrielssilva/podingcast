@@ -12,6 +12,7 @@ public class Podcast implements Parcelable {
 
     private String podcastName;
     private String rssAddress;
+    private String imageAddress;
     private int numberOfEpisodes;
     private List<Episode> episodes;
 
@@ -19,9 +20,10 @@ public class Podcast implements Parcelable {
 
     }
 
-    public Podcast(String podcastName, String rssAddress) {
+    public Podcast(String podcastName, String rssAddress, String imageAddress) {
         this.podcastName = podcastName;
         this.rssAddress = rssAddress;
+        this.imageAddress = imageAddress;
 
         this.episodes = new ArrayList<>();
     }
@@ -56,6 +58,14 @@ public class Podcast implements Parcelable {
 
     public void setNumberOfEpisodes(int numberOfEpisodes) {
         this.numberOfEpisodes = numberOfEpisodes;
+    }
+
+    public String getImageAddress() {
+        return imageAddress;
+    }
+
+    public void setImageAddress(String imageAddress) {
+        this.imageAddress = imageAddress;
     }
 
     public List<Episode> getEpisodes() {

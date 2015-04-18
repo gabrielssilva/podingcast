@@ -9,7 +9,9 @@ import android.widget.Toast;
 import gabrielssilva.podingcast.adapter.FragmentsAdapter;
 import gabrielssilva.podingcast.app.interfaces.CallbackListener;
 import gabrielssilva.podingcast.controller.ServiceController;
+import gabrielssilva.podingcast.database.FilesDbHelper;
 import gabrielssilva.podingcast.database.FilesDbManager;
+import gabrielssilva.podingcast.model.Podcast;
 
 public class HomeActivity extends FragmentActivity implements CallbackListener {
 
@@ -49,7 +51,10 @@ public class HomeActivity extends FragmentActivity implements CallbackListener {
     // This Activity will implement this callback temporarily, testing purposes
     @Override
     public void onSuccess(Object result) {
-        Toast.makeText(this, (String) result, Toast.LENGTH_LONG).show();
+        FilesDbHelper dbHelper = new FilesDbHelper(this.getApplicationContext());
+        dbHelper.insertPodcast((Podcast) result);
+
+        Toast.makeText(this, "Feed downloaded", Toast.LENGTH_LONG).show();
     }
 
     @Override

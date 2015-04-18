@@ -1,5 +1,7 @@
 package gabrielssilva.podingcast.controller;
 
+import android.content.Context;
+
 import org.apache.http.entity.StringEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -7,6 +9,7 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 
 import gabrielssilva.podingcast.app.interfaces.CallbackListener;
+import gabrielssilva.podingcast.database.FilesDbHelper;
 import gabrielssilva.podingcast.model.Podcast;
 import gabrielssilva.podingcast.parser.JsonHandler;
 import gabrielssilva.podingcast.web.DownloadFeedTask;
@@ -28,7 +31,7 @@ public class PodcastController implements CallbackListener {
     }
 
     public void sendPodcast(String podcastName, String rssAddress) {
-        Podcast podcast = new Podcast(podcastName, rssAddress);
+        Podcast podcast = new Podcast(podcastName, rssAddress, null);
 
         try {
             JSONObject jsonObject = podcastToJson(podcast);
@@ -37,7 +40,6 @@ public class PodcastController implements CallbackListener {
         } catch (JSONException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-
     }
 
 
@@ -59,7 +61,9 @@ public class PodcastController implements CallbackListener {
 
         try {
             JsonHandler jsonHandler = new JsonHandler(jsonPodcast);
-            this.externalCallbackListener.onSuccess(jsonHandler.getTitle());
+            Podcast podcast = jsonHandler.getPodcast();
+
+            this.externalCallbackListener.onSuccess(podcast);
         } catch (JSONException e) {
             e.printStackTrace();
             onFailure();
