@@ -29,7 +29,7 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
         ViewTreeObserver.OnGlobalLayoutListener, CallbackListener {
 
     public final static String TAG = "FILES_FRAGMENT";
-    private final static int NUM_EPISODES = 10;
+    private final static int NUM_EPISODES = 5;
 
     private ServiceController serviceController;
     private View rootView;

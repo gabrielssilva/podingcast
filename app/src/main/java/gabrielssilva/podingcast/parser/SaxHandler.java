@@ -1,5 +1,6 @@
 package gabrielssilva.podingcast.parser;
 
+import org.apache.http.client.methods.HttpGet;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.xml.sax.Attributes;
@@ -19,12 +20,15 @@ public class SaxHandler extends DefaultHandler {
     private String stringContent;
     private int maxItems;
 
-    public SaxHandler() {
-        this(NO_LIMIT);
+    private HttpGet httpOperation;
+
+    public SaxHandler(HttpGet httpOperation) {
+        this(NO_LIMIT, httpOperation);
     }
 
-    public SaxHandler(int maxItems) {
+    public SaxHandler(int maxItems, HttpGet httpOperation) {
         this.maxItems = maxItems;
+        this.httpOperation = httpOperation;
     }
 
     @Override
@@ -111,6 +115,7 @@ public class SaxHandler extends DefaultHandler {
                 this.maxItems = this.maxItems - 1;
             } else {
                 closeJson();
+                this.httpOperation.abort();
                 throw new AllItemsParsedSaxException();
             }
         }
