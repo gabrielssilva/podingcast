@@ -50,7 +50,7 @@ public class AddFeedDialog extends DialogFragment {
             String feedAddress = textView.getText().toString();
 
             PodcastController podcastController = new PodcastController(callbackListener);
-            podcastController.addPodcast(feedAddress);
+            podcastController.fetchPodcast(feedAddress, 0);
 
             getDialog().dismiss();
         }

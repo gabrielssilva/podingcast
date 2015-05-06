@@ -11,11 +11,11 @@ import gabrielssilva.podingcast.database.FilesDbHelper;
 import gabrielssilva.podingcast.model.Episode;
 import gabrielssilva.podingcast.model.Podcast;
 
-public class FilesController {
+public class LocalFilesController {
 
     private FilesDbHelper dbHelper;
 
-    public FilesController(Context context) {
+    public LocalFilesController(Context context) {
         dbHelper = new FilesDbHelper(context);
     }
 
@@ -24,10 +24,12 @@ public class FilesController {
         Cursor cursor = dbHelper.getAllFeeds();
 
         int nameColumnIndex = cursor.getColumnIndexOrThrow(FilesDbContract.FeedEntry.FEED_NAME);
+        int addrColumnIndex = cursor.getColumnIndexOrThrow(FilesDbContract.FeedEntry.FEED_ADDRESS);
 
         for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             Podcast podcast = new Podcast();
             podcast.setPodcastName(cursor.getString(nameColumnIndex));
+            podcast.setRssAddress(cursor.getString(addrColumnIndex));
             podcast.setEpisodes(this.getPodcastEpisodes(podcast));
 
             list.add(podcast);

@@ -11,6 +11,10 @@ public class Episode implements Parcelable {
     private String filePath;
     private int lastPlayedPosition;
 
+    public Episode() {
+
+    }
+
     public Episode(String episodeName, String filePath, int lastPlayedPosition) {
         this.episodeName = episodeName;
         this.filePath = filePath;

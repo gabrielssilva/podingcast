@@ -1,7 +1,5 @@
 package gabrielssilva.podingcast.controller;
 
-import android.content.Context;
-
 import org.apache.http.entity.StringEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,7 +7,6 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 
 import gabrielssilva.podingcast.app.interfaces.CallbackListener;
-import gabrielssilva.podingcast.database.FilesDbHelper;
 import gabrielssilva.podingcast.model.Podcast;
 import gabrielssilva.podingcast.parser.JsonHandler;
 import gabrielssilva.podingcast.web.DownloadFeedTask;
@@ -23,10 +20,9 @@ public class PodcastController implements CallbackListener {
         this.externalCallbackListener = externalCallbackListener;
     }
 
-
-    public void addPodcast(String feedAddress) {
+    public void fetchPodcast(String feedAddress, int numOfEpisodes) {
         DownloadFeedTask downloadTask = new DownloadFeedTask(this);
-        Params params = new Params(feedAddress, 10);
+        Params params = new Params(feedAddress, numOfEpisodes);
         downloadTask.execute(params);
     }
 
@@ -78,11 +74,11 @@ public class PodcastController implements CallbackListener {
 
     public class Params {
         public String url;
-        public int numOfEpisodes;
+        public int maxItems;
 
-        public Params(String url, int numOfEpisodes) {
+        public Params(String url, int maxItems) {
             this.url = url;
-            this.numOfEpisodes = numOfEpisodes;
+            this.maxItems = maxItems;
         }
     }
 }

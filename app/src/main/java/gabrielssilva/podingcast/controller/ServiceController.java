@@ -97,8 +97,8 @@ public class ServiceController {
 
     public void saveCurrentPosition() {
         if (this.episode != null) {
-            FilesController filesController = new FilesController(this.context);
-            filesController.saveCurrentPosition(this.episode.getEpisodeName(), this.playerService.getAudioPosition());
+            LocalFilesController localFilesController = new LocalFilesController(this.context);
+            localFilesController.saveCurrentPosition(this.episode.getEpisodeName(), this.playerService.getAudioPosition());
         }
     }
 

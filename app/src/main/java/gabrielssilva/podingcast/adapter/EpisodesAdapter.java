@@ -5,32 +5,30 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
-
-import java.util.List;
 
 import gabrielssilva.podingcast.app.R;
 import gabrielssilva.podingcast.model.Episode;
+import gabrielssilva.podingcast.model.Podcast;
 
 public class EpisodesAdapter extends BaseAdapter {
 
     private Context context;
-    private List<Episode> episodes;
+    private Podcast podcast;
 
-    public EpisodesAdapter(Context context, List<Episode> episodes) {
+    public EpisodesAdapter(Context context, Podcast podcast) {
         this.context = context;
-        this.episodes = episodes;
+        this.podcast = podcast;
     }
 
     @Override
     public int getCount() {
-        return this.episodes.size();
+        return this.podcast.getEpisodes().size();
     }
 
     @Override
     public Object getItem(int index) {
-        return this.episodes.get(index);
+        return this.podcast.getEpisodes().get(index);
     }
 
     @Override
@@ -53,7 +51,7 @@ public class EpisodesAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        Episode episode = this.episodes.get(index);
+        Episode episode = this.podcast.getEpisodes().get(index);
         viewHolder.episodeName.setText(episode.getEpisodeName());
 
         return view;

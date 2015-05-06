@@ -15,7 +15,7 @@ import android.widget.ListView;
 import java.util.List;
 
 import gabrielssilva.podingcast.adapter.PodcastsAdapter;
-import gabrielssilva.podingcast.controller.FilesController;
+import gabrielssilva.podingcast.controller.LocalFilesController;
 import gabrielssilva.podingcast.model.Podcast;
 import gabrielssilva.podingcast.view.AddFeedDialog;
 import gabrielssilva.podingcast.view.Animator;
@@ -60,9 +60,9 @@ public class PodcastsFragment extends Fragment implements ListView.OnItemClickLi
     }
 
     private void loadPodcasts() {
-        FilesController filesController = new FilesController(getActivity());
+        LocalFilesController localFilesController = new LocalFilesController(getActivity());
 
-        this.podcasts = filesController.getAllPodcasts();
+        this.podcasts = localFilesController.getAllPodcasts();
     }
 
 

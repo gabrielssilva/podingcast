@@ -33,7 +33,9 @@ public class FilesDbHelper extends SQLiteOpenHelper {
 
     public Cursor getAllFeeds() {
         SQLiteDatabase database = getReadableDatabase();
-        String columns[] = { FilesDbContract.FeedEntry.FEED_NAME };
+        String columns[] = { FilesDbContract.FeedEntry.FEED_NAME,
+                FilesDbContract.FeedEntry.FEED_ADDRESS,
+                FilesDbContract.FeedEntry.FEED_IMG_ADDRESS};
         String sortOrder = FilesDbContract.FeedEntry.FEED_NAME + " ASC";
 
         return database.query(FilesDbContract.FeedEntry.TABLE_NAME, columns, null, null, null,

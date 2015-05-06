@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="20dp"
@@ -8,10 +9,36 @@
     android:paddingLeft="10dp"
     android:paddingRight="10dp">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/episodes_page_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.Secondary"
+            android:text="@string/feed_episode"/>
+
+        <View
+            style="@style/HorizontalDivider"
+            android:layout_below="@id/episodes_page_title"
+            android:layout_marginBottom="30dp"/>
+
+        <ProgressBar
+            android:id="@+id/episodes_page_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:indeterminate="true"/>
+
+    </RelativeLayout>
+
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/list_view"
         android:divider="@android:color/transparent"/>
 
-</FrameLayout>
+</LinearLayout>

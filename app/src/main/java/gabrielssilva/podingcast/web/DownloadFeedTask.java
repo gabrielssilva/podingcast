@@ -35,7 +35,7 @@ public class DownloadFeedTask extends AsyncTask<PodcastController.Params, Void, 
         DefaultHttpClient httpClient = new DefaultHttpClient();
         HttpGet httpGet = new HttpGet(params[0].url);
 
-        SaxHandler saxHandler = new SaxHandler(0);
+        SaxHandler saxHandler = new SaxHandler(params[0].maxItems);
 
         try {
             HttpResponse httpResponse = httpClient.execute(httpGet);

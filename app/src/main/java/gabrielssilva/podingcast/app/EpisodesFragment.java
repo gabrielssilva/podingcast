@@ -10,25 +10,35 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
 import gabrielssilva.podingcast.adapter.EpisodesAdapter;
+import gabrielssilva.podingcast.app.interfaces.CallbackListener;
+import gabrielssilva.podingcast.controller.EpisodesController;
+import gabrielssilva.podingcast.controller.PodcastController;
 import gabrielssilva.podingcast.controller.ServiceController;
 import gabrielssilva.podingcast.model.Episode;
 import gabrielssilva.podingcast.model.Podcast;
 import gabrielssilva.podingcast.view.Animator;
 
 public class EpisodesFragment extends Fragment implements ListView.OnItemClickListener,
-        ViewTreeObserver.OnGlobalLayoutListener {
+        ViewTreeObserver.OnGlobalLayoutListener, CallbackListener {
 
     public final static String TAG = "FILES_FRAGMENT";
+    private final static int NUM_EPISODES = 10;
 
     private ServiceController serviceController;
     private View rootView;
     private HomeActivity activity;
 
+    private EpisodesAdapter adapter;
     private ListView listView;
+    private TextView titleView;
+    private ProgressBar progressBar;
     private Podcast podcast;
 
     @Override
@@ -48,18 +58,23 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
 
 
     private void initViews() {
+        this.titleView = (TextView) this.rootView.findViewById(R.id.episodes_page_title);
         this.listView = (ListView) this.rootView.findViewById(R.id.list_view);
-
+        this.progressBar = (ProgressBar) this.rootView.findViewById(R.id.episodes_page_progress);
     }
 
     private void retrieveInfo() {
         Bundle args = this.getArguments();
-        podcast = args.getParcelable(PodcastsFragment.ARG_PODCAST);
+        this.podcast = args.getParcelable(PodcastsFragment.ARG_PODCAST);
+        this.titleView.setText(podcast.getPodcastName());
+
+        PodcastController podcastController = new PodcastController(this);
+        podcastController.fetchPodcast(this.podcast.getRssAddress(), NUM_EPISODES);
     }
 
     private void initListView() {
         Context context = activity.getApplicationContext();
-        EpisodesAdapter adapter = new EpisodesAdapter(context, this.podcast.getEpisodes());
+        this.adapter = new EpisodesAdapter(context, this.podcast);
 
         this.listView.setAdapter(adapter);
         this.listView.setOnItemClickListener(this);
@@ -89,5 +104,25 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
 
         Animator animator = new Animator();
         animator.fadeListIn(this.listView, null, 0);
+    }
+
+    @Override
+    public void onSuccess(Object result) {
+        Podcast fetchedPodcast = (Podcast) result;
+        List<Episode> updatedEpisodes;
+
+        EpisodesController episodesController = new EpisodesController();
+        updatedEpisodes = episodesController.compareEpisodes(this.podcast.getEpisodes(),
+                fetchedPodcast.getEpisodes());
+
+        this.podcast.setEpisodes(updatedEpisodes);
+        this.adapter.notifyDataSetChanged();
+        this.progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onFailure() {
+        Toast.makeText(this.activity, "Couldn't to load episodes", Toast.LENGTH_SHORT).show();
+        this.progressBar.setVisibility(View.GONE);
     }
 }
