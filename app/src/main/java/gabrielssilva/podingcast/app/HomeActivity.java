@@ -3,6 +3,7 @@ package gabrielssilva.podingcast.app;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.widget.Toast;
 
@@ -47,12 +48,16 @@ public class HomeActivity extends FragmentActivity implements CallbackListener {
         }
     }
 
-
-    // This Activity will implement this callback temporarily, testing purposes
     @Override
     public void onSuccess(Object result) {
-        FilesDbHelper dbHelper = new FilesDbHelper(this.getApplicationContext());
+        FilesDbHelper dbHelper = new FilesDbHelper(this);
         dbHelper.insertPodcast((Podcast) result);
+
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(PodcastsFragment.TAG);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.detach(fragment);
+        transaction.attach(fragment);
+        transaction.commit();
 
         Toast.makeText(this, "Feed downloaded", Toast.LENGTH_LONG).show();
     }

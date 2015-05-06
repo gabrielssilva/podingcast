@@ -75,7 +75,7 @@ public class PodcastsFragment extends Fragment implements ListView.OnItemClickLi
     @Override
     public void onClick(View view) {
         AddFeedDialog addFeedDialog = new AddFeedDialog();
-        addFeedDialog.show(getFragmentManager(), "test");
+        addFeedDialog.show(getFragmentManager(), AddFeedDialog.TAG);
     }
 
     /*

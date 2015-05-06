@@ -17,6 +17,8 @@ import gabrielssilva.podingcast.controller.PodcastController;
 
 public class AddFeedDialog extends DialogFragment {
 
+    public final static String TAG = "ADD_FEED_DIALOG";
+
     private View rootView;
     private CallbackListener callbackListener;
 
