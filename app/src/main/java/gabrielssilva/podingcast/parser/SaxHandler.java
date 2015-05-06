@@ -11,14 +11,26 @@ import java.util.Stack;
 
 public class SaxHandler extends DefaultHandler {
 
-    private Stack<JSONObject> objects;
-    private String stringContent;
+    private final static String LIMITED_TAG = "item";
+    private final static int NO_LIMIT = -1;
 
-    public SaxHandler() { }
+    private Stack<JSONObject> objects;
+    private Stack<String> tags;
+    private String stringContent;
+    private int maxItems;
+
+    public SaxHandler() {
+        this(NO_LIMIT);
+    }
+
+    public SaxHandler(int maxItems) {
+        this.maxItems = maxItems;
+    }
 
     @Override
     public void startDocument() throws SAXException {
         this.objects = new Stack<>();
+        this.tags = new Stack<>();
         this.stringContent = "";
 
         JSONObject documentRoot = new JSONObject();
@@ -28,7 +40,10 @@ public class SaxHandler extends DefaultHandler {
     @Override
     public void startElement(String uri, String localName, String name, Attributes attributes)
             throws SAXException {
+
+        checkStopCondition(name);
         JSONObject jsonObject = new JSONObject();
+        this.tags.push(name);
 
         try {
             getAttributes(jsonObject, attributes);
@@ -37,7 +52,6 @@ public class SaxHandler extends DefaultHandler {
         }
 
         this.objects.push(jsonObject);
-
     }
 
     @Override
@@ -49,6 +63,7 @@ public class SaxHandler extends DefaultHandler {
     public void endElement(String uri, String localName, String name) throws SAXException {
         JSONObject currentObject = this.objects.pop();
         JSONObject beforeObject = this.objects.pop();
+        this.tags.pop();
 
         try {
             if (!this.stringContent.isEmpty()) {
@@ -82,4 +97,24 @@ public class SaxHandler extends DefaultHandler {
             jsonObject.put(key, content);
         }
     }
+
+    private void closeJson() throws SAXException {
+        while (this.tags.size() > 0) {
+            String tag = this.tags.peek();
+            endElement("", tag, tag);
+        }
+    }
+
+    private void checkStopCondition(String tagName) throws SAXException {
+        if ((this.maxItems != NO_LIMIT) && (tagName.equalsIgnoreCase(LIMITED_TAG))) {
+            if (this.maxItems > 0) {
+                this.maxItems = this.maxItems - 1;
+            } else {
+                closeJson();
+                throw new AllItemsParsedSaxException();
+            }
+        }
+    }
+
+    public class AllItemsParsedSaxException extends SAXException { }
 }

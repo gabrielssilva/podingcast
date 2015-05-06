@@ -35,7 +35,7 @@ public class DownloadFeedTask extends AsyncTask<PodcastController.Params, Void, 
         DefaultHttpClient httpClient = new DefaultHttpClient();
         HttpGet httpGet = new HttpGet(params[0].url);
 
-        SaxHandler saxHandler = new SaxHandler();
+        SaxHandler saxHandler = new SaxHandler(0);
 
         try {
             HttpResponse httpResponse = httpClient.execute(httpGet);
@@ -46,9 +46,17 @@ public class DownloadFeedTask extends AsyncTask<PodcastController.Params, Void, 
 
             xmlReader.setContentHandler(saxHandler);
             xmlReader.parse(new InputSource(xmlFileStream));
-            Log.i("JSON", saxHandler.getJson().toString());
-        } catch (IOException | SAXException | ParserConfigurationException e) {
+        } catch (IOException | ParserConfigurationException e) {
+            Log.e("DownloadFeedTask", "Error downloading the feed file");
             e.printStackTrace();
+        } catch (SAXException e) {
+            if (e instanceof SaxHandler.AllItemsParsedSaxException) {
+                Log.i("JSON", saxHandler.getJson().toString());
+                Log.i("DownloadFeedTask", "All items parsed");
+            } else {
+                Log.e("DownloadFeedTask", "Error parsing the XML file");
+                e.printStackTrace();
+            }
         }
 
         return saxHandler.getJson();
