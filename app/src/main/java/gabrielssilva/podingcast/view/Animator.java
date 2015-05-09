@@ -37,7 +37,7 @@ public class Animator {
             waitAnimation.setDuration(childIndex * animationOffset);
 
             ObjectAnimator fadeAnimation = ObjectAnimator.ofFloat(childView, "alpha", finalAlpha);
-            fadeAnimation.setDuration(300);
+            fadeAnimation.setDuration(150);
             fadeAnimation.setInterpolator(new AccelerateInterpolator());
 
             AnimatorSet subAnimatorSet = new AnimatorSet();
