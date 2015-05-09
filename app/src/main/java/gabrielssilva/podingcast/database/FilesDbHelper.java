@@ -48,7 +48,9 @@ public class FilesDbHelper extends SQLiteOpenHelper {
         String feedId = ""+this.getPodcastId(database, feedName);
 
         String columns[] = { FilesDbContract.FileEntry.FILE_NAME,
-                FilesDbContract.FileEntry.FILE_PATH, FilesDbContract.FileEntry.FILE_LAST_POS };
+                FilesDbContract.FileEntry.FILE_PATH,
+                FilesDbContract.FileEntry.URL,
+                FilesDbContract.FileEntry.FILE_LAST_POS };
         String selection = FilesDbContract.FileEntry.FEED_ID + " = ?";
         String selectionArgs[] = { feedId };
         String sortOrder = FilesDbContract.FileEntry._ID + " ASC";
@@ -64,7 +66,7 @@ public class FilesDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase database = getWritableDatabase();
         insertPodcast(database, new Podcast(feedName, null, null));
         long feedId = getPodcastId(database, feedName);
-        insertEpisode(database, feedId, episode.getEpisodeName(), episode.getFilePath());
+        insertEpisode(database, feedId, episode);
     }
 
     public void insertPodcast(Podcast podcast) {
@@ -99,11 +101,12 @@ public class FilesDbHelper extends SQLiteOpenHelper {
         return queryResult.getInt(columnIndex);
     }
 
-    private void insertEpisode(SQLiteDatabase database, long feedId, String fileName, String filePath) {
+    private void insertEpisode(SQLiteDatabase database, long feedId, Episode episode) {
         ContentValues values = new ContentValues();
         values.put(FilesDbContract.FileEntry.FEED_ID, feedId);
-        values.put(FilesDbContract.FileEntry.FILE_NAME, fileName);
-        values.put(FilesDbContract.FileEntry.FILE_PATH, filePath);
+        values.put(FilesDbContract.FileEntry.FILE_NAME, episode.getEpisodeName());
+        values.put(FilesDbContract.FileEntry.FILE_PATH, episode.getFilePath());
+        values.put(FilesDbContract.FileEntry.URL, episode.getUrl());
 
         database.insertWithOnConflict(FilesDbContract.FileEntry.TABLE_NAME, null, values,
                 SQLiteDatabase.CONFLICT_IGNORE);

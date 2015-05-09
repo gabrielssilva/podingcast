@@ -25,6 +25,7 @@ public final class FilesDbContract {
         public static final String FEED_ID = "feed_id";
         public static final String FILE_NAME = "file_name";
         public static final String FILE_PATH = "file_path";
+        public static final String URL = "url";
         public static final String FILE_LAST_POS = "file_current_pos";
 
         public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " ("
@@ -32,6 +33,7 @@ public final class FilesDbContract {
                 + FEED_ID + " INTEGER, "
                 + FILE_NAME + " TEXT UNIQUE, "
                 + FILE_PATH + " TEXT, "
+                + URL + " TEXT, "
                 + FILE_LAST_POS + " INTEGER DEFAULT 0, "
                 + " FOREIGN KEY (" + FEED_ID + ") REFERENCES " + FeedEntry.TABLE_NAME
                 + " (" + FeedEntry._ID + ") ON DELETE CASCADE" + " ON UPDATE CASCADE);" ;

@@ -54,14 +54,16 @@ public class LocalFilesController {
 
         int nameColumnIndex = cursor.getColumnIndexOrThrow(FilesDbContract.FileEntry.FILE_NAME);
         int pathColumnIndex = cursor.getColumnIndexOrThrow(FilesDbContract.FileEntry.FILE_PATH);
+        int urlColumnIndex = cursor.getColumnIndexOrThrow(FilesDbContract.FileEntry.URL);
         int posColumnIndex = cursor.getColumnIndexOrThrow(FilesDbContract.FileEntry.FILE_LAST_POS);
 
         for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             String episodeName = cursor.getString(nameColumnIndex);
             String filePath = cursor.getString(pathColumnIndex);
+            String url = cursor.getString(urlColumnIndex);
             int lastPlayedPosition = cursor.getInt(posColumnIndex);
 
-            Episode episode = new Episode(episodeName, filePath, lastPlayedPosition);
+            Episode episode = new Episode(episodeName, filePath, url,lastPlayedPosition);
             list.add(episode);
         }
 

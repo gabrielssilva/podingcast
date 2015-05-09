@@ -56,7 +56,7 @@ public class JsonHandler {
 
             Episode episode = new Episode();
             episode.setEpisodeName(jsonEpisode.getString("title"));
-            episode.setFilePath(jsonEnclosure.getString("url"));
+            episode.setUrl(jsonEnclosure.getString("url"));
 
             episodes.add(episode);
         }

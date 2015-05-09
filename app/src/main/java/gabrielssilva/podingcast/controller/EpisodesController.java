@@ -11,10 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gabrielssilva.podingcast.app.interfaces.CallbackListener;
-import gabrielssilva.podingcast.database.FilesDbHelper;
 import gabrielssilva.podingcast.helper.FilesHelper;
 import gabrielssilva.podingcast.model.Episode;
-import gabrielssilva.podingcast.web.DownloadNotifier;
+import gabrielssilva.podingcast.service.DownloadNotifier;
 
 public class EpisodesController implements CallbackListener {
 
@@ -31,7 +30,7 @@ public class EpisodesController implements CallbackListener {
         DownloadManager downloadManager = (DownloadManager)
                 this.activity.getSystemService(Context.DOWNLOAD_SERVICE);
 
-        Request request = new Request(Uri.parse(episode.getFilePath()));
+        Request request = new Request(Uri.parse(episode.getUrl()));
         request.setDescription(episode.getEpisodeName());
         request.setDestinationInExternalPublicDir(FilesHelper.PODINGCAST_FOLDER,
                 episode.getEpisodeName()+".mp3");
@@ -64,7 +63,7 @@ public class EpisodesController implements CallbackListener {
 
         for(int i=0; i<localEpisodes.size(); i++) {
             Episode localEpisode = localEpisodes.get(i);
-            result = episode.getEpisodeName().equals(localEpisode.getEpisodeName());
+            result = episode.getUrl().equalsIgnoreCase(localEpisode.getUrl());
         }
 
         return result;

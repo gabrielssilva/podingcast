@@ -9,6 +9,7 @@ public class Episode implements Parcelable {
 
     private String episodeName;
     private String filePath;
+    private String url;
     private int lastPlayedPosition;
     private boolean local;
 
@@ -16,15 +17,16 @@ public class Episode implements Parcelable {
 
     }
 
-    public Episode(String episodeName, String filePath, int lastPlayedPosition) {
+    public Episode(String episodeName, String filePath, String url, int lastPlayedPosition) {
         this.episodeName = episodeName;
         this.filePath = filePath;
+        this.url = url;
         this.lastPlayedPosition = lastPlayedPosition;
         this.local = true;
     }
 
     public Episode(Parcel parcel) {
-        this(parcel.readString(), parcel.readString(), parcel.readInt());
+        this(parcel.readString(), parcel.readString(), parcel.readString(), parcel.readInt());
     }
 
 
@@ -42,6 +44,14 @@ public class Episode implements Parcelable {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public int getLastPlayedPosition() {
@@ -69,6 +79,7 @@ public class Episode implements Parcelable {
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeString(this.episodeName);
         parcel.writeString(this.filePath);
+        parcel.writeString(this.url);
         parcel.writeInt(this.lastPlayedPosition);
     }
 
