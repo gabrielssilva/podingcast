@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 
-import java.io.File;
-
 import gabrielssilva.podingcast.app.interfaces.ServiceListener;
 import gabrielssilva.podingcast.helper.Mp3Helper;
 import gabrielssilva.podingcast.model.Episode;
@@ -39,8 +37,7 @@ public class ServiceController {
     }
 
     private void updatePlayer() {
-        File episodeFile = new File(this.episode.getFilePath());
-        Mp3Helper mp3Helper = new Mp3Helper(this.context, episodeFile);
+        Mp3Helper mp3Helper = new Mp3Helper(this.episode.getFilePath());
         Bitmap bitmapCover = mp3Helper.getEpisodeCover(this.context.getResources());
 
         this.serviceListener.setEpisodeCover(bitmapCover);

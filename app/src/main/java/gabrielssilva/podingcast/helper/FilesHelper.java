@@ -1,56 +1,24 @@
 package gabrielssilva.podingcast.helper;
 
 import android.os.Environment;
+import android.util.Log;
 
 import java.io.File;
-import java.io.FilenameFilter;
-import java.util.Arrays;
-import java.util.List;
 
 public class FilesHelper {
 
-    private static File podingcastFolder;
+    public final static String PODINGCAST_FOLDER = "Podingcast";
 
-    private FilesHelper() { }
+    public static File getAppFolder() {
+        File storageFolder =
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PODCASTS);
+        File podingcastFolder = new File(storageFolder, PODINGCAST_FOLDER);
 
-    private static void initFolder() {
-        final String PODINGCAST_FOLDER = "Podingcast";
-
-        if (podingcastFolder == null) {
-            File storageFolder = Environment.getExternalStorageDirectory();
-            podingcastFolder = new File(storageFolder, PODINGCAST_FOLDER);
+        boolean created = podingcastFolder.mkdir();
+        if (!created && !podingcastFolder.exists()) {
+            Log.e("EpisodesController", "Unable to create the App folder");
         }
 
-        if (!podingcastFolder.exists()) {
-            podingcastFolder.mkdir();
-        }
+        return podingcastFolder;
     }
-
-    public static List<File> getAllFiles() {
-        List<File> allFiles;
-        File[] filteredFiles;
-
-        initFolder();
-
-        // Using our Filter, declared above.
-        FilterByExtension filter = new FilterByExtension();
-        filteredFiles = podingcastFolder.listFiles(filter);
-        allFiles = Arrays.asList(filteredFiles);
-
-        return allFiles;
-    }
-
-    /* A private class to filter our files.
-     * This class is pretty small, so declare it here should make no harm.
-     */
-    private static class FilterByExtension implements FilenameFilter {
-
-        private final String ACCEPTED_EXTENSION = ".mp3";
-
-        @Override
-        public boolean accept(File file, String name) {
-            return name.toLowerCase().endsWith(this.ACCEPTED_EXTENSION);
-        }
-    }
-
 }

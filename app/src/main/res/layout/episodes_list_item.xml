@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="20dp"
-        android:paddingBottom="20dp"
+        android:paddingBottom="10dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:orientation="vertical">
@@ -21,7 +21,44 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/TextAppearance.Primary.ListItem"
-            android:id="@+id/episode_name"/>
+            android:id="@+id/episode_name"
+            android:text="episode name bla bla bla"/>
+
+        <View
+            style="@style/HorizontalDivider"
+            android:layout_marginBottom="10dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="9"
+            style="@style/TextAppearance.Secondary.ListItem"
+            android:id="@+id/episode_duration"
+            android:text="10:5:190"/>
+
+        <ProgressBar
+            android:id="@+id/episode_item_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:indeterminate="true"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:scaleType="center"
+            android:layout_weight="1"
+            android:src="@drawable/ic_action_download"
+            android:contentDescription="@string/episodes_item_download" />
+
+    </LinearLayout>
+
 
     </LinearLayout>
 

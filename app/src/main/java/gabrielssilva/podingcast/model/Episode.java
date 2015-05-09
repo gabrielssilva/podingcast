@@ -10,6 +10,7 @@ public class Episode implements Parcelable {
     private String episodeName;
     private String filePath;
     private int lastPlayedPosition;
+    private boolean local;
 
     public Episode() {
 
@@ -19,12 +20,11 @@ public class Episode implements Parcelable {
         this.episodeName = episodeName;
         this.filePath = filePath;
         this.lastPlayedPosition = lastPlayedPosition;
+        this.local = true;
     }
 
     public Episode(Parcel parcel) {
-        this.episodeName = parcel.readString();
-        this.filePath = parcel.readString();
-        this.lastPlayedPosition = parcel.readInt();
+        this(parcel.readString(), parcel.readString(), parcel.readInt());
     }
 
 
@@ -52,6 +52,13 @@ public class Episode implements Parcelable {
         this.lastPlayedPosition = lastPlayedPosition;
     }
 
+    public boolean isLocal() {
+        return local;
+    }
+
+    public void setLocal(boolean local) {
+        this.local = local;
+    }
 
     @Override
     public int describeContents() {

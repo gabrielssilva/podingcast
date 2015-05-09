@@ -38,6 +38,11 @@ public class LocalFilesController {
         return list;
     }
 
+    public void updatePodcast(Podcast podcast) {
+        List<Episode> episodes = this.getPodcastEpisodes(podcast);
+        podcast.setEpisodes(episodes);
+    }
+
     public void saveCurrentPosition(String fileName, int currentPosition) {
         this.dbHelper.updateLastPosition(fileName, currentPosition);
     }

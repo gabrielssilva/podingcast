@@ -7,6 +7,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -34,16 +35,14 @@ public class DownloadFeedTask extends AsyncTask<PodcastController.Params, Void, 
     protected JSONObject doInBackground(PodcastController.Params... params) {
         DefaultHttpClient httpClient = new DefaultHttpClient();
         HttpGet httpGet = new HttpGet(params[0].url);
-
         SaxHandler saxHandler = new SaxHandler(params[0].maxItems, httpGet);
 
         try {
             HttpResponse httpResponse = httpClient.execute(httpGet);
             HttpEntity httpEntity = httpResponse.getEntity();
-
             InputStream xmlFileStream = httpEntity.getContent();
-            XMLReader xmlReader = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
 
+            XMLReader xmlReader = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
             xmlReader.setContentHandler(saxHandler);
             xmlReader.parse(new InputSource(xmlFileStream));
         } catch (IOException | ParserConfigurationException e) {
@@ -59,7 +58,14 @@ public class DownloadFeedTask extends AsyncTask<PodcastController.Params, Void, 
             }
         }
 
-        return saxHandler.getJson();
+        JSONObject podcastJson = saxHandler.getJson();
+        try {
+            podcastJson.put("podingcast:link", params[0].url);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return podcastJson;
     }
 
     @Override

@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import gabrielssilva.podingcast.model.Episode;
 import gabrielssilva.podingcast.model.Podcast;
 
 public class FilesDbHelper extends SQLiteOpenHelper {
@@ -56,14 +57,14 @@ public class FilesDbHelper extends SQLiteOpenHelper {
                 selectionArgs, null, null, sortOrder);
     }
 
-    public void insertEpisode(String feedName, String fileTitle, String filePath) {
+    public void insertEpisode(String feedName, Episode episode) {
         /* This function will be called on loops, sometimes.
            Maybe Find a nice way to get the database just once.
           */
         SQLiteDatabase database = getWritableDatabase();
         insertPodcast(database, new Podcast(feedName, null, null));
         long feedId = getPodcastId(database, feedName);
-        insertEpisode(database, feedId, fileTitle, filePath);
+        insertEpisode(database, feedId, episode.getEpisodeName(), episode.getFilePath());
     }
 
     public void insertPodcast(Podcast podcast) {

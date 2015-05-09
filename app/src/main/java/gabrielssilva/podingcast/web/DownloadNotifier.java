@@ -6,42 +6,51 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.util.Log;
 
-import gabrielssilva.podingcast.app.interfaces.DownloadListener;
+import gabrielssilva.podingcast.app.interfaces.CallbackListener;
+import gabrielssilva.podingcast.model.Episode;
 
 public class DownloadNotifier extends BroadcastReceiver {
 
-    private DownloadListener listener;
+    private CallbackListener callbackListener;
+    private DownloadManager downloadManager;
+    private long downloadID;
 
-    public DownloadNotifier(DownloadListener listener) {
-        this.listener = listener;
+    public DownloadNotifier(CallbackListener callbackListener, DownloadManager downloadManager,
+                            long downloadID) {
+        this.callbackListener = callbackListener;
+        this.downloadManager = downloadManager;
+        this.downloadID = downloadID;
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        String action = intent.getAction();
-        boolean isMyDownload = action.equals(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+        long downloadedId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
 
-        if ( isMyDownload && this.isMyDownloadComplete()) {
-            // The download has finished, do something with view...
-        }
-    }
+        if (downloadedId == this.downloadID) {
+            Query query = new Query();
+            query.setFilterById(this.downloadID);
 
-    public boolean isMyDownloadComplete() {
-        boolean isDownloadComplete = false;
-        Query actionQuery = new Query();
-        actionQuery.setFilterById(this.listener.getDownloadID());
+            Cursor cursor = this.downloadManager.query(query);
 
-        Cursor cursor = this.listener.getDownloadManager().query(actionQuery);
-        if (cursor.moveToFirst()) {
-            int columnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS);
-            if (DownloadManager.STATUS_SUCCESSFUL == cursor.getInt(columnIndex)) {
-                isDownloadComplete = true;
-            } else {
-                isDownloadComplete = false;
+            if (cursor.moveToFirst()) {
+                int statusIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS);
+                int pathIndex = cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI);
+                int nameIndex = cursor.getColumnIndex(DownloadManager.COLUMN_TITLE);
+
+                if (DownloadManager.STATUS_SUCCESSFUL == cursor.getInt(statusIndex)) {
+                    String filePath = cursor.getString(pathIndex);
+                    String fileName = cursor.getString(nameIndex);
+
+                    this.callbackListener.onSuccess(new Episode(fileName, filePath, 0));
+                } else if (DownloadManager.STATUS_FAILED == cursor.getInt(statusIndex)) {
+                    this.callbackListener.onFailure();
+                }
             }
+        } else {
+            Log.i("DownloadNotifier", "Captured wrong download. Returning...");
+            this.callbackListener.onSuccess(null);
         }
-
-        return isDownloadComplete;
     }
 }

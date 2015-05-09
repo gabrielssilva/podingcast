@@ -11,7 +11,6 @@ import gabrielssilva.podingcast.adapter.FragmentsAdapter;
 import gabrielssilva.podingcast.app.interfaces.CallbackListener;
 import gabrielssilva.podingcast.controller.ServiceController;
 import gabrielssilva.podingcast.database.FilesDbHelper;
-import gabrielssilva.podingcast.database.FilesDbManager;
 import gabrielssilva.podingcast.model.Podcast;
 
 public class HomeActivity extends FragmentActivity implements CallbackListener {
@@ -24,9 +23,6 @@ public class HomeActivity extends FragmentActivity implements CallbackListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
-        FilesDbManager dbManager = new FilesDbManager(this);
-        dbManager.refreshDatabase();
 
         FragmentsAdapter adapter = new FragmentsAdapter(this.getSupportFragmentManager());
 

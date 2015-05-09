@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,14 +20,16 @@ import java.util.List;
 import gabrielssilva.podingcast.adapter.EpisodesAdapter;
 import gabrielssilva.podingcast.app.interfaces.CallbackListener;
 import gabrielssilva.podingcast.controller.EpisodesController;
+import gabrielssilva.podingcast.controller.LocalFilesController;
 import gabrielssilva.podingcast.controller.PodcastController;
 import gabrielssilva.podingcast.controller.ServiceController;
+import gabrielssilva.podingcast.database.FilesDbHelper;
 import gabrielssilva.podingcast.model.Episode;
 import gabrielssilva.podingcast.model.Podcast;
 import gabrielssilva.podingcast.view.Animator;
 
 public class EpisodesFragment extends Fragment implements ListView.OnItemClickListener,
-        ViewTreeObserver.OnGlobalLayoutListener, CallbackListener {
+        ViewTreeObserver.OnGlobalLayoutListener {
 
     public final static String TAG = "FILES_FRAGMENT";
     private final static int NUM_EPISODES = 5;
@@ -68,7 +71,11 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
         this.podcast = args.getParcelable(PodcastsFragment.ARG_PODCAST);
         this.titleView.setText(podcast.getPodcastName());
 
-        PodcastController podcastController = new PodcastController(this);
+        fetchPodcast();
+    }
+
+    private void fetchPodcast() {
+        PodcastController podcastController = new PodcastController(new FetchEpisodesListener());
         podcastController.fetchPodcast(this.podcast.getRssAddress(), NUM_EPISODES);
     }
 
@@ -87,10 +94,18 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int index, long id) {
         List<Episode> episodes = this.podcast.getEpisodes();
-        this.serviceController.playFile(episodes.get(index));
+        Episode selectedEpisode = episodes.get(index);
 
-        ViewPager viewPager = (ViewPager) this.activity.findViewById(R.id.view_pager);
-        viewPager.setCurrentItem(HomeActivity.PLAYER_FRAGMENT_POS, true);
+        if (selectedEpisode.isLocal()) {
+            this.serviceController.playFile(selectedEpisode);
+
+            ViewPager viewPager = (ViewPager) this.activity.findViewById(R.id.view_pager);
+            viewPager.setCurrentItem(HomeActivity.PLAYER_FRAGMENT_POS, true);
+        } else {
+            EpisodesController episodesController =
+                    new EpisodesController(new DownloadListener(), this.activity);
+            episodesController.downloadEpisode(selectedEpisode);
+        }
     }
 
     /*
@@ -106,23 +121,47 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
         animator.fadeListIn(this.listView, null, 0);
     }
 
-    @Override
-    public void onSuccess(Object result) {
-        Podcast fetchedPodcast = (Podcast) result;
-        List<Episode> updatedEpisodes;
+    private class FetchEpisodesListener implements CallbackListener {
 
-        EpisodesController episodesController = new EpisodesController();
-        updatedEpisodes = episodesController.compareEpisodes(this.podcast.getEpisodes(),
-                fetchedPodcast.getEpisodes());
+        @Override
+        public void onSuccess(Object result) {
+            Podcast fetchedPodcast = (Podcast) result;
 
-        this.podcast.setEpisodes(updatedEpisodes);
-        this.adapter.notifyDataSetChanged();
-        this.progressBar.setVisibility(View.GONE);
+            EpisodesController episodesController =
+                    new EpisodesController(new DownloadListener(), activity);
+            List<Episode> updatedEpisodes = episodesController.compareEpisodes(podcast.getEpisodes(),
+                    fetchedPodcast.getEpisodes());
+
+            podcast.setEpisodes(updatedEpisodes);
+            adapter.notifyDataSetChanged();
+            progressBar.setVisibility(View.GONE);
+        }
+
+        @Override
+        public void onFailure() {
+            Toast.makeText(activity, "Couldn't load episodes", Toast.LENGTH_SHORT).show();
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
-    @Override
-    public void onFailure() {
-        Toast.makeText(this.activity, "Couldn't to load episodes", Toast.LENGTH_SHORT).show();
-        this.progressBar.setVisibility(View.GONE);
+    private class DownloadListener implements CallbackListener {
+
+        @Override
+        public void onSuccess(Object result) {
+            FilesDbHelper filesDbHelper = new FilesDbHelper(activity.getApplicationContext());
+            filesDbHelper.insertEpisode(podcast.getPodcastName(), (Episode) result);
+
+            LocalFilesController localFilesController =
+                    new LocalFilesController(activity.getApplicationContext());
+            localFilesController.updatePodcast(podcast);
+
+            fetchPodcast();
+            Log.i("EpisodesFragment", ((Episode) result).getFilePath());
+        }
+
+        @Override
+        public void onFailure() {
+            Log.i("EpisodesFragment", "Failed");
+        }
     }
 }
