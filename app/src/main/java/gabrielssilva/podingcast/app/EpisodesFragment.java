@@ -1,15 +1,17 @@
 package gabrielssilva.podingcast.app;
 
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -23,9 +25,11 @@ import gabrielssilva.podingcast.controller.EpisodesController;
 import gabrielssilva.podingcast.controller.LocalFilesController;
 import gabrielssilva.podingcast.controller.PodcastController;
 import gabrielssilva.podingcast.controller.ServiceController;
-import gabrielssilva.podingcast.database.FilesDbHelper;
 import gabrielssilva.podingcast.model.Episode;
 import gabrielssilva.podingcast.model.Podcast;
+import gabrielssilva.podingcast.service.BroadcastNotifier;
+import gabrielssilva.podingcast.service.DownloadNotifier;
+import gabrielssilva.podingcast.service.DownloadNotifyService;
 import gabrielssilva.podingcast.view.Animator;
 
 public class EpisodesFragment extends Fragment implements ListView.OnItemClickListener,
@@ -34,15 +38,18 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
     public final static String TAG = "FILES_FRAGMENT";
     private final static int NUM_EPISODES = 5;
 
-    private ServiceController serviceController;
-    private View rootView;
     private HomeActivity activity;
+    private ServiceController serviceController;
+    private Podcast podcast;
+    private BroadcastNotifier broadcastNotifier;
 
+    private View rootView;
     private EpisodesAdapter adapter;
     private ListView listView;
     private TextView titleView;
     private ProgressBar progressBar;
-    private Podcast podcast;
+    private ProgressBar itemProgressBar;
+    private ImageView itemDownloadAction;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -51,12 +58,22 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
         this.rootView = rootView;
         this.activity = (HomeActivity) getActivity();
         this.serviceController = this.activity.getServiceController();
+        this.broadcastNotifier = null;
 
         this.initViews();
         this.retrieveInfo();
         this.initListView();
 
         return rootView;
+    }
+
+    @Override
+    public void onPause() {
+        if (this.broadcastNotifier != null) {
+            this.activity.unregisterReceiver(this.broadcastNotifier);
+        }
+
+        super.onPause();
     }
 
 
@@ -90,6 +107,18 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
         viewTree.addOnGlobalLayoutListener(this);
     }
 
+    private void waitForDownload(long downloadID) {
+        Intent intent = new Intent(this.activity, DownloadNotifyService.class);
+        intent.putExtra(DownloadNotifyService.DOWNLOAD_ID, downloadID);
+        this.activity.startService(intent);
+
+        this.broadcastNotifier = new BroadcastNotifier(new DownloadListener(),
+                DownloadNotifier.ACTION_DOWNLOAD_OK);
+        IntentFilter intentFilter = new IntentFilter(DownloadNotifier.ACTION_DOWNLOAD_OK);
+        intentFilter.addAction(DownloadNotifier.ACTION_DOWNLOAD_FAIL);
+        this.activity.registerReceiver(broadcastNotifier, intentFilter);
+    }
+
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int index, long id) {
@@ -102,9 +131,15 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
             ViewPager viewPager = (ViewPager) this.activity.findViewById(R.id.view_pager);
             viewPager.setCurrentItem(HomeActivity.PLAYER_FRAGMENT_POS, true);
         } else {
-            EpisodesController episodesController =
-                    new EpisodesController(new DownloadListener(), this.activity);
-            episodesController.downloadEpisode(selectedEpisode);
+            this.itemProgressBar = (ProgressBar) view.findViewById(R.id.episode_item_progress);
+            this.itemDownloadAction = (ImageView) view.findViewById(R.id.action_download);
+
+            this.itemProgressBar.setVisibility(View.VISIBLE);
+            this.itemDownloadAction.setVisibility(View.GONE);
+
+            EpisodesController episodesController = new EpisodesController(this.activity);
+            long downloadID = episodesController.downloadEpisode(this.podcast, selectedEpisode);
+            this.waitForDownload(downloadID);
         }
     }
 
@@ -127,8 +162,7 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
         public void onSuccess(Object result) {
             Podcast fetchedPodcast = (Podcast) result;
 
-            EpisodesController episodesController =
-                    new EpisodesController(new DownloadListener(), activity);
+            EpisodesController episodesController = new EpisodesController(activity);
             List<Episode> updatedEpisodes = episodesController.compareEpisodes(podcast.getEpisodes(),
                     fetchedPodcast.getEpisodes());
 
@@ -148,20 +182,18 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
 
         @Override
         public void onSuccess(Object result) {
-            FilesDbHelper filesDbHelper = new FilesDbHelper(activity.getApplicationContext());
-            filesDbHelper.insertEpisode(podcast.getPodcastName(), (Episode) result);
-
             LocalFilesController localFilesController =
                     new LocalFilesController(activity.getApplicationContext());
             localFilesController.updatePodcast(podcast);
 
             fetchPodcast();
-            Log.i("EpisodesFragment", ((Episode) result).getFilePath());
+            itemProgressBar.setVisibility(View.GONE);
         }
 
         @Override
         public void onFailure() {
-            Log.i("EpisodesFragment", "Failed");
+            itemProgressBar.setVisibility(View.GONE);
+            itemDownloadAction.setVisibility(View.VISIBLE);
         }
     }
 }

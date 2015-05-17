@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import gabrielssilva.podingcast.app.R;
@@ -53,6 +54,9 @@ public class EpisodesAdapter extends BaseAdapter {
 
         Episode episode = this.podcast.getEpisodes().get(index);
         viewHolder.episodeName.setText(episode.getEpisodeName());
+
+        ImageView downloadAction = (ImageView) view.findViewById(R.id.action_download);
+        downloadAction.setVisibility(episode.isLocal() ? View.GONE : View.VISIBLE);
 
         return view;
     }

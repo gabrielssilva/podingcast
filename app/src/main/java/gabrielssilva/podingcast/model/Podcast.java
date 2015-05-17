@@ -32,6 +32,8 @@ public class Podcast implements Parcelable {
         this.podcastName = parcel.readString();
         this.rssAddress = parcel.readString();
         this.numberOfEpisodes = parcel.readInt();
+
+        this.episodes = new ArrayList<>();
         parcel.readList(episodes, Episode.class.getClassLoader());
     }
 

@@ -22,5 +22,6 @@
             </intent-filter>
         </activity>
         <service android:name="gabrielssilva.podingcast.service.PlayerService" />
+        <service android:name="gabrielssilva.podingcast.service.DownloadNotifyService" />
     </application>
 </manifest>
