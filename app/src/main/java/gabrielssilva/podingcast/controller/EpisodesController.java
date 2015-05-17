@@ -41,7 +41,7 @@ public class EpisodesController  {
             Episode feedEpisode = feedEpisodes.get(i);
 
             if (!isOnList(feedEpisode, localEpisodes)) {
-                feedEpisode.setLocal(false);
+                feedEpisode.setStatus(Episode.NOT_LOCAL);
                 episodes.add(feedEpisode);
             }
         }
@@ -55,7 +55,7 @@ public class EpisodesController  {
 
         for(int i=0; i<localEpisodes.size(); i++) {
             Episode localEpisode = localEpisodes.get(i);
-            result = episode.getUrl().equalsIgnoreCase(localEpisode.getUrl());
+            result |= episode.getUrl().equalsIgnoreCase(localEpisode.getUrl());
         }
 
         return result;

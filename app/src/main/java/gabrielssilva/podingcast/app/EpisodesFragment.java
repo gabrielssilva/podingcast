@@ -36,7 +36,7 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
         ViewTreeObserver.OnGlobalLayoutListener {
 
     public final static String TAG = "FILES_FRAGMENT";
-    private final static int NUM_EPISODES = 5;
+    private final static int NUM_EPISODES = 10;
 
     private HomeActivity activity;
     private ServiceController serviceController;
@@ -136,6 +136,7 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
 
             this.itemProgressBar.setVisibility(View.VISIBLE);
             this.itemDownloadAction.setVisibility(View.GONE);
+            this.podcast.getEpisodes().get(index).setStatus(Episode.DOWNLOADING);
 
             EpisodesController episodesController = new EpisodesController(this.activity);
             long downloadID = episodesController.downloadEpisode(this.podcast, selectedEpisode);

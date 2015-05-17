@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import gabrielssilva.podingcast.app.R;
@@ -57,6 +58,10 @@ public class EpisodesAdapter extends BaseAdapter {
 
         ImageView downloadAction = (ImageView) view.findViewById(R.id.action_download);
         downloadAction.setVisibility(episode.isLocal() ? View.GONE : View.VISIBLE);
+
+        ProgressBar itemProgress = (ProgressBar) view.findViewById(R.id.episode_item_progress);
+        itemProgress.setVisibility(episode.getStatus().equals(Episode.DOWNLOADING)
+                ? View.VISIBLE : View.GONE);
 
         return view;
     }

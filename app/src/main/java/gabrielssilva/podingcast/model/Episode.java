@@ -6,12 +6,15 @@ import android.os.Parcelable;
 public class Episode implements Parcelable {
 
     public static final Creator<Episode> CREATOR = new MyCreator();
+    public static final String LOCAL = "status_local";
+    public static final String NOT_LOCAL = "status_not_local";
+    public static final String DOWNLOADING = "status_downloading";
 
     private String episodeName;
     private String filePath;
     private String url;
     private int lastPlayedPosition;
-    private boolean local;
+    private String status;
 
     public Episode() {
 
@@ -22,7 +25,7 @@ public class Episode implements Parcelable {
         this.filePath = filePath;
         this.url = url;
         this.lastPlayedPosition = lastPlayedPosition;
-        this.local = true;
+        this.status = LOCAL;
     }
 
     public Episode(Parcel parcel) {
@@ -63,12 +66,14 @@ public class Episode implements Parcelable {
     }
 
     public boolean isLocal() {
-        return local;
+        return this.status.equals(LOCAL) || this.status.equals(DOWNLOADING);
     }
 
-    public void setLocal(boolean local) {
-        this.local = local;
+    public void setStatus(String status) {
+        this.status = status;
     }
+
+    public String getStatus() { return this.status; }
 
     @Override
     public int describeContents() {
