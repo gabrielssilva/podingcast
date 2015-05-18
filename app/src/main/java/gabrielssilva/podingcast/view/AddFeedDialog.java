@@ -60,7 +60,7 @@ public class AddFeedDialog extends DialogFragment {
 
         @Override
         public void onClick(DialogInterface dialogInterface, int i) {
-            callbackListener.onFailure();
+            callbackListener.onFailure(null);
             getDialog().dismiss();
         }
     }

@@ -34,13 +34,13 @@ public class PodcastController implements CallbackListener {
             this.externalCallbackListener.onSuccess(podcast);
         } catch (JSONException e) {
             e.printStackTrace();
-            onFailure();
+            onFailure(null);
         }
     }
 
     @Override
-    public void onFailure() {
-        this.externalCallbackListener.onFailure();
+    public void onFailure(Object result) {
+        this.externalCallbackListener.onFailure(result);
     }
 
 

@@ -16,6 +16,7 @@ public class DownloadNotifier extends BroadcastReceiver {
 
     public final static String ACTION_DOWNLOAD_OK = "gabrielssilva.podingcast.download_ok";
     public final static String ACTION_DOWNLOAD_FAIL = "gabrielssilva.podingcast.download_fail";
+    public final static String EXTRA_DOWNLOAD_ID = "download_id";
 
     private long downloadID;
 
@@ -47,6 +48,8 @@ public class DownloadNotifier extends BroadcastReceiver {
                     this.onDownloadError(context);
                 }
             }
+
+            cursor.close();
         } else {
             Log.i("DownloadNotifier", "Captured wrong download. Registering again...");
         }
@@ -63,6 +66,7 @@ public class DownloadNotifier extends BroadcastReceiver {
     private void sendBroadcast(Context context, String action) {
         Intent intent = new Intent();
         intent.setAction(action);
+        intent.putExtra(EXTRA_DOWNLOAD_ID, this.downloadID);
         context.sendBroadcast(intent);
     }
 

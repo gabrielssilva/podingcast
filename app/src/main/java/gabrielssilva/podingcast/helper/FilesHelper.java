@@ -21,4 +21,9 @@ public class FilesHelper {
 
         return podingcastFolder;
     }
+
+    public static boolean validFile(String filePath) {
+        File file = new File(filePath);
+        return file.exists();
+    }
 }

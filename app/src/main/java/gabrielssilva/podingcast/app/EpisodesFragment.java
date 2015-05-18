@@ -6,12 +6,12 @@ import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.util.LongSparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -41,6 +41,7 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
     private HomeActivity activity;
     private ServiceController serviceController;
     private Podcast podcast;
+    private LongSparseArray<Episode> downloading;
     private BroadcastNotifier broadcastNotifier;
 
     private View rootView;
@@ -48,8 +49,6 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
     private ListView listView;
     private TextView titleView;
     private ProgressBar progressBar;
-    private ProgressBar itemProgressBar;
-    private ImageView itemDownloadAction;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -58,10 +57,14 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
         this.rootView = rootView;
         this.activity = (HomeActivity) getActivity();
         this.serviceController = this.activity.getServiceController();
+
+        // Retrieve the episodes from somewhere
+        this.downloading = new LongSparseArray<>();
         this.broadcastNotifier = null;
 
         this.initViews();
         this.retrieveInfo();
+        this.updateEpisodesStatus();
         this.initListView();
 
         return rootView;
@@ -69,8 +72,8 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
 
     @Override
     public void onPause() {
-        if (this.broadcastNotifier != null) {
-            this.activity.unregisterReceiver(this.broadcastNotifier);
+        if (broadcastNotifier != null) {
+            this.activity.unregisterReceiver(broadcastNotifier);
         }
 
         super.onPause();
@@ -96,6 +99,18 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
         podcastController.fetchPodcast(this.podcast.getRssAddress(), NUM_EPISODES);
     }
 
+    private void updateEpisodesStatus() {
+        List<Episode> episodes = this.podcast.getEpisodes();
+
+        for (int i=0; i<this.downloading.size(); i++) {
+            for (Episode episode : episodes) {
+                if (episode.getUrl().equals(this.downloading.valueAt(i).getUrl())) {
+                    episode.setStatus(Episode.DOWNLOADING);
+                }
+            }
+        }
+    }
+
     private void initListView() {
         Context context = activity.getApplicationContext();
         this.adapter = new EpisodesAdapter(context, this.podcast);
@@ -110,13 +125,38 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
     private void waitForDownload(long downloadID) {
         Intent intent = new Intent(this.activity, DownloadNotifyService.class);
         intent.putExtra(DownloadNotifyService.DOWNLOAD_ID, downloadID);
-        this.activity.startService(intent);
 
-        this.broadcastNotifier = new BroadcastNotifier(new DownloadListener(),
-                DownloadNotifier.ACTION_DOWNLOAD_OK);
-        IntentFilter intentFilter = new IntentFilter(DownloadNotifier.ACTION_DOWNLOAD_OK);
-        intentFilter.addAction(DownloadNotifier.ACTION_DOWNLOAD_FAIL);
-        this.activity.registerReceiver(broadcastNotifier, intentFilter);
+        this.activity.startService(intent);
+        this.registerLocalNotifier();
+    }
+
+    private void registerLocalNotifier() {
+        // If any broadcast receiver was registered, register a new one
+        if (this.broadcastNotifier == null) {
+            this.broadcastNotifier = new BroadcastNotifier(new DownloadListener(),
+                    DownloadNotifier.ACTION_DOWNLOAD_OK);
+            IntentFilter intentFilter = new IntentFilter(DownloadNotifier.ACTION_DOWNLOAD_OK);
+            intentFilter.addAction(DownloadNotifier.ACTION_DOWNLOAD_FAIL);
+            this.activity.registerReceiver(this.broadcastNotifier, intentFilter);
+        }
+    }
+
+    private void playEpisode(Episode episode) {
+        this.serviceController.playFile(episode);
+
+        ViewPager viewPager = (ViewPager) this.activity.findViewById(R.id.view_pager);
+        viewPager.setCurrentItem(HomeActivity.PLAYER_FRAGMENT_POS, true);
+    }
+
+    private void downloadEpisode(Episode episode, int i) {
+        this.podcast.getEpisodes().get(i).setStatus(Episode.DOWNLOADING);
+        this.adapter.notifyDataSetChanged();
+
+        EpisodesController episodesController = new EpisodesController(this.activity);
+        long downloadID = episodesController.downloadEpisode(this.podcast, episode);
+
+        this.waitForDownload(downloadID);
+        this.downloading.append(downloadID, episode);
     }
 
 
@@ -126,21 +166,9 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
         Episode selectedEpisode = episodes.get(index);
 
         if (selectedEpisode.isLocal()) {
-            this.serviceController.playFile(selectedEpisode);
-
-            ViewPager viewPager = (ViewPager) this.activity.findViewById(R.id.view_pager);
-            viewPager.setCurrentItem(HomeActivity.PLAYER_FRAGMENT_POS, true);
+            playEpisode(selectedEpisode);
         } else {
-            this.itemProgressBar = (ProgressBar) view.findViewById(R.id.episode_item_progress);
-            this.itemDownloadAction = (ImageView) view.findViewById(R.id.action_download);
-
-            this.itemProgressBar.setVisibility(View.VISIBLE);
-            this.itemDownloadAction.setVisibility(View.GONE);
-            this.podcast.getEpisodes().get(index).setStatus(Episode.DOWNLOADING);
-
-            EpisodesController episodesController = new EpisodesController(this.activity);
-            long downloadID = episodesController.downloadEpisode(this.podcast, selectedEpisode);
-            this.waitForDownload(downloadID);
+            downloadEpisode(selectedEpisode, index);
         }
     }
 
@@ -168,12 +196,13 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
                     fetchedPodcast.getEpisodes());
 
             podcast.setEpisodes(updatedEpisodes);
+            updateEpisodesStatus();
             adapter.notifyDataSetChanged();
             progressBar.setVisibility(View.GONE);
         }
 
         @Override
-        public void onFailure() {
+        public void onFailure(Object result) {
             Toast.makeText(activity, "Couldn't load episodes", Toast.LENGTH_SHORT).show();
             progressBar.setVisibility(View.GONE);
         }
@@ -188,13 +217,30 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
             localFilesController.updatePodcast(podcast);
 
             fetchPodcast();
-            itemProgressBar.setVisibility(View.GONE);
+
+            this.updateEpisodeStatus((long) result, Episode.LOCAL);
         }
 
         @Override
-        public void onFailure() {
-            itemProgressBar.setVisibility(View.GONE);
-            itemDownloadAction.setVisibility(View.VISIBLE);
+        public void onFailure(Object result) {
+            this.updateEpisodeStatus((long) result, Episode.NOT_LOCAL);
+        }
+
+        private void updateEpisodeStatus(long downloadID, String status) {
+
+            Episode downloadedEpisode = downloading.get(downloadID);
+            downloadedEpisode.setStatus(status);
+            downloading.remove(downloadID);
+
+            activity.unregisterReceiver(broadcastNotifier);
+            broadcastNotifier = null;
+
+            if (downloading.size() > 0) {
+                // More Downloads to watch
+                registerLocalNotifier();
+            }
+
+            adapter.notifyDataSetChanged();
         }
     }
 }

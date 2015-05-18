@@ -8,6 +8,7 @@ import java.util.List;
 
 import gabrielssilva.podingcast.database.FilesDbContract;
 import gabrielssilva.podingcast.database.FilesDbHelper;
+import gabrielssilva.podingcast.helper.FilesHelper;
 import gabrielssilva.podingcast.model.Episode;
 import gabrielssilva.podingcast.model.Podcast;
 
@@ -64,7 +65,9 @@ public class LocalFilesController {
             int lastPlayedPosition = cursor.getInt(posColumnIndex);
 
             Episode episode = new Episode(episodeName, filePath, url,lastPlayedPosition);
-            list.add(episode);
+            if (FilesHelper.validFile(episode.getFilePath())) {
+                list.add(episode);
+            }
         }
 
         return list;

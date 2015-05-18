@@ -73,7 +73,7 @@ public class DownloadFeedTask extends AsyncTask<PodcastController.Params, Void, 
         if (jsonPodcast != null) {
             callbackListener.onSuccess(jsonPodcast);
         } else {
-            callbackListener.onFailure();
+            callbackListener.onFailure(null);
         }
     }
 }

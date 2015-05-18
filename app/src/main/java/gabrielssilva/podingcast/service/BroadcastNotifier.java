@@ -19,11 +19,14 @@ public class BroadcastNotifier extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.i("BroadcastNotifier", "Broadcast Received");
+        Log.d("BroadcastNotifier", "Broadcast Received");
+
+        long downloadID = intent.getLongExtra(DownloadNotifier.EXTRA_DOWNLOAD_ID, 0);
+
         if (intent.getAction().equals(this.okAction)) {
-            this.callbackListener.onSuccess(null);
+            this.callbackListener.onSuccess(downloadID);
         } else {
-            this.callbackListener.onFailure();
+            this.callbackListener.onFailure(downloadID);
         }
     }
 }

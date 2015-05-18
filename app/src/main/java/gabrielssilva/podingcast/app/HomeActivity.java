@@ -59,7 +59,7 @@ public class HomeActivity extends FragmentActivity implements CallbackListener {
     }
 
     @Override
-    public void onFailure() {
+    public void onFailure(Object result) {
         Toast.makeText(this, "Feed not downloaded", Toast.LENGTH_LONG).show();
     }
 
