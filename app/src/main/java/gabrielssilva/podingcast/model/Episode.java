@@ -65,10 +65,6 @@ public class Episode implements Parcelable {
         this.lastPlayedPosition = lastPlayedPosition;
     }
 
-    public boolean isLocal() {
-        return this.status.equals(LOCAL) || this.status.equals(DOWNLOADING);
-    }
-
     public void setStatus(String status) {
         this.status = status;
     }

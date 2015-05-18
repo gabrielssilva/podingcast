@@ -57,7 +57,8 @@ public class EpisodesAdapter extends BaseAdapter {
         viewHolder.episodeName.setText(episode.getEpisodeName());
 
         ImageView downloadAction = (ImageView) view.findViewById(R.id.action_download);
-        downloadAction.setVisibility(episode.isLocal() ? View.GONE : View.VISIBLE);
+        downloadAction.setVisibility(episode.getStatus().equals(Episode.NOT_LOCAL) ?
+                View.VISIBLE : View.GONE);
 
         ProgressBar itemProgress = (ProgressBar) view.findViewById(R.id.episode_item_progress);
         itemProgress.setVisibility(episode.getStatus().equals(Episode.DOWNLOADING)

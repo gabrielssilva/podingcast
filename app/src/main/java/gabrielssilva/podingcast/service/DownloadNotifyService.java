@@ -9,6 +9,7 @@ import android.util.Log;
 import android.util.LongSparseArray;
 
 import gabrielssilva.podingcast.app.interfaces.CallbackListener;
+import gabrielssilva.podingcast.helper.FilesHelper;
 
 public class DownloadNotifyService extends Service implements CallbackListener {
 
@@ -74,9 +75,10 @@ public class DownloadNotifyService extends Service implements CallbackListener {
 
         unregisterReceiver(this.notifiers.get(downloadID));
         this.notifiers.remove(downloadID);
+        FilesHelper.removeDownloadReference(this, downloadID);
 
         if (this.notifiers.size() == 0) {
-            Log.d("DownloadNotifyService", "Stoping Service");
+            Log.d("DownloadNotifyService", "Stopping Service");
             stopSelf();
         }
     }
