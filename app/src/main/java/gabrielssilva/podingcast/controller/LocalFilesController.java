@@ -9,6 +9,7 @@ import java.util.List;
 import gabrielssilva.podingcast.database.FilesDbContract;
 import gabrielssilva.podingcast.database.FilesDbHelper;
 import gabrielssilva.podingcast.helper.FilesHelper;
+import gabrielssilva.podingcast.helper.Mp3Helper;
 import gabrielssilva.podingcast.model.Episode;
 import gabrielssilva.podingcast.model.Podcast;
 
@@ -39,16 +40,6 @@ public class LocalFilesController {
         return list;
     }
 
-    public void updatePodcast(Podcast podcast) {
-        List<Episode> episodes = this.getPodcastEpisodes(podcast);
-        podcast.setEpisodes(episodes);
-    }
-
-    public void saveCurrentPosition(String fileName, int currentPosition) {
-        this.dbHelper.updateLastPosition(fileName, currentPosition);
-    }
-
-
     private List<Episode> getPodcastEpisodes(Podcast podcast) {
         List<Episode> list = new ArrayList<>();
         Cursor cursor = dbHelper.getFeedFiles(podcast.getPodcastName());
@@ -66,10 +57,21 @@ public class LocalFilesController {
 
             Episode episode = new Episode(episodeName, filePath, url,lastPlayedPosition);
             if (FilesHelper.validFile(episode.getFilePath())) {
+                Mp3Helper mp3Helper = new Mp3Helper(filePath);
+                episode.setDuration(mp3Helper.getEpisodeDuration());
                 list.add(episode);
             }
         }
 
         return list;
+    }
+
+    public void updatePodcast(Podcast podcast) {
+        List<Episode> episodes = this.getPodcastEpisodes(podcast);
+        podcast.setEpisodes(episodes);
+    }
+
+    public void saveCurrentPosition(String fileName, int currentPosition) {
+        this.dbHelper.updateLastPosition(fileName, currentPosition);
     }
 }

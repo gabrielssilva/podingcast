@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import gabrielssilva.podingcast.app.R;
 import gabrielssilva.podingcast.model.Episode;
 import gabrielssilva.podingcast.model.Podcast;
@@ -47,6 +49,9 @@ public class EpisodesAdapter extends BaseAdapter {
             view = this.inflateLayout(viewGroup);
 
             viewHolder.episodeName = (TextView) view.findViewById(R.id.episode_name);
+            viewHolder.episodeDuration = (TextView) view.findViewById(R.id.episode_duration);
+            viewHolder.downloadAction = (ImageView) view.findViewById(R.id.action_download);
+            viewHolder.itemProgress = (ProgressBar) view.findViewById(R.id.episode_item_progress);
             view.setTag(viewHolder);
         } else {
             // We can use our Holder!
@@ -55,13 +60,10 @@ public class EpisodesAdapter extends BaseAdapter {
 
         Episode episode = this.podcast.getEpisodes().get(index);
         viewHolder.episodeName.setText(episode.getEpisodeName());
-
-        ImageView downloadAction = (ImageView) view.findViewById(R.id.action_download);
-        downloadAction.setVisibility(episode.getStatus().equals(Episode.NOT_LOCAL) ?
+        viewHolder.episodeDuration.setText(episode.getDuration());
+        viewHolder.downloadAction.setVisibility(episode.getStatus().equals(Episode.NOT_LOCAL) ?
                 View.VISIBLE : View.GONE);
-
-        ProgressBar itemProgress = (ProgressBar) view.findViewById(R.id.episode_item_progress);
-        itemProgress.setVisibility(episode.getStatus().equals(Episode.DOWNLOADING)
+        viewHolder.itemProgress.setVisibility(episode.getStatus().equals(Episode.DOWNLOADING)
                 ? View.VISIBLE : View.GONE);
 
         return view;
@@ -81,5 +83,8 @@ public class EpisodesAdapter extends BaseAdapter {
     // A holder to store our views.
     private class ViewHolder {
         TextView episodeName;
+        TextView episodeDuration;
+        ImageView downloadAction;
+        ProgressBar itemProgress;
     }
 }

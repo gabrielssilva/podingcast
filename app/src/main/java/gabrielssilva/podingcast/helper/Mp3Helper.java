@@ -36,4 +36,17 @@ public class Mp3Helper {
 
         return picture;
     }
+
+    public String getEpisodeDuration() {
+        int totalMilliseconds = Integer.parseInt(this.dataRetriever.extractMetadata(
+                MediaMetadataRetriever.METADATA_KEY_DURATION));
+        int seconds = Math.round(totalMilliseconds / 1000);
+        int minutes = Math.round(seconds / 60);
+        int hours = Math.round(minutes / 60);
+
+        seconds = seconds % 60;
+        minutes = minutes % 60;
+
+        return hours+":"+minutes+":"+seconds;
+    }
 }

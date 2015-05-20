@@ -13,6 +13,7 @@ public class Episode implements Parcelable {
     private String episodeName;
     private String filePath;
     private String url;
+    private String duration;
     private int lastPlayedPosition;
     private String status;
 
@@ -55,6 +56,14 @@ public class Episode implements Parcelable {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
     }
 
     public int getLastPlayedPosition() {
