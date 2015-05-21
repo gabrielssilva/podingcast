@@ -29,5 +29,6 @@
     <string name="dialog_add_feed_confirm">Add Feed</string>
     <string name="dialog_add_feed_cancel">Cancel</string>
     <string name="episodes_item_download">Download</string>
+    <string name="text_footer_episodes_list">More Episodes</string>
 
 </resources>

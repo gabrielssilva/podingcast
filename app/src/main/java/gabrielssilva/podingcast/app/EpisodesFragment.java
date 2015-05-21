@@ -37,7 +37,7 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
         ViewTreeObserver.OnGlobalLayoutListener {
 
     public final static String TAG = "FILES_FRAGMENT";
-    private final static int NUM_EPISODES = 10;
+    private final static int NUM_EPISODES = 5;
 
     private HomeActivity activity;
     private ServiceController serviceController;
@@ -68,7 +68,7 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
         this.activity = (HomeActivity) getActivity();
         this.serviceController = this.activity.getServiceController();
 
-        this.initViews();
+        this.initViews(inflater);
         this.retrieveInfo();
         this.initListView();
 
@@ -96,10 +96,13 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
     }
 
 
-    private void initViews() {
+    private void initViews(LayoutInflater inflater) {
         this.titleView = (TextView) this.rootView.findViewById(R.id.episodes_page_title);
         this.listView = (ListView) this.rootView.findViewById(R.id.list_view);
         this.progressBar = (ProgressBar) this.rootView.findViewById(R.id.episodes_page_progress);
+
+        View footerView = inflater.inflate(R.layout.footer_episodes_list, listView, false);
+        this.listView.addFooterView(footerView);
     }
 
     private void retrieveInfo() {
@@ -191,9 +194,7 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
         this.registerLocalNotifier();
     }
 
-
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int index, long id) {
+    private void selectEpisode(int index) {
         List<Episode> episodes = this.podcast.getEpisodes();
         Episode selectedEpisode = episodes.get(index);
 
@@ -201,6 +202,24 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
             playEpisode(selectedEpisode);
         } else if (selectedEpisode.getStatus().equals(Episode.NOT_LOCAL)) {
             downloadEpisode(selectedEpisode);
+        }
+    }
+
+    private void moreEpisodes() {
+        int amountToFetch = this.podcast.getEpisodes().size() + NUM_EPISODES;
+        this.progressBar.setVisibility(View.VISIBLE);
+
+        PodcastController podcastController = new PodcastController(new FetchEpisodesListener());
+        podcastController.fetchPodcast(this.podcast.getRssAddress(), amountToFetch);
+    }
+
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int index, long id) {
+        if (index == this.podcast.getEpisodes().size()) {
+            moreEpisodes();
+        } else {
+            selectEpisode(index);
         }
     }
 
