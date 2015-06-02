@@ -7,9 +7,11 @@ import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
-import android.util.Log;
+import android.support.v4.app.NotificationCompat;
 
 import java.io.IOException;
+
+import gabrielssilva.podingcast.app.R;
 
 public class PlayerService extends Service implements MediaPlayer.OnPreparedListener,
         MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
@@ -17,23 +19,34 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     private MediaPlayer mediaPlayer;
     private int lastAudioPosition;
     private int currentAudioPosition;
-    private final IBinder playerBind = new PlayerBinder();
 
     @Override
-    public IBinder onBind(Intent intent) {
-        Log.i("Service", "Initializing service (service)");
+    public void onCreate() {
         this.mediaPlayer = new MediaPlayer();
         this.initializeMediaPlayer();
-
-        return this.playerBind;
     }
 
     @Override
-    public boolean onUnbind(Intent intent) {
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        NotificationCompat.Builder nBuilder = new NotificationCompat.Builder(this);
+        nBuilder.setSmallIcon(R.drawable.ic_play);
+        nBuilder.setContentTitle("Playing...");
+
+        this.startForeground(1, nBuilder.build());
+        return START_STICKY;
+    }
+
+    @Override
+    public void onDestroy() {
+        this.stopForeground(true);
+
         this.mediaPlayer.release();
         this.mediaPlayer = new MediaPlayer();
+    }
 
-        return false;
+    @Override
+    public IBinder onBind(Intent intent) {
+        return new PlayerBinder();
     }
 
     @Override
@@ -51,6 +64,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     public void onPrepared(MediaPlayer mp) {
         // Do nothing
     }
+
 
     public void loadAudio(String filePath) {
         this.currentAudioPosition = lastAudioPosition;
@@ -115,7 +129,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
 
 
     public class PlayerBinder extends Binder {
-        PlayerService getService() {
+        public PlayerService getService() {
             return PlayerService.this;
         }
     }

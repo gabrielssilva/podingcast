@@ -8,7 +8,6 @@
         <item name="colorAccent">@color/accent</item>
     </style>
 
-
     <!-- Text Styles -->
     <style name="TextAppearance" parent="Base.TextAppearance.AppCompat">
         <item name="android:typeface">sans</item>
@@ -21,10 +20,18 @@
         <item name="android:textColor">@color/primary_text</item>
     </style>
 
+    <style name="TextAppearance.Primary.Dark" parent="TextAppearance.Primary">
+        <item name="android:textColor">@color/primary_light</item>
+    </style>
+
     <style name="TextAppearance.Secondary">
         <item name="android:textSize">20sp</item>
         <item name="android:singleLine">true</item>
         <item name="android:textColor">@color/secondary_text</item>
+    </style>
+
+    <style name="TextAppearance.Secondary.Dark" parent="TextAppearance.Secondary">
+        <item name="android:textColor">@color/primary_light</item>
     </style>
 
     <style name="TextAppearance.Primary.ListItem">
@@ -33,6 +40,10 @@
 
     <style name="TextAppearance.Secondary.ListItem">
         <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="EditText.Dark" parent="Widget.AppCompat.EditText">
+        <item name="android:textColorHint">@color/primary_light</item>
     </style>
 
 

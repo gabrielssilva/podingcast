@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import gabrielssilva.podingcast.adapter.FragmentsAdapter;
 import gabrielssilva.podingcast.app.interfaces.CallbackListener;
-import gabrielssilva.podingcast.controller.ServiceController;
+import gabrielssilva.podingcast.controller.PlayerController;
 import gabrielssilva.podingcast.database.FilesDbHelper;
 import gabrielssilva.podingcast.model.Podcast;
 
@@ -17,7 +17,7 @@ public class HomeActivity extends FragmentActivity implements CallbackListener {
 
     public final static int PLAYER_FRAGMENT_POS = 1;
 
-    private ServiceController serviceController;
+    private PlayerController playerController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,11 +69,11 @@ public class HomeActivity extends FragmentActivity implements CallbackListener {
      * The PlayerFragment will set it after creating a new ServiceController.
      * The FilesFragment will get it when necessary.
      */
-    public void setServiceController(ServiceController serviceController) {
-        this.serviceController = serviceController;
+    public void setPlayerController(PlayerController playerController) {
+        this.playerController = playerController;
     }
 
-    public ServiceController getServiceController() {
-        return this.serviceController;
+    public PlayerController getPlayerController() {
+        return this.playerController;
     }
 }

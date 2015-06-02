@@ -40,6 +40,41 @@ public class LocalFilesController {
         return list;
     }
 
+    public Episode getEpisode(String episodeName) {
+        Cursor cursor = dbHelper.getEpisode(episodeName);
+        Episode episode = null;
+
+        int nameColumnIndex = cursor.getColumnIndexOrThrow(FilesDbContract.FileEntry.FILE_NAME);
+        int pathColumnIndex = cursor.getColumnIndexOrThrow(FilesDbContract.FileEntry.FILE_PATH);
+        int urlColumnIndex = cursor.getColumnIndexOrThrow(FilesDbContract.FileEntry.URL);
+        int posColumnIndex = cursor.getColumnIndexOrThrow(FilesDbContract.FileEntry.FILE_LAST_POS);
+
+        if (cursor.moveToFirst()) {
+            episodeName = cursor.getString(nameColumnIndex);
+            String filePath = cursor.getString(pathColumnIndex);
+            String url = cursor.getString(urlColumnIndex);
+            int lastPlayedPosition = cursor.getInt(posColumnIndex);
+
+            if (FilesHelper.validFile(filePath)) {
+                Mp3Helper mp3Helper = new Mp3Helper(filePath);
+                episode = new Episode(episodeName, filePath, url, lastPlayedPosition);
+                episode.setDuration(mp3Helper.getEpisodeDuration());
+            }
+        }
+
+        return episode;
+    }
+
+    public void updatePodcast(Podcast podcast) {
+        List<Episode> episodes = this.getPodcastEpisodes(podcast);
+        podcast.setEpisodes(episodes);
+    }
+
+    public void saveCurrentPosition(String fileName, int currentPosition) {
+        this.dbHelper.updateLastPosition(fileName, currentPosition);
+    }
+
+
     private List<Episode> getPodcastEpisodes(Podcast podcast) {
         List<Episode> list = new ArrayList<>();
         Cursor cursor = dbHelper.getFeedFiles(podcast.getPodcastName());
@@ -64,14 +99,5 @@ public class LocalFilesController {
         }
 
         return list;
-    }
-
-    public void updatePodcast(Podcast podcast) {
-        List<Episode> episodes = this.getPodcastEpisodes(podcast);
-        podcast.setEpisodes(episodes);
-    }
-
-    public void saveCurrentPosition(String fileName, int currentPosition) {
-        this.dbHelper.updateLastPosition(fileName, currentPosition);
     }
 }

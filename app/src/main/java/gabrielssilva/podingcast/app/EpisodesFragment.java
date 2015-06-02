@@ -24,7 +24,7 @@ import gabrielssilva.podingcast.app.interfaces.CallbackListener;
 import gabrielssilva.podingcast.controller.EpisodesController;
 import gabrielssilva.podingcast.controller.LocalFilesController;
 import gabrielssilva.podingcast.controller.PodcastController;
-import gabrielssilva.podingcast.controller.ServiceController;
+import gabrielssilva.podingcast.controller.PlayerController;
 import gabrielssilva.podingcast.helper.FilesHelper;
 import gabrielssilva.podingcast.model.Episode;
 import gabrielssilva.podingcast.model.Podcast;
@@ -40,7 +40,7 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
     private final static int NUM_EPISODES = 5;
 
     private HomeActivity activity;
-    private ServiceController serviceController;
+    private PlayerController playerController;
     private Podcast podcast;
     private LongSparseArray<Episode> downloading;
     private BroadcastNotifier broadcastNotifier;
@@ -66,7 +66,7 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
 
         this.rootView = rootView;
         this.activity = (HomeActivity) getActivity();
-        this.serviceController = this.activity.getServiceController();
+        this.playerController = this.activity.getPlayerController();
 
         this.initViews(inflater);
         this.retrieveInfo();
@@ -168,7 +168,7 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
     }
 
     private void playEpisode(Episode episode) {
-        this.serviceController.playFile(episode);
+        this.playerController.playFile(episode);
 
         ViewPager viewPager = (ViewPager) this.activity.findViewById(R.id.view_pager);
         viewPager.setCurrentItem(HomeActivity.PLAYER_FRAGMENT_POS, true);

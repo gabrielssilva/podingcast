@@ -30,5 +30,9 @@
     <string name="dialog_add_feed_cancel">Cancel</string>
     <string name="episodes_item_download">Download</string>
     <string name="text_footer_episodes_list">More Episodes</string>
+    <string name="title_activity_add_feed">Add feed</string>
+    <string name="content_cancel_add_podcast">Cancel action</string>
+    <string name="hint_add_podcast">Looking for…</string>
+    <string name="content_search_add_podcast">Search for Podcasts</string>
 
 </resources>

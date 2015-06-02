@@ -15,7 +15,7 @@ import android.widget.SeekBar;
 
 import gabrielssilva.podingcast.app.interfaces.PlayerEventListener;
 import gabrielssilva.podingcast.app.interfaces.ServiceListener;
-import gabrielssilva.podingcast.controller.ServiceController;
+import gabrielssilva.podingcast.controller.PlayerController;
 import gabrielssilva.podingcast.events.PlayPauseClick;
 import gabrielssilva.podingcast.events.SeekBarTouch;
 import gabrielssilva.podingcast.events.JumpAudioPositionClick;
@@ -32,20 +32,21 @@ public class PlayerFragment extends Fragment implements PlayerEventListener, Ser
     private View rootView;
     private Handler handler;
     ProgressUpdateRunnable updateRunnable;
-    private ServiceController serviceController;
+    private PlayerController playerController;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_player, container, false);
-
-        this.serviceController = new ServiceController(this);
-        ((HomeActivity) this.getActivity()).setServiceController(this.serviceController);
 
         this.rootView = rootView;
         this.handler = new Handler();
 
         this.initViews();
         this.setButtonEvents();
+
+
+        this.playerController = new PlayerController(this);
+        ((HomeActivity) this.getActivity()).setPlayerController(this.playerController);
 
         this.setSeekBar();
         this.updateButtonPlayPause();
@@ -58,8 +59,8 @@ public class PlayerFragment extends Fragment implements PlayerEventListener, Ser
         super.onDestroy();
         this.stopUpdatingSeekBar();
 
-        this.serviceController.saveCurrentPosition();
-        this.serviceController.destroyService();
+        this.playerController.saveCurrentPosition();
+        this.playerController.disconnectFromService();
 
         Log.i("Activity Life Cycle", "Destroying activity");
     }
@@ -95,7 +96,7 @@ public class PlayerFragment extends Fragment implements PlayerEventListener, Ser
         String contentDescription;
         int selectorId;
 
-        if (this.serviceController.isPlaying()) {
+        if (this.playerController.isPlaying()) {
             selectorId = R.drawable.selector_pause_button;
             contentDescription = "Pause";
         } else {
@@ -110,13 +111,13 @@ public class PlayerFragment extends Fragment implements PlayerEventListener, Ser
 
     @Override
     public void playOrPause() {
-        this.serviceController.playOrPause();
+        this.playerController.playOrPause();
         this.updateButtonPlayPause();
     }
 
     @Override
     public void setSeekBar() {
-        int audioDuration = this.serviceController.getAudioDuration();
+        int audioDuration = this.playerController.getAudioDuration();
         SeekBarTouch seekBarTouchEvent = new SeekBarTouch(this);
         this.updateRunnable = new ProgressUpdateRunnable(this);
 
@@ -134,13 +135,13 @@ public class PlayerFragment extends Fragment implements PlayerEventListener, Ser
 
     @Override
     public void seekToPosition(int deltaInMilliseconds) {
-        this.serviceController.seekToPosition(deltaInMilliseconds, true);
+        this.playerController.seekToPosition(deltaInMilliseconds, true);
         this.updateButtonPlayPause();
     }
 
     @Override
     public void updateSeekBar() {
-        int newProgress = this.serviceController.getAudioPosition();
+        int newProgress = this.playerController.getAudioPosition();
 
         this.seekBar.setProgress(newProgress);
         this.handler.postDelayed(this.updateRunnable, 100);
@@ -148,7 +149,7 @@ public class PlayerFragment extends Fragment implements PlayerEventListener, Ser
 
     @Override
     public void startUpdatingSeekBar(int seekPosition) {
-        this.serviceController.seekToPosition(seekPosition, false);
+        this.playerController.seekToPosition(seekPosition, false);
         this.handler.postDelayed(this.updateRunnable, 100);
         this.updateButtonPlayPause();
     }

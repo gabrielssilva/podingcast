@@ -1,17 +1,22 @@
 package gabrielssilva.podingcast.controller;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.os.IBinder;
 
 import gabrielssilva.podingcast.app.interfaces.ServiceListener;
 import gabrielssilva.podingcast.helper.Mp3Helper;
 import gabrielssilva.podingcast.model.Episode;
-import gabrielssilva.podingcast.service.PlayerConnection;
 import gabrielssilva.podingcast.service.PlayerService;
 
-public class ServiceController {
+public class PlayerController implements ServiceConnection {
+
+    public static String SHARED_PREF_KEY = "gabrielssilva.podingcast.last_ep";
+    public static String KEY_EP_NAME = "EPISODE_NAME";
 
     private Context context;
     private boolean bound;
@@ -19,21 +24,29 @@ public class ServiceController {
 
     private ServiceListener serviceListener;
     private PlayerService playerService;
-    private ServiceConnection playerConnection;
+    private LocalFilesController localFilesController;
 
-    public ServiceController(ServiceListener serviceListener) {
+    public PlayerController(ServiceListener serviceListener) {
         this.serviceListener = serviceListener;
         this.context = serviceListener.getApplicationContext();
+        this.localFilesController = new LocalFilesController(this.context);
 
         this.initService();
     }
 
     private void initService() {
-        this.playerConnection = new PlayerConnection(this);
-
         Intent playerIntent = new Intent(this.context, PlayerService.class);
-        this.context.bindService(playerIntent, this.playerConnection, Context.BIND_AUTO_CREATE);
+
         this.context.startService(playerIntent);
+        this.context.bindService(playerIntent, this, Context.BIND_AUTO_CREATE);
+    }
+
+    private Episode retrieveLastEpisode() {
+        SharedPreferences sharedPrefs =
+                this.context.getSharedPreferences(SHARED_PREF_KEY, Context.MODE_PRIVATE);
+        String episodeName = sharedPrefs.getString(KEY_EP_NAME, "");
+
+        return this.localFilesController.getEpisode(episodeName);
     }
 
     private void updatePlayer() {
@@ -44,27 +57,21 @@ public class ServiceController {
         this.serviceListener.setSeekBar();
     }
 
-
-    /*
-     * The following two method will be called by the PlayerConnection,
-     * as soon as the Service was created. Because of that, it is necessary
-     * to check if the Ser
-     */
-    public void setService(PlayerService playerService) {
-        this.playerService = playerService;
+    private void updateLastEpisode(Episode episode) {
+        SharedPreferences sharedPrefs =
+                this.context.getSharedPreferences(SHARED_PREF_KEY, Context.MODE_PRIVATE);
+        sharedPrefs.edit().putString(KEY_EP_NAME, episode.getEpisodeName()).apply();
     }
 
-    public void setBound(boolean bound) {
-        this.bound = bound;
-    }
 
-    public void playFile(Episode episode) {
+    public void playFile(Episode newEpisode) {
         // Save position from current episode and update it's reference to a new one.
+        this.updateLastEpisode(newEpisode);
         this.saveCurrentPosition();
-        this.episode = episode;
+        this.episode = newEpisode;
 
-        this.playerService.setLastAudioPosition(episode.getLastPlayedPosition());
-        this.playerService.loadAudio(episode.getFilePath());
+        this.playerService.setLastAudioPosition(newEpisode.getLastPlayedPosition());
+        this.playerService.loadAudio(newEpisode.getFilePath());
         this.playerService.playAudio();
 
         this.updatePlayer();
@@ -86,16 +93,16 @@ public class ServiceController {
         }
     }
 
-    public void destroyService() {
+    public void disconnectFromService() {
         if (bound) {
-            this.context.unbindService(this.playerConnection);
+            this.context.unbindService(this);
         }
     }
 
     public void saveCurrentPosition() {
         if (this.episode != null) {
-            LocalFilesController localFilesController = new LocalFilesController(this.context);
-            localFilesController.saveCurrentPosition(this.episode.getEpisodeName(), this.playerService.getAudioPosition());
+            this.localFilesController.saveCurrentPosition(this.episode.getEpisodeName(),
+                    this.playerService.getAudioPosition());
         }
     }
 
@@ -117,5 +124,22 @@ public class ServiceController {
 
     public boolean isPlaying() {
         return this.bound && this.playerService.isPlaying();
+    }
+
+
+    @Override
+    public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+        this.playerService = ((PlayerService.PlayerBinder) iBinder).getService();
+        this.bound = true;
+
+        this.episode = retrieveLastEpisode();
+        if (this.episode != null) {
+            this.updatePlayer();
+        }
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName componentName) {
+        this.bound = false;
     }
 }
