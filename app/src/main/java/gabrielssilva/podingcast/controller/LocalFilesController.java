@@ -27,11 +27,13 @@ public class LocalFilesController {
 
         int nameColumnIndex = cursor.getColumnIndexOrThrow(FilesDbContract.FeedEntry.FEED_NAME);
         int addrColumnIndex = cursor.getColumnIndexOrThrow(FilesDbContract.FeedEntry.FEED_ADDRESS);
+        int imgColIndex = cursor.getColumnIndexOrThrow(FilesDbContract.FeedEntry.FEED_IMG_ADDRESS);
 
         for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             Podcast podcast = new Podcast();
             podcast.setPodcastName(cursor.getString(nameColumnIndex));
             podcast.setRssAddress(cursor.getString(addrColumnIndex));
+            podcast.setImageAddress(cursor.getString(imgColIndex));
             podcast.setEpisodes(this.getPodcastEpisodes(podcast));
 
             list.add(podcast);

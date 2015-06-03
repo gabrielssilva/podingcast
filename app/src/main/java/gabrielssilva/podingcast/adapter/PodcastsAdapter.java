@@ -12,6 +12,7 @@ import java.util.List;
 
 import gabrielssilva.podingcast.app.R;
 import gabrielssilva.podingcast.model.Podcast;
+import gabrielssilva.podingcast.view.SmartImageView;
 
 public class PodcastsAdapter extends BaseAdapter {
 
@@ -49,6 +50,7 @@ public class PodcastsAdapter extends BaseAdapter {
 
             viewHolder.podcastName = (TextView) view.findViewById(R.id.feed_podcast_name);
             viewHolder.episodesCount = (TextView) view.findViewById(R.id.feed_episodes_count);
+            viewHolder.podcastCover = (SmartImageView) view.findViewById(R.id.podcast_cover);
             view.setTag(viewHolder);
         } else {
             // We can use our Holder!
@@ -60,6 +62,7 @@ public class PodcastsAdapter extends BaseAdapter {
 
         viewHolder.podcastName.setText(podcast.getPodcastName());
         viewHolder.episodesCount.setText(episodesCountString);
+        viewHolder.podcastCover.setSource(podcast.getPodcastName(), podcast.getImageAddress());
 
         return view;
     }
@@ -92,5 +95,6 @@ public class PodcastsAdapter extends BaseAdapter {
     private class ViewHolder {
         TextView podcastName;
         TextView episodesCount;
+        SmartImageView podcastCover;
     }
 }

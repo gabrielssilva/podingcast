@@ -12,10 +12,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
+        <gabrielssilva.podingcast.view.SmartImageView
+            android:id="@+id/podcast_cover"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/default_feed_cover"
+            android:layout_height="200dp"
             android:scaleType="centerCrop"
             android:contentDescription="@string/feed_item_cover" />
 
