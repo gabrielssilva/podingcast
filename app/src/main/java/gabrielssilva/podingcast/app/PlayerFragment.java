@@ -1,6 +1,5 @@
 package gabrielssilva.podingcast.app;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,14 +13,17 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 
 import gabrielssilva.podingcast.app.interfaces.PlayerEventListener;
-import gabrielssilva.podingcast.app.interfaces.ServiceListener;
+import gabrielssilva.podingcast.app.interfaces.PlayerListener;
 import gabrielssilva.podingcast.controller.PlayerController;
 import gabrielssilva.podingcast.events.PlayPauseClick;
 import gabrielssilva.podingcast.events.SeekBarTouch;
 import gabrielssilva.podingcast.events.JumpAudioPositionClick;
 import gabrielssilva.podingcast.events.ProgressUpdateRunnable;
+import gabrielssilva.podingcast.helper.Mp3Helper;
+import gabrielssilva.podingcast.model.Episode;
 
-public class PlayerFragment extends Fragment implements PlayerEventListener, ServiceListener {
+public class PlayerFragment extends Fragment implements PlayerEventListener,
+        PlayerListener {
 
     private ImageButton buttonPlayPause;
     private ImageButton buttonSkipAudio;
@@ -44,12 +46,8 @@ public class PlayerFragment extends Fragment implements PlayerEventListener, Ser
         this.initViews();
         this.setButtonEvents();
 
-
-        this.playerController = new PlayerController(this);
+        this.playerController = new PlayerController(this, this.getActivity());
         ((HomeActivity) this.getActivity()).setPlayerController(this.playerController);
-
-        this.setSeekBar();
-        this.updateButtonPlayPause();
 
         return rootView;
     }
@@ -108,15 +106,7 @@ public class PlayerFragment extends Fragment implements PlayerEventListener, Ser
         this.buttonPlayPause.setContentDescription(contentDescription);
     }
 
-
-    @Override
-    public void playOrPause() {
-        this.playerController.playOrPause();
-        this.updateButtonPlayPause();
-    }
-
-    @Override
-    public void setSeekBar() {
+    private void setupSeekBar() {
         int audioDuration = this.playerController.getAudioDuration();
         SeekBarTouch seekBarTouchEvent = new SeekBarTouch(this);
         this.updateRunnable = new ProgressUpdateRunnable(this);
@@ -128,9 +118,18 @@ public class PlayerFragment extends Fragment implements PlayerEventListener, Ser
         this.updateButtonPlayPause();
     }
 
+    private void setEpisodeCover(String filePath) {
+        Mp3Helper mp3Helper = new Mp3Helper(filePath);
+        Bitmap episodeCover = mp3Helper.getEpisodeCover(this.getResources());
+
+        this.imageView.setImageBitmap(episodeCover);
+    }
+
+
     @Override
-    public void setEpisodeCover(Bitmap bitmapCover) {
-        this.imageView.setImageBitmap(bitmapCover);
+    public void playOrPause() {
+        this.playerController.playOrPause();
+        this.updateButtonPlayPause();
     }
 
     @Override
@@ -160,7 +159,9 @@ public class PlayerFragment extends Fragment implements PlayerEventListener, Ser
     }
 
     @Override
-    public Context getApplicationContext() {
-        return this.getActivity().getApplicationContext();
+    public void updateViews(Episode episode) {
+        this.setupSeekBar();
+        this.setEpisodeCover(episode.getFilePath());
+        this.updateButtonPlayPause();
     }
 }

@@ -5,11 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.os.IBinder;
 
-import gabrielssilva.podingcast.app.interfaces.ServiceListener;
-import gabrielssilva.podingcast.helper.Mp3Helper;
+import gabrielssilva.podingcast.app.interfaces.PlayerListener;
 import gabrielssilva.podingcast.model.Episode;
 import gabrielssilva.podingcast.service.PlayerService;
 
@@ -22,14 +20,14 @@ public class PlayerController implements ServiceConnection {
     private boolean bound;
     private Episode episode;
 
-    private ServiceListener serviceListener;
+    private PlayerListener playerListener;
     private PlayerService playerService;
     private LocalFilesController localFilesController;
 
-    public PlayerController(ServiceListener serviceListener) {
-        this.serviceListener = serviceListener;
-        this.context = serviceListener.getApplicationContext();
-        this.localFilesController = new LocalFilesController(this.context);
+    public PlayerController(PlayerListener playerListener, Context context) {
+        this.playerListener = playerListener;
+        this.context = context;
+        this.localFilesController = new LocalFilesController(context);
 
         this.initService();
     }
@@ -49,14 +47,6 @@ public class PlayerController implements ServiceConnection {
         return this.localFilesController.getEpisode(episodeName);
     }
 
-    private void updatePlayer() {
-        Mp3Helper mp3Helper = new Mp3Helper(this.episode.getFilePath());
-        Bitmap bitmapCover = mp3Helper.getEpisodeCover(this.context.getResources());
-
-        this.serviceListener.setEpisodeCover(bitmapCover);
-        this.serviceListener.setSeekBar();
-    }
-
     private void updateLastEpisode(Episode episode) {
         SharedPreferences sharedPrefs =
                 this.context.getSharedPreferences(SHARED_PREF_KEY, Context.MODE_PRIVATE);
@@ -74,7 +64,7 @@ public class PlayerController implements ServiceConnection {
         this.playerService.loadAudio(newEpisode.getFilePath());
         this.playerService.playAudio();
 
-        this.updatePlayer();
+        this.playerListener.updateViews(this.episode);
     }
 
     public void seekToPosition(int seekPosition, boolean preservePosition) {
@@ -133,8 +123,11 @@ public class PlayerController implements ServiceConnection {
         this.bound = true;
 
         this.episode = retrieveLastEpisode();
-        if (this.episode != null) {
-            this.updatePlayer();
+        this.playerListener.updateViews(this.episode);
+
+        if (this.episode != null && !this.isPlaying()) {
+            this.playerService.setLastAudioPosition(this.episode.getLastPlayedPosition());
+            this.playerService.loadAudio(this.episode.getFilePath());
         }
     }
 

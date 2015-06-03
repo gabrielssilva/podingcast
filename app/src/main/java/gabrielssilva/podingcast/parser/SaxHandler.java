@@ -90,7 +90,11 @@ public class SaxHandler extends DefaultHandler {
     }
 
     public JSONObject getJson() {
-        return this.objects.peek();
+        if (this.objects != null) {
+            return this.objects.peek();
+        } else {
+            return null;
+        }
     }
 
 
