@@ -16,21 +16,28 @@ import gabrielssilva.podingcast.web.LoadImageTask;
 
 public class SmartImageView extends ImageView implements CallbackListener {
 
+    private boolean sourceSet;
+
     public SmartImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         Bitmap defaultCover = BitmapFactory.decodeResource(context.getResources(),
                 R.drawable.default_feed_cover);
         this.setImageBitmap(defaultCover);
+        this.sourceSet = false;
     }
 
     public void setSource(String key, String imageAddress) {
-        try {
-            Param param = new Param(key, new URL(imageAddress));
-            LoadImageTask loadImageTask = new LoadImageTask(this, this.getContext().getCacheDir());
-            loadImageTask.execute(param);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+        if (!sourceSet) {
+            try {
+                Param param = new Param(key, new URL(imageAddress));
+                LoadImageTask loadImageTask = new LoadImageTask(this, this.getContext().getCacheDir());
+                loadImageTask.execute(param);
+
+                this.sourceSet = true;
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -39,13 +46,11 @@ public class SmartImageView extends ImageView implements CallbackListener {
     public void onSuccess(Object result) {
         Bitmap image = (Bitmap) result;
         this.setImageBitmap(image);
-
-        // Cache image...
     }
 
     @Override
     public void onFailure(Object result) {
-
+        this.sourceSet = false;
     }
 
     public class Param {
