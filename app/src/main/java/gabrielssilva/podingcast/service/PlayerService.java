@@ -37,16 +37,22 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     }
 
     @Override
-    public void onDestroy() {
-        this.stopForeground(true);
+    public IBinder onBind(Intent intent) {
+        return new PlayerBinder();
+    }
 
+    @Override
+    public void onDestroy() {
         this.mediaPlayer.release();
         this.mediaPlayer = new MediaPlayer();
     }
 
     @Override
-    public IBinder onBind(Intent intent) {
-        return new PlayerBinder();
+    public boolean onUnbind(Intent intent) {
+        this.stopForeground(true);
+        this.stopSelf();
+
+        return false;
     }
 
     @Override

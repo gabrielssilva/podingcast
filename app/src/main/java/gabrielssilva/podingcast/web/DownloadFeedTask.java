@@ -59,10 +59,12 @@ public class DownloadFeedTask extends AsyncTask<PodcastController.Params, Void, 
         }
 
         JSONObject podcastJson = saxHandler.getJson();
-        try {
-            podcastJson.put("podingcast:link", params[0].url);
-        } catch (JSONException e) {
-            e.printStackTrace();
+        if (podcastJson != null) {
+            try {
+                podcastJson.put("podingcast:link", params[0].url);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
 
         return podcastJson;

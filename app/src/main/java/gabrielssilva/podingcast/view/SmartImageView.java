@@ -7,9 +7,12 @@ import android.graphics.BitmapFactory;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import gabrielssilva.podingcast.app.R;
 import gabrielssilva.podingcast.app.interfaces.CallbackListener;
-import gabrielssilva.podingcast.web.DownloadImageTask;
+import gabrielssilva.podingcast.web.LoadImageTask;
 
 public class SmartImageView extends ImageView implements CallbackListener {
 
@@ -22,8 +25,13 @@ public class SmartImageView extends ImageView implements CallbackListener {
     }
 
     public void setSource(String key, String imageAddress) {
-        DownloadImageTask downloadImageTask = new DownloadImageTask(this);
-        downloadImageTask.execute(imageAddress);
+        try {
+            Param param = new Param(key, new URL(imageAddress));
+            LoadImageTask loadImageTask = new LoadImageTask(this, this.getContext().getCacheDir());
+            loadImageTask.execute(param);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -38,5 +46,15 @@ public class SmartImageView extends ImageView implements CallbackListener {
     @Override
     public void onFailure(Object result) {
 
+    }
+
+    public class Param {
+        public String key;
+        public URL imageURL;
+
+        public Param(String key, URL imageURL) {
+            this.key = key;
+            this.imageURL = imageURL;
+        }
     }
 }

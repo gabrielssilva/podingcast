@@ -37,6 +37,7 @@ public class HomeActivity extends FragmentActivity implements CallbackListener {
          * If FeedList is visible, the back button will just send the App to background
          * (without calling onDestroy()). If FilesList is displayed, it will get back one screen.
          */
+
         if (filesFragment == null) {
             moveTaskToBack(true);
         } else {
