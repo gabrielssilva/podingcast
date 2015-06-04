@@ -28,9 +28,18 @@ public class SmartImageView extends ImageView implements CallbackListener {
     }
 
     public void setSource(String key, String imageAddress) {
-        if (!sourceSet) {
+        genericSetSource(key, imageAddress, true);
+    }
+
+    public void setSource(String imageAddress) {
+        genericSetSource(null, imageAddress, false);
+    }
+
+
+    private void genericSetSource(String key, String imageAddress, boolean saveOnCache) {
+        if (!this.sourceSet) {
             try {
-                Param param = new Param(key, new URL(imageAddress));
+                Param param = new Param(key, new URL(imageAddress), saveOnCache);
                 LoadImageTask loadImageTask = new LoadImageTask(this, this.getContext().getCacheDir());
                 loadImageTask.execute(param);
 
@@ -56,10 +65,12 @@ public class SmartImageView extends ImageView implements CallbackListener {
     public class Param {
         public String key;
         public URL imageURL;
+        public boolean saveOnCache;
 
-        public Param(String key, URL imageURL) {
+        public Param(String key, URL imageURL, boolean saveOnCache) {
             this.key = key;
             this.imageURL = imageURL;
+            this.saveOnCache = saveOnCache;
         }
     }
 }
