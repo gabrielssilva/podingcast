@@ -26,7 +26,7 @@ public class LoadImageTask extends AsyncTask<SmartImageView.Param, Void, Bitmap>
     @Override
     protected Bitmap doInBackground(SmartImageView.Param... params) {
         SmartImageView.Param param = params[0];
-        Bitmap imageBitmap = restoreBitmap(param.key);
+        Bitmap imageBitmap = restoreBitmap(param.key, param.saveOnCache);
 
         if (imageBitmap == null) {
             try {
@@ -34,7 +34,7 @@ public class LoadImageTask extends AsyncTask<SmartImageView.Param, Void, Bitmap>
                 urlConnection.connect();
                 imageBitmap = BitmapFactory.decodeStream(urlConnection.getInputStream());
 
-                cacheBitmap(param.key, imageBitmap);
+                cacheBitmap(param.key, imageBitmap, param.saveOnCache);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -52,17 +52,24 @@ public class LoadImageTask extends AsyncTask<SmartImageView.Param, Void, Bitmap>
         }
     }
 
-    private Bitmap restoreBitmap(String key) {
-        File savedBitmap = new File(cacheDir, key);
+    private Bitmap restoreBitmap(String key, boolean onCache) {
+        Bitmap cachedBitmap = null;
 
-        return BitmapFactory.decodeFile(savedBitmap.getPath());
+        if (onCache) {
+            File savedBitmap = new File(cacheDir, key);
+            cachedBitmap = BitmapFactory.decodeFile(savedBitmap.getPath());
+        }
+
+        return cachedBitmap;
     }
 
-    private void cacheBitmap(String key, Bitmap bitmap) throws IOException {
-        File cachedBitmap = new File(cacheDir, key);
-        FileOutputStream outputStream = new FileOutputStream(cachedBitmap);
+    private void cacheBitmap(String key, Bitmap bitmap, boolean saveOnCache) throws IOException {
+        if (saveOnCache) {
+            File cachedBitmap = new File(cacheDir, key);
+            FileOutputStream outputStream = new FileOutputStream(cachedBitmap);
 
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream);
-        outputStream.close();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream);
+            outputStream.close();
+        }
     }
 }

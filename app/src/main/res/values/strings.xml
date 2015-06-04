@@ -34,5 +34,6 @@
     <string name="content_cancel_add_podcast">Cancel action</string>
     <string name="hint_add_podcast">Looking for…</string>
     <string name="content_search_add_podcast">Search for Podcasts</string>
+    <string name="tittle_add_podcast">Add a Podcast</string>
 
 </resources>

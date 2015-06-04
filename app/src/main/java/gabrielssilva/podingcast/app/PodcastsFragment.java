@@ -1,5 +1,6 @@
 package gabrielssilva.podingcast.app;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -74,8 +75,11 @@ public class PodcastsFragment extends Fragment implements ListView.OnItemClickLi
 
     @Override
     public void onClick(View view) {
-        AddFeedDialog addFeedDialog = new AddFeedDialog();
-        addFeedDialog.show(getFragmentManager(), AddFeedDialog.TAG);
+        // AddFeedDialog addFeedDialog = new AddFeedDialog();
+        // addFeedDialog.show(getFragmentManager(), AddFeedDialog.TAG);
+
+        Intent intent = new Intent(this.getActivity(), AddPodcastActivity.class);
+        startActivity(intent);
     }
 
     /*

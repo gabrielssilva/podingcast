@@ -21,6 +21,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".AddPodcastActivity"
+            android:label="@string/tittle_add_podcast"
+            android:screenOrientation="portrait"/>
         <service android:name="gabrielssilva.podingcast.service.PlayerService" />
         <service android:name="gabrielssilva.podingcast.service.DownloadNotifyService" />
     </application>
