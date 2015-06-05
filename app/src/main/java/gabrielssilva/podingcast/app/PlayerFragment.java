@@ -95,10 +95,10 @@ public class PlayerFragment extends Fragment implements PlayerEventListener,
         int selectorId;
 
         if (this.playerController.isPlaying()) {
-            selectorId = R.drawable.selector_pause_button;
+            selectorId = R.drawable.ic_pause_black_48dp;
             contentDescription = "Pause";
         } else {
-            selectorId = R.drawable.selector_play_button;
+            selectorId = R.drawable.ic_play_arrow_black_48dp;
             contentDescription = "Play";
         }
 

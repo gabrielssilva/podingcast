@@ -55,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:id="@+id/button_minus_30"
-                android:src="@drawable/selector_minus30_button"/>
+                android:src="@drawable/ic_replay_30_black_48dp"/>
 
             <ImageButton
                 android:layout_width="wrap_content"
@@ -65,7 +65,7 @@
                 android:layout_marginRight="20dp"
                 android:background="@android:color/transparent"
                 android:id="@+id/button_play_pause"
-                android:src="@drawable/selector_play_button"/>
+                android:src="@drawable/ic_play_arrow_black_48dp"/>
 
             <ImageButton
                 style="?android:attr/buttonStyleSmall"
@@ -73,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:id="@+id/button_plus_30"
-                android:src="@drawable/selector_plus30_button"/>
+                android:src="@drawable/ic_forward_30_black_48dp"/>
         </LinearLayout>
 
     </LinearLayout>
