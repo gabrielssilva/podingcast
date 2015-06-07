@@ -57,7 +57,6 @@ public class JsonHandler {
             Episode episode = new Episode();
             episode.setEpisodeName(jsonEpisode.getString("title"));
             episode.setUrl(jsonEnclosure.getString("url"));
-            episode.setDuration(jsonEpisode.getString("itunes:duration"));
 
             episodes.add(episode);
         }

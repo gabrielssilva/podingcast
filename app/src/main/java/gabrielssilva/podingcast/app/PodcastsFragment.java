@@ -34,12 +34,16 @@ public class PodcastsFragment extends Fragment implements ListView.OnItemClickLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_podcasts, container, false);
         this.rootView = rootView;
-
         this.initViews();
-        this.loadPodcasts();
-        this.initListView();
 
         return rootView;
+    }
+
+    @Override public void onResume() {
+        super.onResume();
+
+        this.loadPodcasts();
+        this.initListView();
     }
 
 

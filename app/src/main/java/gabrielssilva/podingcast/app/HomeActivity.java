@@ -3,17 +3,12 @@ package gabrielssilva.podingcast.app;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
-import android.widget.Toast;
 
 import gabrielssilva.podingcast.adapter.FragmentsAdapter;
-import gabrielssilva.podingcast.app.interfaces.CallbackListener;
 import gabrielssilva.podingcast.controller.PlayerController;
-import gabrielssilva.podingcast.database.FilesDbHelper;
-import gabrielssilva.podingcast.model.Podcast;
 
-public class HomeActivity extends FragmentActivity implements CallbackListener {
+public class HomeActivity extends FragmentActivity {
 
     public final static int PLAYER_FRAGMENT_POS = 1;
 
@@ -43,25 +38,6 @@ public class HomeActivity extends FragmentActivity implements CallbackListener {
         } else {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public void onSuccess(Object result) {
-        FilesDbHelper dbHelper = new FilesDbHelper(this);
-        dbHelper.insertPodcast((Podcast) result);
-
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(PodcastsFragment.TAG);
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.detach(fragment);
-        transaction.attach(fragment);
-        transaction.commit();
-
-        Toast.makeText(this, "Feed downloaded", Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void onFailure(Object result) {
-        Toast.makeText(this, "Feed not downloaded", Toast.LENGTH_LONG).show();
     }
 
 

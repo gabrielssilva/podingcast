@@ -5,26 +5,39 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import gabrielssilva.podingcast.adapter.SearchResultAdapter;
 import gabrielssilva.podingcast.app.interfaces.CallbackListener;
+import gabrielssilva.podingcast.database.FilesDbHelper;
+import gabrielssilva.podingcast.model.Podcast;
 import gabrielssilva.podingcast.web.SearchTask;
 
-public class AddPodcastActivity extends Activity implements CallbackListener {
+public class AddPodcastActivity extends Activity implements CallbackListener,
+        AdapterView.OnItemClickListener {
 
     private ProgressBar progressBar;
-    private ListView resultsList;
+    private SearchResultAdapter adapter;
+    private List<Podcast> results;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_podcast);
+
+        this.results = new ArrayList<>();
+        this.adapter = new SearchResultAdapter(this, this.results);
 
         this.initViews();
     }
@@ -32,7 +45,10 @@ public class AddPodcastActivity extends Activity implements CallbackListener {
 
     private void initViews() {
         this.progressBar = (ProgressBar) this.findViewById(R.id.progress_add_podcast);
-        this.resultsList = (ListView) this.findViewById(R.id.results_list);
+
+        ListView resultsList = (ListView) this.findViewById(R.id.results_list);
+        resultsList.setAdapter(this.adapter);
+        resultsList.setOnItemClickListener(this);
 
         EditText editText = (EditText) this.findViewById(R.id.search_field_add_podcast);
         editText.setOnEditorActionListener(new SearchAction());
@@ -48,9 +64,25 @@ public class AddPodcastActivity extends Activity implements CallbackListener {
 
     @Override
     public void onSuccess(Object result) {
-        SearchResultAdapter adapter = new SearchResultAdapter(this, (JSONObject) result);
-        this.resultsList.setAdapter(adapter);
+        this.results.clear();
 
+        try {
+            JSONArray jsonResults = ((JSONObject) result).getJSONArray("results");
+
+            for (int i=0; i<jsonResults.length(); i++) {
+                Podcast podcast = new Podcast();
+                JSONObject currentResult = jsonResults.getJSONObject(i);
+
+                podcast.setPodcastName(currentResult.getString("collectionName"));
+                podcast.setImageAddress(currentResult.getString("artworkUrl100"));
+                podcast.setRssAddress(currentResult.getString("feedUrl"));
+                this.results.add(podcast);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        this.adapter.notifyDataSetChanged();
         this.progressBar.setVisibility(View.INVISIBLE);
     }
 
@@ -59,10 +91,16 @@ public class AddPodcastActivity extends Activity implements CallbackListener {
         this.progressBar.setVisibility(View.INVISIBLE);
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int index, long id) {
+        FilesDbHelper dbHelper = new FilesDbHelper(this);
+        dbHelper.insertPodcast(this.results.get(index));
+
+        this.onBackPressed();
+    }
+
 
     private class SearchAction implements TextView.OnEditorActionListener {
-
-
         @Override
         public boolean onEditorAction(TextView textView, int action, KeyEvent keyEvent) {
             boolean eventHandled = false;

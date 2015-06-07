@@ -7,54 +7,30 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.List;
 
 import gabrielssilva.podingcast.app.R;
+import gabrielssilva.podingcast.model.Podcast;
 import gabrielssilva.podingcast.view.SmartImageView;
 
 public class SearchResultAdapter extends BaseAdapter {
 
     private Context context;
-    private JSONObject jsonResult;
-    private JSONArray resultArray;
+    private List<Podcast> podcasts;
 
-    public SearchResultAdapter(Context context, JSONObject jsonResult) {
+    public SearchResultAdapter(Context context, List<Podcast> podcasts) {
         this.context = context;
-        this.jsonResult = jsonResult;
-
-        try {
-            this.resultArray = jsonResult.getJSONArray("results");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        this.podcasts = podcasts;
     }
 
     @Override
     public int getCount() {
-        int count = 0;
-
-        try {
-            count = jsonResult.getInt("resultCount");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return count;
+        return podcasts.size();
     }
 
     @Override
     public Object getItem(int index) {
-        Object item = null;
-
-        try {
-            item = this.resultArray.get(index);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return item;
+        return podcasts.get(index);
     }
 
     @Override
@@ -75,14 +51,9 @@ public class SearchResultAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        try {
-            JSONObject resultItem = resultArray.getJSONObject(index);
-
-            viewHolder.podcastTitle.setText(resultItem.getString("collectionName"));
-            viewHolder.podcastCover.setSource(resultItem.getString("artworkUrl100"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        Podcast currentPodcast = podcasts.get(index);
+        viewHolder.podcastTitle.setText(currentPodcast.getPodcastName());
+        viewHolder.podcastCover.setSource(currentPodcast.getImageAddress());
 
         return view;
     }
