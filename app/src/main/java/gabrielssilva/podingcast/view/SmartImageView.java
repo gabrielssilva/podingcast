@@ -16,6 +16,7 @@ import gabrielssilva.podingcast.web.LoadImageTask;
 
 public class SmartImageView extends ImageView implements CallbackListener {
 
+    private LoadImageTask loadImageTask;
     private String oldSource;
 
     public SmartImageView(Context context, AttributeSet attrs) {
@@ -24,50 +25,57 @@ public class SmartImageView extends ImageView implements CallbackListener {
         Bitmap defaultCover = BitmapFactory.decodeResource(context.getResources(),
                 R.drawable.default_feed_cover);
         this.setImageBitmap(defaultCover);
-        this.oldSource = null;
+
+        this.setOldSource(null);
+        this.loadImageTask = null;
     }
 
     public void setSource(String key, String imageAddress) {
-        genericSetSource(key, imageAddress, true);
-    }
-
-    public void setSource(String imageAddress) {
-        genericSetSource(null, imageAddress, false);
+        genericSetSource(key, imageAddress, true, this);
     }
 
 
-    private void genericSetSource(String key, String imageAddress, boolean saveOnCache) {
+    protected void genericSetSource(String key, String imageAddress, boolean saveOnCache,
+                                  CallbackListener callbackListener) {
+
         // Only loads the image if the requested source is different from the current.
         if (!imageAddress.equals(this.oldSource)) {
+            this.cancelOldDownload();
+
             try {
                 Param param = new Param(key, new URL(imageAddress), saveOnCache);
-                LoadImageTask loadImageTask = new LoadImageTask(this, this.getContext().getCacheDir());
+                this.loadImageTask = new LoadImageTask(callbackListener,
+                        this.getContext().getCacheDir());
                 loadImageTask.execute(param);
 
-                this.oldSource = imageAddress;
+                this.setOldSource(imageAddress);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
         }
     }
 
+    protected void setOldSource(String oldSource) {
+        this.oldSource = oldSource;
+    }
+
+    private void cancelOldDownload() {
+        if (this.loadImageTask != null) {
+            this.loadImageTask.cancel(true);
+        }
+    }
+
     @Override
     public void onSuccess(Object result) {
-        //Bitmap currentBitmap = (Bitmap) this.getTag();
-
-        //if (currentBitmap == null) {
-            Bitmap image = (Bitmap) result;
-            this.setImageBitmap(image);
-            this.setTag(image);
-        //} else {
-        //    this.setImageBitmap(currentBitmap);
-        //}
+        Bitmap resultBitmap = (Bitmap) result;
+        this.setImageBitmap(resultBitmap);
     }
 
     @Override
     public void onFailure(Object result) {
-        this.oldSource = null;
+        this.setOldSource(null);
     }
+
 
     public class Param {
         public String key;

@@ -1,6 +1,8 @@
 package gabrielssilva.podingcast.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,16 +13,18 @@ import java.util.List;
 
 import gabrielssilva.podingcast.app.R;
 import gabrielssilva.podingcast.model.Podcast;
-import gabrielssilva.podingcast.view.SmartImageView;
+import gabrielssilva.podingcast.view.CachedImageView;
 
 public class SearchResultAdapter extends BaseAdapter {
 
     private Context context;
     private List<Podcast> podcasts;
+    private SparseArray<Bitmap> cachedBitmaps;
 
     public SearchResultAdapter(Context context, List<Podcast> podcasts) {
         this.context = context;
         this.podcasts = podcasts;
+        this.cachedBitmaps = new SparseArray<>();
     }
 
     @Override
@@ -43,7 +47,7 @@ public class SearchResultAdapter extends BaseAdapter {
         ViewHolder viewHolder = new ViewHolder();
         if (view == null) {
             view = this.inflateLayout(viewGroup);
-            viewHolder.podcastCover = (SmartImageView) view.findViewById(R.id.result_item_cover);
+            viewHolder.podcastCover = (CachedImageView) view.findViewById(R.id.result_item_cover);
             viewHolder.podcastTitle = (TextView) view.findViewById(R.id.result_item_title);
 
             view.setTag(viewHolder);
@@ -53,9 +57,16 @@ public class SearchResultAdapter extends BaseAdapter {
 
         Podcast currentPodcast = podcasts.get(index);
         viewHolder.podcastTitle.setText(currentPodcast.getPodcastName());
-        viewHolder.podcastCover.setSource(currentPodcast.getImageAddress());
+        viewHolder.podcastCover.setCachedSource(currentPodcast.getImageAddress(), index,
+                this.cachedBitmaps);
 
         return view;
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        this.cachedBitmaps.clear();
+        super.notifyDataSetChanged();
     }
 
 
@@ -66,7 +77,8 @@ public class SearchResultAdapter extends BaseAdapter {
 
 
     private class ViewHolder {
-        public SmartImageView podcastCover;
+        public CachedImageView podcastCover;
         public TextView podcastTitle;
     }
+
 }

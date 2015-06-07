@@ -58,7 +58,7 @@ public class AddPodcastActivity extends Activity implements CallbackListener,
         SearchTask searchTask = new SearchTask(this);
         searchTask.execute(podcastName);
 
-        progressBar.setVisibility(View.VISIBLE);
+        this.progressBar.setVisibility(View.VISIBLE);
     }
 
 
