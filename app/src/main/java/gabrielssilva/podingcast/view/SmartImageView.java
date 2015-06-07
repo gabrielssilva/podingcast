@@ -16,7 +16,7 @@ import gabrielssilva.podingcast.web.LoadImageTask;
 
 public class SmartImageView extends ImageView implements CallbackListener {
 
-    private boolean sourceSet;
+    private String oldSource;
 
     public SmartImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -24,7 +24,7 @@ public class SmartImageView extends ImageView implements CallbackListener {
         Bitmap defaultCover = BitmapFactory.decodeResource(context.getResources(),
                 R.drawable.default_feed_cover);
         this.setImageBitmap(defaultCover);
-        this.sourceSet = false;
+        this.oldSource = null;
     }
 
     public void setSource(String key, String imageAddress) {
@@ -37,29 +37,36 @@ public class SmartImageView extends ImageView implements CallbackListener {
 
 
     private void genericSetSource(String key, String imageAddress, boolean saveOnCache) {
-        if (!this.sourceSet) {
+        // Only loads the image if the requested source is different from the current.
+        if (!imageAddress.equals(this.oldSource)) {
             try {
                 Param param = new Param(key, new URL(imageAddress), saveOnCache);
                 LoadImageTask loadImageTask = new LoadImageTask(this, this.getContext().getCacheDir());
                 loadImageTask.execute(param);
 
-                this.sourceSet = true;
+                this.oldSource = imageAddress;
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
         }
     }
 
-
     @Override
     public void onSuccess(Object result) {
-        Bitmap image = (Bitmap) result;
-        this.setImageBitmap(image);
+        //Bitmap currentBitmap = (Bitmap) this.getTag();
+
+        //if (currentBitmap == null) {
+            Bitmap image = (Bitmap) result;
+            this.setImageBitmap(image);
+            this.setTag(image);
+        //} else {
+        //    this.setImageBitmap(currentBitmap);
+        //}
     }
 
     @Override
     public void onFailure(Object result) {
-        this.sourceSet = false;
+        this.oldSource = null;
     }
 
     public class Param {
