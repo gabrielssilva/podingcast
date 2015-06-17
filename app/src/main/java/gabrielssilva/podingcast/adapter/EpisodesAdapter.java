@@ -74,8 +74,8 @@ public class EpisodesAdapter extends BaseAdapter {
             public void onClick(View view) {
                 Intent intent = new Intent(context, EpisodeDetailsActivity.class);
                 Bundle args = new Bundle();
-                args.putParcelable(EpisodeDetailsActivity.ARG_EPISODE,
-                        podcast.getEpisodes().get(index));
+                args.putString(EpisodeDetailsActivity.ARG_EPISODE,
+                        podcast.getEpisodes().get(index).getEpisodeName());
 
                 intent.putExtras(args);
                 context.startActivity(intent);

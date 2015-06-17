@@ -1,14 +1,9 @@
 package gabrielssilva.podingcast.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class Podcast implements Parcelable {
-
-    public static final Creator<Podcast> CREATOR = new MyCreator();
+public class Podcast {
 
     private String podcastName;
     private String rssAddress;
@@ -27,16 +22,6 @@ public class Podcast implements Parcelable {
 
         this.episodes = new ArrayList<>();
     }
-
-    public Podcast(Parcel parcel) {
-        this.podcastName = parcel.readString();
-        this.rssAddress = parcel.readString();
-        this.numberOfEpisodes = parcel.readInt();
-
-        this.episodes = new ArrayList<>();
-        parcel.readList(episodes, Episode.class.getClassLoader());
-    }
-
 
     public String getRssAddress() {
         return rssAddress;
@@ -80,30 +65,4 @@ public class Podcast implements Parcelable {
     }
 
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeString(this.podcastName);
-        parcel.writeString(this.rssAddress);
-        parcel.writeInt(this.numberOfEpisodes);
-        parcel.writeList(this.episodes);
-    }
-
-
-    private static class MyCreator implements Creator<Podcast> {
-
-        @Override
-        public Podcast createFromParcel(Parcel parcel) {
-            return new Podcast(parcel);
-        }
-
-        @Override
-        public Podcast[] newArray(int size) {
-            return new Podcast[size];
-        }
-    }
 }

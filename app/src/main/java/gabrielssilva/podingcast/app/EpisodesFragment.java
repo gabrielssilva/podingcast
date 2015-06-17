@@ -3,7 +3,6 @@ package gabrielssilva.podingcast.app;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.app.Fragment;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.util.LongSparseArray;
@@ -107,7 +106,10 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
 
     private void retrieveInfo() {
         Bundle args = this.getArguments();
-        this.podcast = args.getParcelable(PodcastsFragment.ARG_PODCAST);
+        String podcastName = args.getString(PodcastsFragment.ARG_PODCAST);
+
+        LocalFilesController localFilesController = new LocalFilesController(this.activity);
+        this.podcast = localFilesController.getPodcast(podcastName);
         this.titleView.setText(podcast.getPodcastName());
 
         fetchPodcast();

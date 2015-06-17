@@ -119,7 +119,7 @@ public class PodcastsFragment extends Fragment implements ListView.OnItemClickLi
             Fragment filesFragment = new EpisodesFragment();
             Bundle args = new Bundle();
 
-            args.putParcelable(ARG_PODCAST, podcasts.get(this.index));
+            args.putString(ARG_PODCAST, podcasts.get(this.index).getPodcastName());
             filesFragment.setArguments(args);
 
             FragmentTransaction transaction = getFragmentManager().beginTransaction();

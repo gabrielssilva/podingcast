@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageButton;
 
 import gabrielssilva.podingcast.controller.EpisodesController;
+import gabrielssilva.podingcast.controller.LocalFilesController;
 import gabrielssilva.podingcast.model.Episode;
 
 public class EpisodeDetailsActivity extends Activity {
@@ -19,7 +20,9 @@ public class EpisodeDetailsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_episode_details);
 
-        this.episode = getIntent().getExtras().getParcelable(ARG_EPISODE);
+        String episodeName = getIntent().getExtras().getString(ARG_EPISODE);
+        LocalFilesController localFilesController = new LocalFilesController(this);
+        this.episode = localFilesController.getEpisode(episodeName);
         initViews();
     }
 

@@ -43,6 +43,19 @@ public class FilesDbHelper extends SQLiteOpenHelper {
                 null, sortOrder);
     }
 
+    public Cursor getPodcast(String podcastName) {
+        SQLiteDatabase database = getReadableDatabase();
+        String columns[] = { FilesDbContract.FeedEntry.FEED_NAME,
+                FilesDbContract.FeedEntry.FEED_ADDRESS,
+                FilesDbContract.FeedEntry.FEED_IMG_ADDRESS};
+        String selection = FilesDbContract.FeedEntry.FEED_NAME + " = ?";
+        String selectionArgs[] = { podcastName };
+        String sortOrder = FilesDbContract.FeedEntry.FEED_NAME + " ASC";
+
+        return database.query(FilesDbContract.FeedEntry.TABLE_NAME, columns, selection,
+                selectionArgs, null, null, sortOrder);
+    }
+
     public Cursor getFeedFiles(String feedName) {
         SQLiteDatabase database = getReadableDatabase();
         String feedId = ""+this.getPodcastId(database, feedName);

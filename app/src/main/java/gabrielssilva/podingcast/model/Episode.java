@@ -3,9 +3,8 @@ package gabrielssilva.podingcast.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Episode implements Parcelable {
+public class Episode {
 
-    public static final Creator<Episode> CREATOR = new MyCreator();
     public static final String LOCAL = "status_local";
     public static final String NOT_LOCAL = "status_not_local";
     public static final String DOWNLOADING = "status_downloading";
@@ -28,11 +27,6 @@ public class Episode implements Parcelable {
         this.lastPlayedPosition = lastPlayedPosition;
         this.status = LOCAL;
     }
-
-    public Episode(Parcel parcel) {
-        this(parcel.readString(), parcel.readString(), parcel.readString(), parcel.readInt());
-    }
-
 
     public String getEpisodeName() {
         return episodeName;
@@ -79,31 +73,4 @@ public class Episode implements Parcelable {
     }
 
     public String getStatus() { return this.status; }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeString(this.episodeName);
-        parcel.writeString(this.filePath);
-        parcel.writeString(this.url);
-        parcel.writeInt(this.lastPlayedPosition);
-    }
-
-
-    private static class MyCreator implements Creator<Episode> {
-
-        @Override
-        public Episode createFromParcel(Parcel parcel) {
-            return new Episode(parcel);
-        }
-
-        @Override
-        public Episode[] newArray(int size) {
-            return new Episode[size];
-        }
-    }
 }

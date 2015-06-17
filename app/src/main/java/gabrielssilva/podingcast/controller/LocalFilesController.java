@@ -42,6 +42,25 @@ public class LocalFilesController {
         return list;
     }
 
+    public Podcast getPodcast(String podcastName) {
+        Cursor cursor = dbHelper.getPodcast(podcastName);
+        Podcast podcast = null;
+
+        int nameColumnIndex = cursor.getColumnIndexOrThrow(FilesDbContract.FeedEntry.FEED_NAME);
+        int addrColumnIndex = cursor.getColumnIndexOrThrow(FilesDbContract.FeedEntry.FEED_ADDRESS);
+        int imgColIndex = cursor.getColumnIndexOrThrow(FilesDbContract.FeedEntry.FEED_IMG_ADDRESS);
+
+        if (cursor.moveToFirst()) {
+            podcast = new Podcast();
+            podcast.setPodcastName(cursor.getString(nameColumnIndex));
+            podcast.setRssAddress(cursor.getString(addrColumnIndex));
+            podcast.setImageAddress(cursor.getString(imgColIndex));
+            podcast.setEpisodes(this.getPodcastEpisodes(podcast));
+        }
+
+        return podcast;
+    }
+
     public Episode getEpisode(String episodeName) {
         Cursor cursor = dbHelper.getEpisode(episodeName);
         Episode episode = null;
