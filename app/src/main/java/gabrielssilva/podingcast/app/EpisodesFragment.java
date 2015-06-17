@@ -146,8 +146,7 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
     }
 
     private void initListView() {
-        Context context = activity.getApplicationContext();
-        this.adapter = new EpisodesAdapter(context, this.podcast);
+        this.adapter = new EpisodesAdapter(this.activity, this.podcast);
 
         this.listView.setAdapter(adapter);
         this.listView.setOnItemClickListener(this);
@@ -235,6 +234,7 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
         Animator animator = new Animator();
         animator.fadeListIn(this.listView, null, 0);
     }
+
 
     private class FetchEpisodesListener implements CallbackListener {
 

@@ -37,7 +37,7 @@ public class FilesHelper {
                 Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(""+downloadID, url);
-        editor.commit();
+        editor.apply();
     }
 
     public static void removeDownloadReference(Context context, long downloadID) {
@@ -58,5 +58,14 @@ public class FilesHelper {
             references.append(Long.valueOf(entry.getKey()), (String) entry.getValue());
         }
         return references;
+    }
+
+    public static void deleteFile(String filePath) {
+        File file = new File(filePath);
+        boolean deleted = file.delete();
+
+        if (!deleted) {
+            Log.e("FilesHelper", "File not deleted.");
+        }
     }
 }

@@ -9,6 +9,7 @@ import android.net.Uri;
 import java.util.ArrayList;
 import java.util.List;
 
+import gabrielssilva.podingcast.database.FilesDbHelper;
 import gabrielssilva.podingcast.helper.FilesHelper;
 import gabrielssilva.podingcast.model.Episode;
 import gabrielssilva.podingcast.model.Podcast;
@@ -32,6 +33,12 @@ public class EpisodesController  {
                 episode.getEpisodeName()+".mp3");
 
         return downloadManager.enqueue(request);
+    }
+
+    public void deleteEpisode(Episode episode) {
+        FilesDbHelper filesDbHelper = new FilesDbHelper(activity.getApplicationContext());
+        filesDbHelper.removeEpisode(episode.getEpisodeName());
+        FilesHelper.deleteFile(episode.getFilePath());
     }
 
     public List<Episode> compareEpisodes(List<Episode> localEpisodes, List<Episode> feedEpisodes) {

@@ -41,7 +41,7 @@ public class PodcastsAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int index, View view, ViewGroup viewGroup) {
+    public View getView(final int index, View view, ViewGroup viewGroup) {
         ViewHolder viewHolder = new ViewHolder();
 
         if (view == null) {
@@ -57,7 +57,7 @@ public class PodcastsAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        Podcast podcast = this.podcasts.get(index);
+        final Podcast podcast = this.podcasts.get(index);
         String episodesCountString = this.getEpisodesCountString(podcast.getNumberOfEpisodes());
 
         viewHolder.podcastName.setText(podcast.getPodcastName());

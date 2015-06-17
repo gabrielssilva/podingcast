@@ -84,9 +84,25 @@ public class FilesDbHelper extends SQLiteOpenHelper {
         insertEpisode(database, feedId, episode);
     }
 
+    public void removeEpisode(String episodeName) {
+        SQLiteDatabase database = getWritableDatabase();
+        String selection = FilesDbContract.FileEntry.FILE_NAME + " LIKE ?";
+        String selectionArgs[] = { episodeName };
+
+        database.delete(FilesDbContract.FileEntry.TABLE_NAME, selection, selectionArgs);
+    }
+
     public void insertPodcast(Podcast podcast) {
         SQLiteDatabase database = getWritableDatabase();
         insertPodcast(database, podcast);
+    }
+
+    public void removePodcast(String podcastName) {
+        SQLiteDatabase database = getWritableDatabase();
+        String selection = FilesDbContract.FeedEntry.FEED_NAME + " LIKE ?";
+        String selectionArgs[] = { podcastName };
+
+        database.delete(FilesDbContract.FeedEntry.TABLE_NAME, selection, selectionArgs);
     }
 
     public void updateLastPosition(String fileName, int currentPosition) {

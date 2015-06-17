@@ -1,16 +1,18 @@
 package gabrielssilva.podingcast.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
+import gabrielssilva.podingcast.app.EpisodeDetailsActivity;
 import gabrielssilva.podingcast.app.R;
 import gabrielssilva.podingcast.model.Episode;
 import gabrielssilva.podingcast.model.Podcast;
@@ -41,7 +43,7 @@ public class EpisodesAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int index, View view, ViewGroup viewGroup) {
+    public View getView(final int index, View view, ViewGroup viewGroup) {
         ViewHolder viewHolder = new ViewHolder();
 
         if (view == null) {
@@ -52,6 +54,7 @@ public class EpisodesAdapter extends BaseAdapter {
             viewHolder.episodeDuration = (TextView) view.findViewById(R.id.episode_duration);
             viewHolder.downloadAction = (ImageView) view.findViewById(R.id.action_download);
             viewHolder.itemProgress = (ProgressBar) view.findViewById(R.id.episode_item_progress);
+            viewHolder.infoButton = (ImageButton) view.findViewById(R.id.episode_info);
             view.setTag(viewHolder);
         } else {
             // We can use our Holder!
@@ -65,6 +68,19 @@ public class EpisodesAdapter extends BaseAdapter {
                 View.VISIBLE : View.GONE);
         viewHolder.itemProgress.setVisibility(episode.getStatus().equals(Episode.DOWNLOADING)
                 ? View.VISIBLE : View.GONE);
+
+        viewHolder.infoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, EpisodeDetailsActivity.class);
+                Bundle args = new Bundle();
+                args.putParcelable(EpisodeDetailsActivity.ARG_EPISODE,
+                        podcast.getEpisodes().get(index));
+
+                intent.putExtras(args);
+                context.startActivity(intent);
+            }
+        });
 
         return view;
     }
@@ -86,5 +102,6 @@ public class EpisodesAdapter extends BaseAdapter {
         TextView episodeDuration;
         ImageView downloadAction;
         ProgressBar itemProgress;
+        ImageButton infoButton;
     }
 }

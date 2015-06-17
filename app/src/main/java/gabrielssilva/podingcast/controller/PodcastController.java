@@ -1,9 +1,14 @@
 package gabrielssilva.podingcast.controller;
 
+import android.content.Context;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import gabrielssilva.podingcast.app.interfaces.CallbackListener;
+import gabrielssilva.podingcast.database.FilesDbHelper;
+import gabrielssilva.podingcast.helper.FilesHelper;
+import gabrielssilva.podingcast.model.Episode;
 import gabrielssilva.podingcast.model.Podcast;
 import gabrielssilva.podingcast.parser.JsonHandler;
 import gabrielssilva.podingcast.web.DownloadFeedTask;
@@ -20,6 +25,15 @@ public class PodcastController implements CallbackListener {
         DownloadFeedTask downloadTask = new DownloadFeedTask(this);
         Params params = new Params(feedAddress, numOfEpisodes);
         downloadTask.execute(params);
+    }
+
+    public void removePodcast(Context context, Podcast podcast) {
+        for (Episode episode : podcast.getEpisodes()) {
+            FilesHelper.deleteFile(episode.getFilePath());
+        }
+
+        FilesDbHelper filesDbHelper = new FilesDbHelper(context);
+        filesDbHelper.removePodcast(podcast.getPodcastName());
     }
 
 

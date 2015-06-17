@@ -160,8 +160,10 @@ public class PlayerFragment extends Fragment implements PlayerEventListener,
 
     @Override
     public void updateViews(Episode episode) {
-        this.setupSeekBar();
-        this.setEpisodeCover(episode.getFilePath());
-        this.updateButtonPlayPause();
+        if (episode != null) {
+            this.setupSeekBar();
+            this.setEpisodeCover(episode.getFilePath());
+            this.updateButtonPlayPause();
+        }
     }
 }

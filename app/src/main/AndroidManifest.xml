@@ -23,7 +23,15 @@
         </activity>
         <activity
             android:name=".AddPodcastActivity"
-            android:label="@string/tittle_add_podcast"
+            android:label="@string/title_add_podcast"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".EpisodeDetailsActivity"
+            android:label="@string/title_episode_details"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".PodcastDetailsActivity"
+            android:label="@string/title_podcast_details"
             android:screenOrientation="portrait"/>
         <service android:name="gabrielssilva.podingcast.service.PlayerService" />
         <service android:name="gabrielssilva.podingcast.service.DownloadNotifyService" />
