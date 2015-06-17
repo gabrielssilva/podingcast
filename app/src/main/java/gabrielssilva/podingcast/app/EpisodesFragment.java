@@ -69,29 +69,35 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
 
         this.initViews(inflater);
         this.retrieveInfo();
-        this.initListView();
+
 
         return rootView;
     }
 
     @Override
-    public void onPause() {
-        if (this.broadcastNotifier != null) {
-            this.activity.unregisterReceiver(broadcastNotifier);
-            this.broadcastNotifier = null;
-        }
-
-        super.onPause();
-    }
-
-    @Override
     public void onResume() {
+        this.retrieveInfo();
+        this.initListView();
+
+        this.recreateDownloads();
+        this.updateEpisodesStatus();
+
         if (this.downloading.size() > 0) {
             // More Downloads to watch
             registerLocalNotifier();
         }
-
         super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        this.downloading.clear();
+
+        if (this.broadcastNotifier != null) {
+            this.activity.unregisterReceiver(broadcastNotifier);
+            this.broadcastNotifier = null;
+        }
+        super.onPause();
     }
 
 

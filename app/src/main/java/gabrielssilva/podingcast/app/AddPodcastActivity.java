@@ -74,7 +74,7 @@ public class AddPodcastActivity extends Activity implements CallbackListener,
                 JSONObject currentResult = jsonResults.getJSONObject(i);
 
                 podcast.setPodcastName(currentResult.getString("collectionName"));
-                podcast.setImageAddress(currentResult.getString("artworkUrl100"));
+                podcast.setImageAddress(currentResult.getString("artworkUrl600"));
                 podcast.setRssAddress(currentResult.getString("feedUrl"));
                 this.results.add(podcast);
             }

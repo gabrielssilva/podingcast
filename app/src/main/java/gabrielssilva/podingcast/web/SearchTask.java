@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 
 import gabrielssilva.podingcast.app.interfaces.CallbackListener;
 
@@ -31,7 +32,7 @@ public class SearchTask extends AsyncTask<String, Void, JSONObject> {
         JSONObject jsonResult = null;
 
         try {
-            URL url = new URL(prefix + strings[0] + suffix);
+            URL url = new URL(prefix + URLEncoder.encode(strings[0], "utf-8") + suffix);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();
