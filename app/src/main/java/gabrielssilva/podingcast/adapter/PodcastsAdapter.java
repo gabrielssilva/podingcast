@@ -1,15 +1,18 @@
 package gabrielssilva.podingcast.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.List;
 
+import gabrielssilva.podingcast.app.PodcastDetailsActivity;
 import gabrielssilva.podingcast.app.R;
 import gabrielssilva.podingcast.model.Podcast;
 import gabrielssilva.podingcast.view.SmartImageView;
@@ -51,6 +54,7 @@ public class PodcastsAdapter extends BaseAdapter {
             viewHolder.podcastName = (TextView) view.findViewById(R.id.feed_podcast_name);
             viewHolder.episodesCount = (TextView) view.findViewById(R.id.feed_episodes_count);
             viewHolder.podcastCover = (SmartImageView) view.findViewById(R.id.podcast_cover);
+            viewHolder.infoButton = (ImageButton) view.findViewById(R.id.info_button);
             view.setTag(viewHolder);
         } else {
             // We can use our Holder!
@@ -63,6 +67,15 @@ public class PodcastsAdapter extends BaseAdapter {
         viewHolder.podcastName.setText(podcast.getPodcastName());
         viewHolder.episodesCount.setText(episodesCountString);
         viewHolder.podcastCover.setSource(podcast.getPodcastName(), podcast.getImageAddress());
+
+        viewHolder.infoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, PodcastDetailsActivity.class);
+                intent.putExtra(PodcastDetailsActivity.ARG_PODCAST, podcast.getPodcastName());
+                context.startActivity(intent);
+            }
+        });
 
         return view;
     }
@@ -96,5 +109,6 @@ public class PodcastsAdapter extends BaseAdapter {
         TextView podcastName;
         TextView episodesCount;
         SmartImageView podcastCover;
+        ImageButton infoButton;
     }
 }

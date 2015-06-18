@@ -2,7 +2,6 @@ package gabrielssilva.podingcast.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,7 +60,7 @@ public class EpisodesAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        Episode episode = this.podcast.getEpisodes().get(index);
+        final Episode episode = this.podcast.getEpisodes().get(index);
         viewHolder.episodeName.setText(episode.getEpisodeName());
         viewHolder.episodeDuration.setText(episode.getDuration());
         viewHolder.downloadAction.setVisibility(episode.getStatus().equals(Episode.NOT_LOCAL) ?
@@ -73,11 +72,7 @@ public class EpisodesAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, EpisodeDetailsActivity.class);
-                Bundle args = new Bundle();
-                args.putString(EpisodeDetailsActivity.ARG_EPISODE,
-                        podcast.getEpisodes().get(index).getEpisodeName());
-
-                intent.putExtras(args);
+                intent.putExtra(EpisodeDetailsActivity.ARG_EPISODE, episode.getEpisodeName());
                 context.startActivity(intent);
             }
         });

@@ -41,4 +41,8 @@
     <string name="content_cancel_add_podcast">Cancel action</string>
     <string name="hint_add_podcast">Looking for…</string>
     <string name="content_search_add_podcast">Search for Podcasts</string>
+    <string name="alt_remove_podcast">Delete Podcast</string>
+    <string name="alt_info_podcast">More details and options</string>
+
+    <string name="podcast_details_episodes">Local Episodes:</string>
 </resources>

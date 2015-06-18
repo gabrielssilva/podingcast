@@ -20,10 +20,14 @@ public class EpisodeDetailsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_episode_details);
 
-        String episodeName = getIntent().getExtras().getString(ARG_EPISODE);
+        this.retrieveInfo();
+        this.initViews();
+    }
+
+    private void retrieveInfo() {
+        String episodeName = getIntent().getStringExtra(ARG_EPISODE);
         LocalFilesController localFilesController = new LocalFilesController(this);
         this.episode = localFilesController.getEpisode(episodeName);
-        initViews();
     }
 
     private void initViews() {

@@ -10,7 +10,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:descendantFocusability="blocksDescendants">
 
         <gabrielssilva.podingcast.view.SmartImageView
             android:id="@+id/podcast_cover"
@@ -18,6 +19,17 @@
             android:layout_height="200dp"
             android:scaleType="centerCrop"
             android:contentDescription="@string/feed_item_cover" />
+
+        <ImageButton
+            android:id="@+id/info_button"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:background="@color/primary_light"
+            android:layout_alignParentRight="true"
+            android:alpha=".7"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_info_outline_black_48dp"
+            android:contentDescription="@string/alt_info_podcast"/>
 
         <LinearLayout
             android:layout_width="match_parent"
