@@ -27,24 +27,19 @@ public class PlayerController implements ServiceConnection {
     public PlayerController(PlayerListener playerListener, Context context) {
         this.playerListener = playerListener;
         this.context = context;
-        this.localFilesController = new LocalFilesController(context);
 
-        this.initService();
+        this.localFilesController = new LocalFilesController(context);
+        this.bound = false;
+        this.episode = retrieveLastEpisode();
     }
 
     private void initService() {
-        Intent playerIntent = new Intent(this.context, PlayerService.class);
+        if (this.playerService == null) {
+            Intent playerIntent = new Intent(this.context, PlayerService.class);
 
-        this.context.startService(playerIntent);
-        this.context.bindService(playerIntent, this, Context.BIND_AUTO_CREATE);
-    }
-
-    private Episode retrieveLastEpisode() {
-        SharedPreferences sharedPrefs =
-                this.context.getSharedPreferences(SHARED_PREF_KEY, Context.MODE_PRIVATE);
-        String episodeName = sharedPrefs.getString(KEY_EP_NAME, "");
-
-        return this.localFilesController.getEpisode(episodeName);
+            this.context.startService(playerIntent);
+            this.context.bindService(playerIntent, this, Context.BIND_AUTO_CREATE);
+        }
     }
 
     private void updateLastEpisode(Episode episode) {
@@ -54,21 +49,36 @@ public class PlayerController implements ServiceConnection {
     }
 
 
+    public Episode retrieveLastEpisode() {
+        SharedPreferences sharedPrefs =
+                this.context.getSharedPreferences(SHARED_PREF_KEY, Context.MODE_PRIVATE);
+        String episodeName = sharedPrefs.getString(KEY_EP_NAME, "");
+
+        return this.localFilesController.getEpisode(episodeName);
+    }
+
     public void playFile(Episode newEpisode) {
-        // Save position from current episode and update it's reference to a new one.
         this.updateLastEpisode(newEpisode);
-        this.saveCurrentPosition();
-        this.episode = newEpisode;
 
-        this.playerService.setLastAudioPosition(newEpisode.getLastPlayedPosition());
-        this.playerService.loadAudio(newEpisode.getFilePath());
-        this.playerService.playAudio();
+        if (this.playerService == null) {
+            this.initService();
+        } else {
+            // Save position from current episode and update it's reference to a new one.
+            this.saveCurrentPosition();
+            this.episode = newEpisode;
 
-        this.playerListener.updateViews(this.episode);
+            this.playerService.setLastAudioPosition(newEpisode.getLastPlayedPosition());
+            this.playerService.loadAudio(newEpisode.getFilePath());
+            this.playerService.playAudio();
+
+            this.playerListener.updateViews(this.episode);
+        }
     }
 
     public void seekToPosition(int seekPosition, boolean preservePosition) {
-        if (preservePosition) {
+        if (this.playerService == null) {
+            this.initService();
+        } else if (preservePosition) {
             this.playerService.seekToWithDelta(seekPosition);
         } else {
             this.playerService.genericSeekPosition(seekPosition);
@@ -76,7 +86,9 @@ public class PlayerController implements ServiceConnection {
     }
 
     public void playOrPause() {
-        if (this.isPlaying()) {
+        if (this.playerService == null) {
+            this.initService();
+        } else if (this.isPlaying()) {
             this.playerService.pauseAudio();
         } else {
             this.playerService.playAudio();
@@ -122,12 +134,11 @@ public class PlayerController implements ServiceConnection {
         this.playerService = ((PlayerService.PlayerBinder) iBinder).getService();
         this.bound = true;
 
-        this.episode = retrieveLastEpisode();
-        this.playerListener.updateViews(this.episode);
-
         if (this.episode != null && !this.isPlaying()) {
             this.playerService.setLastAudioPosition(this.episode.getLastPlayedPosition());
             this.playerService.loadAudio(this.episode.getFilePath());
+            this.playerService.playAudio();
+            this.playerListener.updateViews(this.episode);
         }
     }
 

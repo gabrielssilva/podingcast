@@ -17,6 +17,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
 
     private MediaPlayer mediaPlayer;
+    private NotificationCompat.Builder notificationBuilder;
     private int lastAudioPosition;
     private int currentAudioPosition;
 
@@ -28,11 +29,11 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        NotificationCompat.Builder nBuilder = new NotificationCompat.Builder(this);
-        nBuilder.setSmallIcon(R.drawable.ic_play);
-        nBuilder.setContentTitle("Playing...");
+        this.notificationBuilder = new NotificationCompat.Builder(this);
+        this.notificationBuilder.setSmallIcon(R.drawable.ic_play_arrow_black_48dp)
+                .setContentTitle("Playing...");
+        this.startForeground(1, this.notificationBuilder.build());
 
-        this.startForeground(1, nBuilder.build());
         return START_STICKY;
     }
 

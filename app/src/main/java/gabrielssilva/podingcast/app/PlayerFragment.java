@@ -45,9 +45,7 @@ public class PlayerFragment extends Fragment implements PlayerEventListener,
 
         this.initViews();
         this.setButtonEvents();
-
-        this.playerController = new PlayerController(this, this.getActivity());
-        ((HomeActivity) this.getActivity()).setPlayerController(this.playerController);
+        this.preparePlayer();
 
         return rootView;
     }
@@ -88,6 +86,14 @@ public class PlayerFragment extends Fragment implements PlayerEventListener,
 
         JumpAudioPositionClick backAudioEvent = new JumpAudioPositionClick(this, -30000);
         this.buttonBackAudio.setOnClickListener(backAudioEvent);
+    }
+
+    private void preparePlayer() {
+        this.playerController = new PlayerController(this, this.getActivity());
+        ((HomeActivity) this.getActivity()).setPlayerController(this.playerController);
+
+        Episode episode = this.playerController.retrieveLastEpisode();
+        this.updateViews(episode);
     }
 
     private void updateButtonPlayPause() {

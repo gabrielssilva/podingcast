@@ -52,7 +52,7 @@ public class JsonHandler {
 
         for (int i=0; i<jsonEpisodes.length(); i++) {
             JSONObject jsonEpisode = jsonEpisodes.getJSONObject(i);
-            JSONObject jsonEnclosure = jsonEpisode.getJSONObject("enclosure");
+            JSONObject jsonEnclosure = this.getEnclosure(jsonEpisode);
 
             Episode episode = new Episode();
             episode.setEpisodeName(jsonEpisode.getString("title"));
@@ -65,5 +65,17 @@ public class JsonHandler {
         }
 
         return episodes;
+    }
+
+    private JSONObject getEnclosure(JSONObject jsonEpisode) throws JSONException {
+        JSONObject jsonEnclosure;
+
+        try {
+            jsonEnclosure = jsonEpisode.getJSONObject("enclosure");
+        } catch (JSONException e) {
+            jsonEnclosure = jsonEpisode.getJSONArray("enclosure").getJSONObject(0);
+        }
+
+        return jsonEnclosure;
     }
 }
