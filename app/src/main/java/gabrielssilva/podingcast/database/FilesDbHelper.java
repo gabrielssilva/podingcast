@@ -11,7 +11,7 @@ import gabrielssilva.podingcast.model.Podcast;
 
 public class FilesDbHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 4;
+    public static final int DATABASE_VERSION = 5;
     public static final String DATABASE_NAME = "Podingcast.db";
 
     public FilesDbHelper(Context context) {
@@ -63,7 +63,9 @@ public class FilesDbHelper extends SQLiteOpenHelper {
         String columns[] = { FilesDbContract.FileEntry.FILE_NAME,
                 FilesDbContract.FileEntry.FILE_PATH,
                 FilesDbContract.FileEntry.URL,
-                FilesDbContract.FileEntry.FILE_LAST_POS };
+                FilesDbContract.FileEntry.FILE_LAST_POS,
+                FilesDbContract.FileEntry.DESCRIPTION,
+                FilesDbContract.FileEntry.CONTENT };
         String selection = FilesDbContract.FileEntry.FEED_ID + " = ?";
         String selectionArgs[] = { feedId };
         String sortOrder = FilesDbContract.FileEntry._ID + " ASC";
@@ -78,7 +80,9 @@ public class FilesDbHelper extends SQLiteOpenHelper {
         String columns[] = { FilesDbContract.FileEntry.FILE_NAME,
                 FilesDbContract.FileEntry.FILE_PATH,
                 FilesDbContract.FileEntry.URL,
-                FilesDbContract.FileEntry.FILE_LAST_POS };
+                FilesDbContract.FileEntry.FILE_LAST_POS,
+                FilesDbContract.FileEntry.DESCRIPTION,
+                FilesDbContract.FileEntry.CONTENT };
         String selection = FilesDbContract.FileEntry.FILE_NAME + " = ?";
         String selectionArgs[] = { fileName };
         String sortOrder = FilesDbContract.FileEntry._ID + " ASC";
@@ -151,6 +155,8 @@ public class FilesDbHelper extends SQLiteOpenHelper {
         values.put(FilesDbContract.FileEntry.FILE_NAME, episode.getEpisodeName());
         values.put(FilesDbContract.FileEntry.FILE_PATH, episode.getFilePath());
         values.put(FilesDbContract.FileEntry.URL, episode.getUrl());
+        values.put(FilesDbContract.FileEntry.DESCRIPTION, episode.getDescription());
+        values.put(FilesDbContract.FileEntry.CONTENT, episode.getContent());
 
         database.insertWithOnConflict(FilesDbContract.FileEntry.TABLE_NAME, null, values,
                 SQLiteDatabase.CONFLICT_IGNORE);

@@ -1,8 +1,5 @@
 package gabrielssilva.podingcast.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 public class Episode {
 
     public static final String LOCAL = "status_local";
@@ -15,6 +12,9 @@ public class Episode {
     private String duration;
     private int lastPlayedPosition;
     private String status;
+    private String coverAddress;
+    private String content;
+    private String description;
 
     public Episode() {
 
@@ -73,4 +73,28 @@ public class Episode {
     }
 
     public String getStatus() { return this.status; }
+
+    public String getCoverAddress() {
+        return coverAddress;
+    }
+
+    public void setCoverAddress(String coverAddress) {
+        this.coverAddress = coverAddress;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 }

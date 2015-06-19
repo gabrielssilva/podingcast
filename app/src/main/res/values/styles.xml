@@ -30,6 +30,12 @@
         <item name="android:textColor">@color/secondary_text</item>
     </style>
 
+    <style name="TextAppearance.Long">
+        <item name="android:textSize">15sp</item>
+        <item name="android:singleLine">false</item>
+        <item name="android:textColor">@color/secondary_text</item>
+    </style>
+
     <style name="TextAppearance.Secondary.Dark" parent="TextAppearance.Secondary">
         <item name="android:textColor">@color/primary_light</item>
     </style>

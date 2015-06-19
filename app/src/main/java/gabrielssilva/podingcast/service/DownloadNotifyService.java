@@ -14,6 +14,8 @@ import gabrielssilva.podingcast.helper.FilesHelper;
 public class DownloadNotifyService extends Service implements CallbackListener {
 
     public final static String DOWNLOAD_ID = "download_id";
+    public final static String EPISODE_DESCRIPTION = "episode_description";
+    public final static String EPISODE_CONTENT = "episode_content";
 
     private LongSparseArray<DownloadNotifier> notifiers;
     private BroadcastNotifier mainBroadcastNotifier;
@@ -39,8 +41,11 @@ public class DownloadNotifyService extends Service implements CallbackListener {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i("DownloadNotifyService", "Service starting...");
         long downloadID = intent.getLongExtra(DOWNLOAD_ID, 0);
+        String episodeDescription = intent.getStringExtra(EPISODE_DESCRIPTION);
+        String episodeContent = intent.getStringExtra(EPISODE_CONTENT);
 
-        DownloadNotifier downloadNotifier = new DownloadNotifier(downloadID);
+        DownloadNotifier downloadNotifier = new DownloadNotifier(downloadID, episodeDescription,
+                episodeContent);
         IntentFilter intentFilter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
         registerReceiver(downloadNotifier, intentFilter);
 

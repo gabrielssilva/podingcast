@@ -69,6 +69,8 @@ public class LocalFilesController {
         int pathColumnIndex = cursor.getColumnIndexOrThrow(FilesDbContract.FileEntry.FILE_PATH);
         int urlColumnIndex = cursor.getColumnIndexOrThrow(FilesDbContract.FileEntry.URL);
         int posColumnIndex = cursor.getColumnIndexOrThrow(FilesDbContract.FileEntry.FILE_LAST_POS);
+        int desColumnIndex = cursor.getColumnIndexOrThrow(FilesDbContract.FileEntry.DESCRIPTION);
+        int conColumnIndex = cursor.getColumnIndexOrThrow(FilesDbContract.FileEntry.CONTENT);
 
         if (cursor.moveToFirst()) {
             episodeName = cursor.getString(nameColumnIndex);
@@ -80,6 +82,8 @@ public class LocalFilesController {
                 Mp3Helper mp3Helper = new Mp3Helper(filePath);
                 episode = new Episode(episodeName, filePath, url, lastPlayedPosition);
                 episode.setDuration(mp3Helper.getEpisodeDuration());
+                episode.setDescription(cursor.getString(desColumnIndex));
+                episode.setContent(cursor.getString(conColumnIndex));
             }
         }
 
@@ -104,6 +108,8 @@ public class LocalFilesController {
         int pathColumnIndex = cursor.getColumnIndexOrThrow(FilesDbContract.FileEntry.FILE_PATH);
         int urlColumnIndex = cursor.getColumnIndexOrThrow(FilesDbContract.FileEntry.URL);
         int posColumnIndex = cursor.getColumnIndexOrThrow(FilesDbContract.FileEntry.FILE_LAST_POS);
+        int desColumnIndex = cursor.getColumnIndexOrThrow(FilesDbContract.FileEntry.DESCRIPTION);
+        int conColumnIndex = cursor.getColumnIndexOrThrow(FilesDbContract.FileEntry.CONTENT);
 
         for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             String episodeName = cursor.getString(nameColumnIndex);
@@ -115,6 +121,8 @@ public class LocalFilesController {
             if (FilesHelper.validFile(episode.getFilePath())) {
                 Mp3Helper mp3Helper = new Mp3Helper(filePath);
                 episode.setDuration(mp3Helper.getEpisodeDuration());
+                episode.setDescription(cursor.getString(desColumnIndex));
+                episode.setContent(cursor.getString(conColumnIndex));
                 list.add(episode);
             }
         }

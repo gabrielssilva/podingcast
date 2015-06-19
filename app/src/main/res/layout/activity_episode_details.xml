@@ -1,13 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-    <ImageButton
-        android:id="@+id/remove_episode"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:src="@drawable/ic_delete_black_48dp"/>
+        android:padding="10dp">
 
-</LinearLayout>
+        <gabrielssilva.podingcast.view.SmartImageView
+            android:id="@+id/episode_cover"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"/>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            card_view:cardCornerRadius="1dp"
+            card_view:cardElevation="2dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:id="@+id/episode_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/TextAppearance.Primary"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/episode_duration"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="9"
+                        style="@style/TextAppearance.Secondary"/>
+
+                    <ImageButton
+                        android:id="@+id/delete_button"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:layout_weight="1"
+                        android:layout_gravity="right"
+                        android:background="@android:color/transparent"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_delete_black_48dp"
+                        android:contentDescription="@string/alt_remove_podcast"/>
+
+                </LinearLayout>
+
+                <View
+                    style="@style/HorizontalDivider"
+                    android:layout_marginBottom="10dp"/>
+
+                <TextView
+                    android:id="@+id/episode_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:singleLine="false"
+                    style="@style/TextAppearance.Long"/>
+
+                <View
+                    style="@style/HorizontalDivider"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"/>
+
+
+                <TextView
+                    android:id="@+id/episode_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:singleLine="false"
+                    style="@style/TextAppearance.Long"/>
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+    </LinearLayout>
+</ScrollView>

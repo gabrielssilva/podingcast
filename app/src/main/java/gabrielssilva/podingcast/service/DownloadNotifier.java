@@ -19,10 +19,14 @@ public class DownloadNotifier extends BroadcastReceiver {
     public final static String EXTRA_DOWNLOAD_ID = "download_id";
 
     private long downloadID;
+    private String episodeDescription;
+    private String episodeContent;
 
-    public DownloadNotifier(long downloadID) {
+    public DownloadNotifier(long downloadID, String episodeDescription, String episodeContent) {
         Log.i("DownloadNotifier", "Notifier created...");
         this.downloadID = downloadID;
+        this.episodeDescription = episodeDescription;
+        this.episodeContent = episodeContent;
     }
 
     @Override
@@ -81,8 +85,10 @@ public class DownloadNotifier extends BroadcastReceiver {
         String fileName = mp3Helper.getFileTitle();
 
         Episode episode = new Episode(fileName, filePath, uri, 0);
-        FilesDbHelper filesDbHelper = new FilesDbHelper(context);
+        episode.setDescription(this.episodeDescription);
+        episode.setContent(this.episodeContent);
 
+        FilesDbHelper filesDbHelper = new FilesDbHelper(context);
         filesDbHelper.insertEpisode(cursor.getString(descrIndex), episode);
     }
 }

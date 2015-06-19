@@ -189,13 +189,15 @@ public class EpisodesFragment extends Fragment implements ListView.OnItemClickLi
         long downloadID = episodesController.downloadEpisode(this.podcast, episode);
 
         FilesHelper.saveDownloadReference(this.activity, downloadID, episode.getUrl());
-        this.waitForDownload(downloadID);
+        this.waitForDownload(episode, downloadID);
         this.downloading.append(downloadID, episode);
     }
 
-    private void waitForDownload(long downloadID) {
+    private void waitForDownload(Episode episode, long downloadID) {
         Intent intent = new Intent(this.activity, DownloadNotifyService.class);
         intent.putExtra(DownloadNotifyService.DOWNLOAD_ID, downloadID);
+        intent.putExtra(DownloadNotifyService.EPISODE_DESCRIPTION, episode.getDescription());
+        intent.putExtra(DownloadNotifyService.EPISODE_CONTENT, episode.getContent());
 
         this.activity.startService(intent);
         this.registerLocalNotifier();

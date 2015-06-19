@@ -68,6 +68,8 @@ public class EpisodesAdapter extends BaseAdapter {
         viewHolder.itemProgress.setVisibility(episode.getStatus().equals(Episode.DOWNLOADING)
                 ? View.VISIBLE : View.GONE);
 
+        viewHolder.infoButton.setVisibility(episode.getStatus().equals(Episode.LOCAL)
+                ? View.VISIBLE : View.GONE);
         viewHolder.infoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
