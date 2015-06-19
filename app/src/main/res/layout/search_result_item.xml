@@ -2,14 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:padding="10dp">
 
     <gabrielssilva.podingcast.view.CachedImageView
         android:id="@+id/result_item_cover"
         android:layout_weight="3"
         android:layout_width="0dp"
         android:layout_height="70dp"
-        android:padding="10dp"
         android:scaleType="centerCrop"/>
 
     <TextView
@@ -17,6 +17,7 @@
         style="@style/TextAppearance.Primary.ListItem"
         android:layout_weight="7"
         android:layout_width="0dp"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent"
+        android:gravity="center"/>
 
 </LinearLayout>

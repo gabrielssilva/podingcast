@@ -9,6 +9,8 @@ import gabrielssilva.podingcast.app.interfaces.CallbackListener;
 
 public class CachedImageView extends SmartImageView {
 
+    private final static int MAX_CACHE_SIZE = 10;
+
     public CachedImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
@@ -36,8 +38,15 @@ public class CachedImageView extends SmartImageView {
         @Override
         public void onSuccess(Object result) {
             Bitmap resultBitmap = (Bitmap) result;
-            this.bitmaps.append(this.index, resultBitmap);
             setImageBitmap(resultBitmap);
+
+            // Erase an old image, do not cache too much!
+            int cacheSize = this.bitmaps.size();
+            if (cacheSize > MAX_CACHE_SIZE) {
+                this.bitmaps.remove(this.bitmaps.keyAt(0));
+            }
+
+            this.bitmaps.append(this.index, resultBitmap);
         }
 
         @Override
