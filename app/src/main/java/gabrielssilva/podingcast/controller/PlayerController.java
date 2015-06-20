@@ -71,6 +71,7 @@ public class PlayerController implements ServiceConnection {
             this.playerService.loadAudio(newEpisode.getFilePath());
             this.playerService.playAudio();
 
+            this.playerService.updateNotification(this.episode);
             this.playerListener.updateViews(this.episode);
         }
     }
@@ -88,10 +89,8 @@ public class PlayerController implements ServiceConnection {
     public void playOrPause() {
         if (this.playerService == null) {
             this.initService();
-        } else if (this.isPlaying()) {
-            this.playerService.pauseAudio();
         } else {
-            this.playerService.playAudio();
+            this.playerService.playOrPause();
         }
     }
 
@@ -138,6 +137,7 @@ public class PlayerController implements ServiceConnection {
             this.playerService.setLastAudioPosition(this.episode.getLastPlayedPosition());
             this.playerService.loadAudio(this.episode.getFilePath());
             this.playerService.playAudio();
+            this.playerService.updateNotification(this.episode);
             this.playerListener.updateViews(this.episode);
         }
     }

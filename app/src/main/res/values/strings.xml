@@ -45,4 +45,8 @@
     <string name="alt_info_podcast">More details and options</string>
 
     <string name="podcast_details_episodes">Local Episodes:</string>
+    <string name="alt_replay_30_button">Go 30 seconds back</string>
+    <string name="alt_play_button">Play or Pause</string>
+    <string name="alt_forward_30_button">Forward 30 seconds</string>
+    <string name="alt_notification_image">Episode playing</string>
 </resources>

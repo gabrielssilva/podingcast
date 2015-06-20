@@ -21,6 +21,7 @@ import gabrielssilva.podingcast.events.JumpAudioPositionClick;
 import gabrielssilva.podingcast.events.ProgressUpdateRunnable;
 import gabrielssilva.podingcast.helper.Mp3Helper;
 import gabrielssilva.podingcast.model.Episode;
+import gabrielssilva.podingcast.service.PlayerService;
 
 public class PlayerFragment extends Fragment implements PlayerEventListener,
         PlayerListener {
@@ -81,10 +82,12 @@ public class PlayerFragment extends Fragment implements PlayerEventListener,
         PlayPauseClick playPauseEvent = new PlayPauseClick(this);
         this.buttonPlayPause.setOnClickListener(playPauseEvent);
 
-        JumpAudioPositionClick skipAudioEvent = new JumpAudioPositionClick(this, 30000);
+        JumpAudioPositionClick skipAudioEvent = new JumpAudioPositionClick(this,
+                PlayerService.PLUS_DELTA);
         this.buttonSkipAudio.setOnClickListener(skipAudioEvent);
 
-        JumpAudioPositionClick backAudioEvent = new JumpAudioPositionClick(this, -30000);
+        JumpAudioPositionClick backAudioEvent = new JumpAudioPositionClick(this,
+                PlayerService.MINUS_DELTA);
         this.buttonBackAudio.setOnClickListener(backAudioEvent);
     }
 

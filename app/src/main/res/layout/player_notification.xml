@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:weightSum="10">
+
+    <ImageView
+        android:id="@+id/episode_cover"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:scaleType="fitStart"
+        android:src="@drawable/default_episode_cover"
+        android:contentDescription="@string/alt_notification_image"/>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="8"
+        android:weightSum="3"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/episode_name"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:weightSum="3">
+
+            <ImageButton
+                android:id="@+id/replay_30_button"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/ic_replay_30_black_48dp"
+                android:scaleType="fitCenter"
+                android:contentDescription="@string/alt_replay_30_button"/>
+
+            <ImageButton
+                android:id="@+id/play_button"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/ic_play_arrow_black_48dp"
+                android:scaleType="fitCenter"
+                android:contentDescription="@string/alt_play_button"/>
+
+            <ImageButton
+                android:id="@+id/forward_30_button"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/ic_forward_30_black_48dp"
+                android:scaleType="fitCenter"
+                android:contentDescription="@string/alt_forward_30_button"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+        
+</LinearLayout>
