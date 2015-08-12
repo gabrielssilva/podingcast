@@ -4,7 +4,7 @@ Podingcast is a lightweight podcasts feed and player. No fancy features. Just ma
 
 ## More about Podingcast...
 
-Some time ago I was willing to learn more about Android, exploring some more advanced platform features (like Services and Notifiers). I decided to start a new project.
+Some time ago I was willing to learn more about Android and explore some more advanced platform features (like Services and Notifiers). I decided to start a new project.
 
 At the same time, I never found a cool podcasts app for Android. I tried a bunch of them, and always found something to destroy my experience. It was natural to put the two ideas together, and finally I was starting to code Podingcast.
 
